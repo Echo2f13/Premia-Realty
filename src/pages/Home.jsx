@@ -1,89 +1,116 @@
-import HeroSection from "../components/HeroSection";
-import PropertyCard from "../components/PropertyCard";
-import properties from "../data/properties.json";
+import { Link } from 'react-router-dom';
+import { Bath, Bed, Eye, Heart, MapPin, Maximize } from 'lucide-react';
+import HeroSection from '../components/HeroSection';
+import data from '../data/properties.json';
 
 const Home = () => {
-  const featured = properties[0];
+  const { collection } = data;
 
   return (
-    <div className="space-y-24 pb-24">
-      <HeroSection
-        eyebrow="CURATED RESIDENCES"
-        title="A Gold Standard in Luxury Living"
-        subtitle="Experience a curated selection of signature residences that blend contemporary architecture with timeless sophistication. Crafted for discerning individuals seeking exclusivity beyond compare."
-        ctaPrimary={{ label: "Schedule A Private Tour", href: "#featured-residence" }}
-        ctaSecondary={{ label: "Discover Our Story", href: "/about" }}
-        backgroundImage="https://images.unsplash.com/photo-1512914890250-352c5ee5e774?auto=format&fit=crop&w=2000&q=80"
-      />
+    <div className="bg-background text-platinum-pearl">
+      <HeroSection />
 
-      <section className="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 rounded-[2.75rem] border border-border/50 bg-surface/60 p-10 sm:grid-cols-3">
-          {[{
-            title: "Legacy of Excellence",
-            copy:
-              "Over 20 years of sculpting landmark residences across India's most coveted neighborhoods.",
-          },
-          {
-            title: "Private Membership",
-            copy:
-              "Access curated lifestyle services, from Michelin-star dining privileges to bespoke concierge.",
-          },
-          {
-            title: "Tailored Services",
-            copy:
-              "Resident experiences personalised by dedicated lifestyle curators and valet teams.",
-          }].map((item) => (
-            <div key={item.title} className="space-y-4 border-white/5 sm:border-l sm:pl-8 first:pl-0 first:sm:border-l-0">
-              <span className="inline-block text-xs uppercase tracking-[0.35em] text-accent/70">
-                PREMIER ADVANTAGE
-              </span>
-              <h2 className="font-display text-2xl text-white">{item.title}</h2>
-              <p className="text-sm leading-relaxed text-white/65">{item.copy}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="featured-residence" className="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-accent/70">SIGNATURE SHOWCASE</p>
-            <h2 className="mt-3 font-display text-3xl text-white sm:text-4xl">
-              Featured Private Residence
+      <section className="bg-gradient-luxury py-20">
+        <div className="container px-4 lg:px-8">
+          <div className="mb-20 text-center animate-fade-in">
+            <span className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.3em] text-gold-primary/70">
+              Exclusive Collection
+            </span>
+            <h2 className="mb-6 text-2xl font-serif font-normal text-platinum-pearl md:text-3xl">
+              Carefully curated residences
             </h2>
+            <p className="mx-auto max-w-xl text-lg font-light leading-relaxed text-platinum-pearl/60">
+              Each property represents the pinnacle of luxury living and architectural excellence.
+            </p>
           </div>
-          <a
-            href="/properties"
-            className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-white transition hover:border-accent hover:text-accent"
-          >
-            View Complete Portfolio
-          </a>
-        </div>
 
-        <div className="grid gap-10 lg:grid-cols-[1fr,380px]">
-          <PropertyCard property={featured} />
-          <div className="space-y-8 rounded-[2.5rem] border border-border/40 bg-background/60 p-8">
-            <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-accent/70">ELEVATED LIVING</p>
-              <p className="mt-3 text-sm leading-loose text-white/60">
-                Private terraces wrap around the skyline-level residence, framed by triple-height glass and bespoke Italian marble finishes. A sky lounge, infinity-edge plunge pool, and sommelier-curated cellar complete the experience.
-              </p>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2">
-              {[
-                { metric: "11,000", label: "Square Feet" },
-                { metric: "06", label: "Signature Suites" },
-                { metric: "04", label: "Private Lounges" },
-                { metric: "24/7", label: "Lifestyle Concierge" },
-              ].map((item) => (
-                <div key={item.label} className="rounded-3xl border border-border/30 bg-background/40 px-5 py-6 text-center">
-                  <p className="font-display text-3xl text-accent">{item.metric}</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.35em] text-white/50">
-                    {item.label}
-                  </p>
+          <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {collection.map((property, index) => (
+              <article
+                key={property.id}
+                className="group glass-card overflow-hidden animate-slide-up"
+                style={{ animationDelay: `${index * 0.15}s` }}
+              >
+                <div className="relative overflow-hidden">
+                  <img
+                    src={property.image}
+                    alt={property.title}
+                    className="h-64 w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center gap-4 bg-luxury-black/60 opacity-0 transition duration-300 group-hover:opacity-100">
+                    <button
+                      type="button"
+                      className="flex h-11 w-11 items-center justify-center rounded-full border border-gold-primary/40 bg-black/40 text-gold-primary transition hover:bg-gold-primary hover:text-luxury-black"
+                    >
+                      <Heart className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
+                      className="flex h-11 w-11 items-center justify-center rounded-full border border-gold-primary/40 bg-black/40 text-gold-primary transition hover:bg-gold-primary hover:text-luxury-black"
+                    >
+                      <Eye className="h-5 w-5" />
+                    </button>
+                  </div>
+                  <div className="absolute top-4 left-4 rounded-full bg-gradient-gold px-4 py-1 text-sm font-semibold text-luxury-black">
+                    {property.status}
+                  </div>
+                  {property.featured && (
+                    <div className="absolute top-4 right-4 rounded-full bg-luxury-black/80 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold-primary">
+                      Featured
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+
+                <div className="space-y-6 p-6">
+                  <div>
+                    <h3 className="mb-3 text-lg font-serif font-medium text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
+                      {property.title}
+                    </h3>
+                    <div className="flex items-center text-sm text-platinum-pearl/60">
+                      <MapPin className="mr-2 h-4 w-4 text-gold-primary/80" />
+                      <span>{property.location}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-gold-primary/10 pt-4 text-xs text-platinum-pearl/70">
+                    <div className="flex items-center gap-1">
+                      <Bed className="h-3.5 w-3.5 text-gold-primary/80" />
+                      <span>{property.beds} Beds</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Bath className="h-3.5 w-3.5 text-gold-primary/80" />
+                      <span>{property.baths} Baths</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Maximize className="h-3.5 w-3.5 text-gold-primary/80" />
+                      <span>{property.area}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-gold-primary">{property.price}</span>
+                    <button
+                      type="button"
+                      className="rounded-full border border-gold-primary/30 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="text-center animate-scale-in">
+            <Link
+              to="/properties"
+              className="rounded-full border border-gold-primary/40 px-8 py-2 text-sm font-medium uppercase tracking-[0.4em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
+            >
+              View Complete Collection
+            </Link>
+            <p className="mt-6 text-sm font-light text-platinum-pearl/50">
+              Over 500 exceptional properties available exclusively
+            </p>
           </div>
         </div>
       </section>

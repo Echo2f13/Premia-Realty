@@ -1,56 +1,72 @@
-[
-  {
-    "id": 1,
-    "title": "Skyline Royale Penthouse",
-    "location": "Worli Seaface, Mumbai",
-    "price": "?9.8 Cr",
-    "image": "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?auto=format&fit=crop&w=1600&q=80",
-    "description": "Panoramic Arabian Sea vistas with a private sky lounge, infinity pool, and bespoke interiors by Atelier Noir.",
-    "status": "READY TO MOVE"
-  },
-  {
-    "id": 2,
-    "title": "Elysian Garden Residences",
-    "location": "Golf Course Road, Gurgaon",
-    "price": "?6.4 Cr",
-    "image": "https://images.unsplash.com/photo-1579632652768-6cb9dcf85912?auto=format&fit=crop&w=1600&q=80",
-    "description": "A low-density enclave with cascading green terraces, smart home automation, and a signature wellness club.",
-    "status": "UNDER CONSTRUCTION"
-  },
-  {
-    "id": 3,
-    "title": "Azure Harbour Villas",
-    "location": "Morjim Beach, Goa",
-    "price": "?7.2 Cr",
-    "image": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80",
-    "description": "Beachfront villa ensemble featuring private decks, plunge pools, and curated resort concierge services.",
-    "status": "NEW LAUNCH"
-  },
-  {
-    "id": 4,
-    "title": "The Meridian Residences",
-    "location": "Banjara Hills, Hyderabad",
-    "price": "?5.1 Cr",
-    "image": "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1600&q=80",
-    "description": "Art-deco inspired interiors, dual living lounges, and signature sky club for the residents.",
-    "status": "READY TO MOVE"
-  },
-  {
-    "id": 5,
-    "title": "Celestial Crest Duplex",
-    "location": "Residency Road, Bengaluru",
-    "price": "?4.9 Cr",
-    "image": "https://images.unsplash.com/photo-1600585154340-0ef3c08dcdb6?auto=format&fit=crop&w=1600&q=80",
-    "description": "Sun-drenched duplex with double-height living, custom-crafted kitchen, and residents' business lounge.",
-    "status": "READY TO MOVE"
-  },
-  {
-    "id": 6,
-    "title": "Lunaire Crown Suites",
-    "location": "Lower Parel, Mumbai",
-    "price": "?8.3 Cr",
-    "image": "https://images.unsplash.com/photo-1613553474178-e5d7513f42c7?auto=format&fit=crop&w=1600&q=80",
-    "description": "Sky homes with curated art collection, sommelier-staffed private dining, and skyline observatory deck.",
-    "status": "BOOKING OPEN"
-  }
-]
+{
+  "collection": [
+    {
+      "id": 1,
+      "title": "Luxury Penthouse Suite",
+      "location": "Downtown Manhattan",
+      "price": ",250,000",
+      "image": "/assets/property-1-BYXSAaID.jpg",
+      "beds": 3,
+      "baths": 2,
+      "area": "2,500 sq ft",
+      "status": "For Sale",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Modern Villa Estate",
+      "location": "Beverly Hills",
+      "price": ",900,000",
+      "image": "/assets/property-2-C4DbY7wx.jpg",
+      "beds": 5,
+      "baths": 4,
+      "area": "6,200 sq ft",
+      "status": "For Sale",
+      "featured": true
+    },
+    {
+      "id": 3,
+      "title": "Executive Penthouse",
+      "location": "Miami Beach",
+      "price": ",750,000",
+      "image": "/assets/property-3-zqLbcdWX.jpg",
+      "beds": 4,
+      "baths": 3,
+      "area": "3,400 sq ft",
+      "status": "For Sale",
+      "featured": false
+    }
+  ],
+  "listings": [
+    {
+      "id": 1,
+      "title": "Luxury Penthouse Suite",
+      "location": "Downtown Financial District",
+      "price": ",500/month",
+      "image": "/assets/property-1-BYXSAaID.jpg",
+      "beds": 3,
+      "baths": 3,
+      "area": "2,850 sq ft"
+    },
+    {
+      "id": 2,
+      "title": "Modern Waterfront Residence",
+      "location": "Marina Bay",
+      "price": ",200/month",
+      "image": "/assets/property-2-C4DbY7wx.jpg",
+      "beds": 2,
+      "baths": 2,
+      "area": "1,950 sq ft"
+    },
+    {
+      "id": 3,
+      "title": "Executive Sky Villa",
+      "location": "Central Business District",
+      "price": ",000/month",
+      "image": "/assets/property-3-zqLbcdWX.jpg",
+      "beds": 4,
+      "baths": 4,
+      "area": "3,500 sq ft"
+    }
+  ]
+}

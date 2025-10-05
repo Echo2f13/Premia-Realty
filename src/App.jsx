@@ -9,7 +9,7 @@ import Contact from "./pages/Contact";
 const App = () => {
   return (
     <Router>
-      <div className="flex min-h-screen flex-col bg-background text-muted">
+      <div className="flex min-h-screen flex-col bg-background text-platinum-pearl">
         <Navbar />
         <main className="flex-1">
           <Routes>
