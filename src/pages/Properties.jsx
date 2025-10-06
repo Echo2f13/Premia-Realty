@@ -1,10 +1,35 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Bath, Bed, Heart, MapPin, Maximize, Search } from "lucide-react";
 import staticData from "../data/properties.json";
-import { getAllProperties } from "../data/firebaseService";
+import {
+  getAllProperties,
+  removeSavedProperty,
+  savePropertyForUser,
+  subscribeToSavedProperties,
+} from "../data/firebaseService";
+import useAuth from "../hooks/useAuth";
+
+const getPropertyKey = (property, fallback) => {
+  if (property?.id) return String(property.id);
+  if (property?.slug) return property.slug;
+  if (property?.title) {
+    const normalized = property.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+    if (normalized) {
+      return normalized;
+    }
+  }
+  return `fallback-${fallback}`;
+};
 
 const Properties = () => {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const [listings, setListings] = useState(staticData.listings);
+  const [savedResidences, setSavedResidences] = useState(new Map());
 
   useEffect(() => {
     let active = true;
@@ -27,6 +52,46 @@ const Properties = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      setSavedResidences(new Map());
+      return undefined;
+    }
+
+    const unsubscribe = subscribeToSavedProperties(user.uid, (items) => {
+      const nextMap = new Map();
+      items.forEach((item) => {
+        const key = item.propertyId ?? item.id;
+        nextMap.set(key, item);
+      });
+      setSavedResidences(nextMap);
+    });
+
+    return () => unsubscribe?.();
+  }, [isAuthenticated, user]);
+
+  const handleToggleSaved = async (property, fallbackKey) => {
+    if (!isAuthenticated || !user) {
+      navigate("/login", { state: { from: "/properties" } });
+      return;
+    }
+
+    const propertyKey = getPropertyKey(property, fallbackKey);
+
+    try {
+      if (savedResidences.has(propertyKey)) {
+        await removeSavedProperty(user.uid, propertyKey);
+      } else {
+        await savePropertyForUser(user.uid, property);
+      }
+    } catch (error) {
+      console.error("Failed to toggle saved property", error);
+      alert("We were unable to update your saved residences. Please try again.");
+    }
+  };
+
+  const savedIdentifiers = useMemo(() => new Set(savedResidences.keys()), [savedResidences]);
+
   return (
     <div className="bg-background text-platinum-pearl">
       <section className="relative isolate overflow-hidden py-28">
@@ -39,7 +104,7 @@ const Properties = () => {
         <div className="relative container px-4 lg:px-8">
           <span className="text-xs font-medium uppercase tracking-[0.45em] text-gold-primary/75">Curated Portfolio</span>
           <h1 className="mt-6 max-w-3xl text-4xl font-serif font-bold text-platinum-pearl md:text-5xl">
-            Reserve access to the world's finest residences
+            Reserve access to the world&apos;s finest residences
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-platinum-pearl/70">
             Each listing is handpicked for architectural merit, location prominence, and bespoke lifestyle privileges. Experience sky penthouses, landscaped villas, and duplex sanctuaries guided by our concierge collective.
@@ -81,7 +146,7 @@ const Properties = () => {
       <section className="container px-4 pb-24 lg:px-8">
         <div className="mb-16 grid gap-10 lg:grid-cols-[1fr,0.85fr]">
           <div className="glass-card space-y-6 p-10">
-            <p className="text-xs font-medium uppercase tracking-[0.4em] text-gold-primary/75">Collector's Brief</p>
+            <p className="text-xs font-medium uppercase tracking-[0.4em] text-gold-primary/75">Collector&apos;s Brief</p>
             <h2 className="text-3xl font-serif font-bold text-platinum-pearl">Private preview protocol</h2>
             <p className="text-sm leading-relaxed text-platinum-pearl/70">
               Submit your intent and a concierge will choreograph a twilight walkthrough suited to your schedule. Expect chauffeured arrivals, sommelier pairings, and spatial technology demonstrations personalised to your preferences.
@@ -99,7 +164,7 @@ const Properties = () => {
             <h3 className="text-2xl font-serif text-platinum-pearl">Residency trends 2025</h3>
             <ul className="space-y-4 text-sm leading-relaxed text-platinum-pearl/70">
               <li>Mumbai coastal penthouses observe 18% YoY appreciation with limited inventory.</li>
-              <li>Gurgaon's biophilic villas in Golf Course micro-markets see increased NRI demand.</li>
+              <li>Gurgaon&apos;s biophilic villas in Golf Course micro-markets see increased NRI demand.</li>
               <li>Goan beachfront villas experience 2x booking velocity for hospitality co-ownership models.</li>
             </ul>
             <span className="inline-flex w-fit items-center rounded-full border border-gold-primary/20 px-5 py-2 text-xs uppercase tracking-[0.4em] text-gold-primary">
@@ -109,58 +174,76 @@ const Properties = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {listings.map((property, index) => (
-            <article
-              key={property.id ?? index}
-              className="group glass-card overflow-hidden animate-scale-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="relative h-64 overflow-hidden">
-                <img
-                  src={property.image}
-                  alt={property.title}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute top-4 right-4 rounded-full bg-luxury-black/80 p-2 text-gold-primary">
-                  <Heart className="h-5 w-5" />
-                </div>
-                <div className="absolute bottom-4 left-4 rounded-full bg-gradient-gold px-4 py-1 text-sm font-bold text-luxury-black">
-                  {property.price}
-                </div>
-              </div>
-              <div className="space-y-6 p-6">
-                <div>
-                  <h3 className="text-xl font-serif font-bold text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
-                    {property.title}
-                  </h3>
-                  <div className="mt-2 flex items-center text-sm text-platinum-pearl/70">
-                    <MapPin className="mr-1.5 h-4 w-4" />
-                    <span>{property.location}</span>
+          {listings.map((property, index) => {
+            const propertyKey = getPropertyKey(property, index);
+            const isSaved = savedIdentifiers.has(propertyKey);
+
+            return (
+              <article
+                key={propertyKey}
+                className="group glass-card overflow-hidden animate-scale-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={property.image}
+                    alt={property.title}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleToggleSaved(property, index);
+                    }}
+                    className={`absolute top-4 right-4 rounded-full p-2 transition ${
+                      isSaved
+                        ? "bg-gold-primary text-luxury-black shadow-gold"
+                        : "bg-luxury-black/80 text-gold-primary"
+                    }`}
+                    aria-label={isSaved ? "Remove from saved" : "Save residence"}
+                  >
+                    <Heart className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
+                  </button>
+                  <div className="absolute bottom-4 left-4 rounded-full bg-gradient-gold px-4 py-1 text-sm font-bold text-luxury-black">
+                    {property.price}
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-sm text-platinum-pearl/75">
-                  <div className="flex items-center gap-1">
-                    <Bed className="h-4 w-4" />
-                    <span>{property.beds} Beds</span>
+                <div className="space-y-6 p-6">
+                  <div>
+                    <h3 className="text-xl font-serif font-bold text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
+                      {property.title}
+                    </h3>
+                    <div className="mt-2 flex items-center text-sm text-platinum-pearl/70">
+                      <MapPin className="mr-1.5 h-4 w-4" />
+                      <span>{property.location}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Bath className="h-4 w-4" />
-                    <span>{property.baths} Baths</span>
+                  <div className="flex items-center justify-between text-sm text-platinum-pearl/75">
+                    <div className="flex items-center gap-1">
+                      <Bed className="h-4 w-4" />
+                      <span>{property.beds} Beds</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Bath className="h-4 w-4" />
+                      <span>{property.baths} Baths</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Maximize className="h-4 w-4" />
+                      <span>{property.area}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Maximize className="h-4 w-4" />
-                    <span>{property.area}</span>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/contact")}
+                    className="w-full rounded-full border border-gold-primary/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
+                  >
+                    View Residence
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="w-full rounded-full border border-gold-primary/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
-                >
-                  View Residence
-                </button>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </section>
     </div>
@@ -168,3 +251,5 @@ const Properties = () => {
 };
 
 export default Properties;
+
+

@@ -1,6 +1,7 @@
-﻿import { useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { addContactForm } from "../data/firebaseService";
+import useAuth from "../hooks/useAuth";
 
 const contacts = [
   { icon: Phone, title: "Phone", detail: "+1 (555) 123-4567", link: "tel:+15551234567" },
@@ -20,8 +21,20 @@ const initialFormState = {
 };
 
 const Contact = () => {
+  const { user, profile, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      name: prev.name || profile?.fullName || user?.displayName || "",
+      email: prev.email || profile?.email || user?.email || "",
+      phone: prev.phone || profile?.phone || "",
+    }));
+  }, [isAuthenticated, profile, user]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -46,6 +59,9 @@ const Contact = () => {
         message: formData.requirements,
         virtualWalkthrough: formData.virtualWalkthrough,
         twilightPreview: formData.twilightPreview,
+      }, {
+        userId: user?.uid ?? null,
+        propertyTitle: formData.city || null,
       });
 
       alert("Form submitted successfully!");
@@ -206,7 +222,7 @@ const Contact = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full rounded-full bg-gradient-gold px-8 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
+                className="w-full rounded-full bg-gradient-gold px-8 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury disabled:opacity-75"
               >
                 Submit Request
               </button>
@@ -242,4 +258,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
 

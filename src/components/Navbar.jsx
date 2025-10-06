@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Building, Menu, X } from 'lucide-react';
+﻿import { useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Building, Menu, X } from "lucide-react";
+import useAuth from "../hooks/useAuth";
 
 const links = [
-  { label: 'Home', to: '/' },
-  { label: 'Properties', to: '/properties' },
-  { label: 'About', to: '/about' },
-  { label: 'Contact', to: '/contact' },
+  { label: "Home", to: "/" },
+  { label: "Properties", to: "/properties" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const onScroll = () => {
@@ -19,21 +21,21 @@ const Navbar = () => {
     };
 
     onScroll();
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
+    document.body.style.overflow = open ? "hidden" : "";
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [open]);
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b border-gold-primary/20 transition-colors duration-500 ${
-        scrolled ? 'bg-luxury-black/90 backdrop-blur-lg' : 'bg-luxury-black/60 backdrop-blur-sm'
+        scrolled ? "bg-luxury-black/90 backdrop-blur-lg" : "bg-luxury-black/60 backdrop-blur-sm"
       }`}
     >
       <div className="container flex h-20 items-center justify-between px-4 lg:px-8">
@@ -55,7 +57,7 @@ const Navbar = () => {
                 to={link.to}
                 className={({ isActive }) =>
                   `text-xs font-semibold uppercase tracking-[0.35em] transition-colors duration-300 ${
-                    isActive ? 'text-gold-primary' : 'text-platinum-pearl/70 hover:text-gold-primary'
+                    isActive ? "text-gold-primary" : "text-platinum-pearl/70 hover:text-gold-primary"
                   }`
                 }
               >
@@ -63,12 +65,14 @@ const Navbar = () => {
               </NavLink>
             ))}
           </div>
-          <Link
-            to="/properties"
-            className="rounded-full bg-gradient-gold px-6 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
-          >
-            View Listings
-          </Link>
+          <div className="flex items-center">
+            <Link
+              to={isAuthenticated ? "/account" : "/login"}
+              className="rounded-full bg-gradient-gold px-6 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
+            >
+              {isAuthenticated ? "My Account" : "Sign In"}
+            </Link>
+          </div>
         </nav>
 
         <button
@@ -93,8 +97,8 @@ const Navbar = () => {
                   className={({ isActive }) =>
                     `rounded-full border border-gold-primary/30 px-5 py-3 text-xs font-semibold uppercase tracking-[0.45em] transition ${
                       isActive
-                        ? 'bg-gradient-gold text-luxury-black'
-                        : 'text-platinum-pearl/70 hover:text-gold-primary'
+                        ? "bg-gradient-gold text-luxury-black"
+                        : "text-platinum-pearl/70 hover:text-gold-primary"
                     }`
                   }
                 >
@@ -102,11 +106,11 @@ const Navbar = () => {
                 </NavLink>
               ))}
               <Link
-                to="/properties"
+                to={isAuthenticated ? "/account" : "/login"}
                 onClick={() => setOpen(false)}
-                className="mt-2 inline-flex items-center justify-center rounded-full bg-gradient-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.45em] text-luxury-black shadow-gold"
+                className="inline-flex items-center justify-center rounded-full bg-gradient-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.45em] text-luxury-black shadow-gold transition hover:shadow-luxury"
               >
-                Reserve Consultation
+                {isAuthenticated ? "My Account" : "Sign In"}
               </Link>
             </div>
           </div>
@@ -117,3 +121,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
