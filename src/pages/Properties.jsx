@@ -1,8 +1,31 @@
-import { Bath, Bed, Heart, MapPin, Maximize, Search } from 'lucide-react';
-import data from '../data/properties.json';
+﻿import { useEffect, useState } from "react";
+import { Bath, Bed, Heart, MapPin, Maximize, Search } from "lucide-react";
+import staticData from "../data/properties.json";
+import { getAllProperties } from "../data/firebaseService";
 
 const Properties = () => {
-  const { listings } = data;
+  const [listings, setListings] = useState(staticData.listings);
+
+  useEffect(() => {
+    let active = true;
+
+    const fetchProperties = async () => {
+      try {
+        const fetchedProperties = await getAllProperties();
+        if (active && fetchedProperties.length) {
+          setListings(fetchedProperties);
+        }
+      } catch (error) {
+        console.error("Failed to load properties from Firestore", error);
+      }
+    };
+
+    fetchProperties();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <div className="bg-background text-platinum-pearl">
@@ -88,7 +111,7 @@ const Properties = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {listings.map((property, index) => (
             <article
-              key={property.id}
+              key={property.id ?? index}
               className="group glass-card overflow-hidden animate-scale-in"
               style={{ animationDelay: `${index * 0.1}s` }}
             >

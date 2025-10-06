@@ -1,13 +1,63 @@
-import { Clock, Mail, MapPin, Phone } from 'lucide-react';
+ï»¿import { useState } from "react";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { addContactForm } from "../data/firebaseService";
 
 const contacts = [
-  { icon: Phone, title: 'Phone', detail: '+1 (555) 123-4567', link: 'tel:+15551234567' },
-  { icon: Mail, title: 'Email', detail: 'info@premiarealty.com', link: 'mailto:info@premiarealty.com' },
-  { icon: MapPin, title: 'Office', detail: '123 Luxury Avenue, Downtown' },
-  { icon: Clock, title: 'Hours', detail: 'Mon - Fri: 9AM – 6PM' },
+  { icon: Phone, title: "Phone", detail: "+1 (555) 123-4567", link: "tel:+15551234567" },
+  { icon: Mail, title: "Email", detail: "info@premiarealty.com", link: "mailto:info@premiarealty.com" },
+  { icon: MapPin, title: "Office", detail: "123 Luxury Avenue, Downtown" },
+  { icon: Clock, title: "Hours", detail: "Mon - Fri: 9AM - 6PM" },
 ];
 
+const initialFormState = {
+  name: "",
+  email: "",
+  phone: "",
+  city: "",
+  requirements: "",
+  virtualWalkthrough: false,
+  twilightPreview: false,
+};
+
 const Contact = () => {
+  const [formData, setFormData] = useState(initialFormState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      await addContactForm({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        city: formData.city,
+        message: formData.requirements,
+        virtualWalkthrough: formData.virtualWalkthrough,
+        twilightPreview: formData.twilightPreview,
+      });
+
+      alert("Form submitted successfully!");
+      setFormData(initialFormState);
+    } catch (error) {
+      console.error("Failed to submit contact form", error);
+      alert("We were unable to submit your request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="bg-background text-platinum-pearl">
       <section className="relative isolate overflow-hidden pt-32 pb-24">
@@ -42,7 +92,7 @@ const Contact = () => {
                   <p className="mt-2 text-lg text-platinum-pearl/70">123 Luxury Avenue, Downtown, NY 10001</p>
                 </div>
                 <div className="sm:col-span-2 rounded-3xl border border-gold-primary/20 bg-luxury-black/40 px-6 py-4 text-xs uppercase tracking-[0.4em] text-platinum-pearl/55">
-                  Concierge Hours: 9 AM – 6 PM | Private preview slots available Thu–Sun evenings
+                  Concierge Hours: 9 AM - 6 PM | Private preview slots available Thu-Sun evenings
                 </div>
               </div>
 
@@ -58,22 +108,30 @@ const Contact = () => {
               </div>
             </div>
 
-            <form className="glass-card space-y-6 bg-luxury-black/70 p-10 shadow-glass animate-slide-up">
+            <form className="glass-card space-y-6 bg-luxury-black/70 p-10 shadow-glass animate-slide-up" onSubmit={handleSubmit}>
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
                   <label className="text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">Full Name</label>
                   <input
                     type="text"
+                    name="name"
                     placeholder="John Doe"
+                    value={formData.name}
+                    onChange={handleInputChange}
                     className="w-full rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl placeholder:text-platinum-pearl/35 focus:border-gold-primary focus:outline-none"
+                    required
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">Email Address</label>
                   <input
                     type="email"
+                    name="email"
                     placeholder="john@example.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-full rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl placeholder:text-platinum-pearl/35 focus:border-gold-primary focus:outline-none"
+                    required
                   />
                 </div>
               </div>
@@ -82,14 +140,22 @@ const Contact = () => {
                 <label className="text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">Phone Number</label>
                 <input
                   type="tel"
+                  name="phone"
                   placeholder="+1 (555) 000-0000"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   className="w-full rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl placeholder:text-platinum-pearl/35 focus:border-gold-primary focus:outline-none"
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">Preferred City</label>
-                <select className="w-full rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl focus:border-gold-primary focus:outline-none">
+                <select
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="w-full rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                >
                   <option value="" hidden>
                     Select city of interest
                   </option>
@@ -106,24 +172,40 @@ const Contact = () => {
                 <label className="text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">Bespoke Requirements</label>
                 <textarea
                   rows={6}
+                  name="requirements"
                   placeholder="Tell us about your dream residence, preferred amenities, or lifestyle expectations."
+                  value={formData.requirements}
+                  onChange={handleInputChange}
                   className="w-full rounded-3xl border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-4 text-sm text-platinum-pearl placeholder:text-platinum-pearl/35 focus:border-gold-primary focus:outline-none"
                 />
               </div>
 
               <div className="grid gap-3 text-xs uppercase tracking-[0.35em] text-platinum-pearl/55 sm:grid-cols-2">
                 <label className="flex items-center gap-3">
-                  <input type="checkbox" className="h-4 w-4 rounded border-gold-primary/40 bg-luxury-charcoal/70" />
+                  <input
+                    type="checkbox"
+                    name="virtualWalkthrough"
+                    checked={formData.virtualWalkthrough}
+                    onChange={handleCheckboxChange}
+                    className="h-4 w-4 rounded border-gold-primary/40 bg-luxury-charcoal/70"
+                  />
                   Virtual walkthrough request
                 </label>
                 <label className="flex items-center gap-3">
-                  <input type="checkbox" className="h-4 w-4 rounded border-gold-primary/40 bg-luxury-charcoal/70" />
+                  <input
+                    type="checkbox"
+                    name="twilightPreview"
+                    checked={formData.twilightPreview}
+                    onChange={handleCheckboxChange}
+                    className="h-4 w-4 rounded border-gold-primary/40 bg-luxury-charcoal/70"
+                  />
                   Twilight preview slot
                 </label>
               </div>
 
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full rounded-full bg-gradient-gold px-8 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
               >
                 Submit Request
@@ -160,3 +242,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
