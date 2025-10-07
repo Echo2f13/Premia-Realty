@@ -1,10 +1,10 @@
-import { Award, Building, TrendingUp, Users } from 'lucide-react';
+import { Award, Building, TrendingUp, Users } from "lucide-react";
 
-const metrics = [
-  { icon: Building, value: '500+', label: 'Premium Properties' },
-  { icon: Users, value: '2,000+', label: 'Happy Clients' },
-  { icon: Award, value: '15+', label: 'Years Experience' },
-  { icon: TrendingUp, value: '$2B+', label: 'Properties Sold' },
+const stats = [
+  { icon: Building, value: "500+", label: "Premium Properties" },
+  { icon: Users, value: "2,000+", label: "Happy Clients" },
+  { icon: Award, value: "15+", label: "Years Experience" },
+  { icon: TrendingUp, value: "$2B+", label: "Properties Sold" },
 ];
 
 const About = () => {
@@ -12,8 +12,8 @@ const About = () => {
     <div className="bg-background text-platinum-pearl">
       <section className="relative isolate overflow-hidden pt-32 pb-20">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/assets/hero-skyline-B9OuM1TT.jpg')" }} />
-          <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-luxury-black/75 to-luxury-black/55" />
+          <div className="absolute inset-0 bg-[url('/assets/hero-skyline-B9OuM1TT.jpg')] bg-cover bg-center" />
+          <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-luxury-black/75 to-luxury-black/60" />
           <div className="absolute -left-1/5 -top-1/6 h-[520px] w-[520px] rounded-full bg-gold-primary/15 blur-[180px]" />
         </div>
         <div className="relative container px-4 lg:px-8">
@@ -72,7 +72,7 @@ const About = () => {
               </p>
             </div>
             <div className="grid gap-6 md:grid-cols-2">
-              {metrics.map((item) => (
+              {stats.map((item) => (
                 <div key={item.label} className="glass-card flex flex-col items-center gap-3 px-6 py-8 text-center">
                   <item.icon className="h-8 w-8 text-gold-primary" />
                   <p className="text-3xl font-bold text-gold-primary">{item.value}</p>
@@ -88,7 +88,7 @@ const About = () => {
             <span className="text-xs font-medium uppercase tracking-[0.4em] text-gold-primary/80">Founder's Letter</span>
             <h2 className="text-3xl font-serif">A conversation with our principal visionary</h2>
             <p className="text-sm leading-relaxed text-platinum-pearl/70">
-              "Our residences are curated not only as homes but as legacies. We craft spaces where art, technology, wellness, and personal heritage converge. Each Premia project is an orchestration of discreet luxury, from the arrival ritual to the final reveal." — Aanya Prem, Principal Curator
+              "Our residences are curated not only as homes but as legacies. We craft spaces where art, technology, wellness, and personal heritage converge. Each Premia project is an orchestration of discreet luxury, from the arrival ritual to the final reveal." - Aanya Prem, Principal Curator
             </p>
             <span className="inline-flex w-fit items-center gap-3 rounded-full border border-gold-primary/20 px-5 py-2 text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">
               In conversation with Architectural Digest India
@@ -105,7 +105,7 @@ const About = () => {
               <div className="rounded-3xl border border-gold-primary/20 bg-luxury-black/40 px-5 py-4">Meridian Residences, Hyderabad</div>
             </div>
             <div className="rounded-3xl border border-gold-primary/20 bg-luxury-black/40 px-5 py-4 text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">
-              Sustainability benchmarks — LEED Platinum | Smart Grid Energy | Zero-waste materiality
+              Sustainability benchmarks - LEED Platinum | Smart Grid Energy | Zero-waste materiality
             </div>
           </div>
         </div>

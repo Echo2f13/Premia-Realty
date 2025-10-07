@@ -1,5 +1,7 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import LuxurySelect from "../components/LuxurySelect";
+import { cityOptions } from "../data/filterOptions";
 import { addContactForm } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
 
@@ -39,6 +41,10 @@ const Contact = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCityChange = (value) => {
+    setFormData((prev) => ({ ...prev, city: value }));
   };
 
   const handleCheckboxChange = (event) => {
@@ -166,22 +172,14 @@ const Contact = () => {
 
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-[0.4em] text-platinum-pearl/60">Preferred City</label>
-                <select
-                  name="city"
+                <LuxurySelect
+                  className="h-full"
+                  icon={MapPin}
+                  placeholder="Select city of interest"
+                  options={cityOptions}
                   value={formData.city}
-                  onChange={handleInputChange}
-                  className="w-full rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl focus:border-gold-primary focus:outline-none"
-                >
-                  <option value="" hidden>
-                    Select city of interest
-                  </option>
-                  <option value="mumbai">Mumbai</option>
-                  <option value="gurgaon">Gurgaon</option>
-                  <option value="goa">Goa</option>
-                  <option value="hyderabad">Hyderabad</option>
-                  <option value="bengaluru">Bengaluru</option>
-                  <option value="international">International Portfolio</option>
-                </select>
+                  onChange={handleCityChange}
+                />
               </div>
 
               <div className="space-y-2">

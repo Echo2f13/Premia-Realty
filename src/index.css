@@ -104,6 +104,51 @@ a:hover {
   .shadow-luxury {
     box-shadow: 0 30px 80px rgba(4, 4, 6, 0.55);
   }
+
+  .luxury-input {
+    @apply w-full min-h-[54px] rounded-[1.7rem] border border-gold-primary/30 bg-luxury-black/65 px-6 text-sm text-platinum-pearl placeholder:text-platinum-pearl/55 transition duration-200 focus:border-gold-primary focus:outline-none focus:ring-1 focus:ring-gold-primary/30 shadow-[0_16px_38px_rgba(4,4,6,0.45)];
+  }
+
+  .luxury-input:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+
+  .luxury-select {
+    @apply luxury-input appearance-none pr-12;
+  }
+
+  .luxury-select-icon,
+  .luxury-field-icon {
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(212, 175, 55, 0.65);
+    transition: color 0.2s ease;
+  }
+
+  .luxury-select-icon {
+    right: 1.25rem;
+  }
+
+  .luxury-field-icon {
+    left: 1.25rem;
+  }
+
+  .group:hover .luxury-select,
+  .group:focus-within .luxury-select,
+  .group:hover .luxury-input,
+  .group:focus-within .luxury-input {
+    border-color: rgba(212, 175, 55, 0.55);
+    box-shadow: 0 20px 46px rgba(4, 4, 6, 0.5);
+  }
+
+  .group:hover .luxury-select-icon,
+  .group:focus-within .luxury-select-icon,
+  .group:hover .luxury-field-icon,
+  .group:focus-within .luxury-field-icon {
+    color: rgba(248, 227, 160, 1);
+  }
 }
 
 @layer utilities {

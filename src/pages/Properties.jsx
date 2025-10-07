@@ -1,6 +1,6 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bath, Bed, Heart, MapPin, Maximize, Search } from "lucide-react";
+import { Bath, Bed, Building, DollarSign, Heart, MapPin, Maximize, Search } from "lucide-react";
 import staticData from "../data/properties.json";
 import {
   getAllProperties,
@@ -9,6 +9,8 @@ import {
   subscribeToSavedProperties,
 } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
+import LuxurySelect from "../components/LuxurySelect";
+import { priceRangeOptions, propertyTypeOptions } from "../data/filterOptions";
 
 const getPropertyKey = (property, fallback) => {
   if (property?.id) return String(property.id);
@@ -29,6 +31,7 @@ const Properties = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const [listings, setListings] = useState(staticData.listings);
+  const [filters, setFilters] = useState({ location: "", propertyType: "", priceRange: "" });
   const [savedResidences, setSavedResidences] = useState(new Map());
 
   useEffect(() => {
@@ -94,47 +97,55 @@ const Properties = () => {
 
   return (
     <div className="bg-background text-platinum-pearl">
-      <section className="relative isolate overflow-hidden py-28">
+      <section className="relative isolate overflow-hidden pt-32 pb-20">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-background via-luxury-black/70 to-luxury-black/40" />
           <div className="absolute right-0 top-1/3 h-96 w-96 translate-x-1/3 rounded-full bg-gold-primary/20 blur-[160px]" />
           <div className="absolute left-0 top-0 hidden h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-gold-primary/15 blur-[200px] md:block" />
-          <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-[url('/assets/hero-skyline-B9OuM1TT.jpg')] bg-cover bg-center opacity-15 lg:block" />
         </div>
         <div className="relative container px-4 lg:px-8">
-          <span className="text-xs font-medium uppercase tracking-[0.45em] text-gold-primary/75">Curated Portfolio</span>
-          <h1 className="mt-6 max-w-3xl text-4xl font-serif font-bold text-platinum-pearl md:text-5xl">
-            Reserve access to the world&apos;s finest residences
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-platinum-pearl/70">
-            Each listing is handpicked for architectural merit, location prominence, and bespoke lifestyle privileges. Experience sky penthouses, landscaped villas, and duplex sanctuaries guided by our concierge collective.
-          </p>
+          <div className="text-center animate-fade-in">
+            <span className="text-xs font-medium uppercase tracking-[0.45em] text-gold-primary/75">
+              Curated Portfolio
+            </span>
+            <h1 className="mt-6 text-4xl font-serif font-bold text-platinum-pearl md:text-5xl">
+              Reserve access to the world's finest residences
+            </h1>
+            <p className="mt-6 mx-auto max-w-2xl text-base leading-relaxed text-platinum-pearl/70">
+              Each listing is handpicked for architectural merit, location prominence, and bespoke lifestyle privileges.
+            </p>
+          </div>
 
-          <div className="glass-card mt-14 grid grid-cols-1 gap-4 p-6 md:grid-cols-4 animate-slide-up">
-            <input
-              type="text"
-              placeholder="Location"
-              className="rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl placeholder:text-platinum-pearl/50 focus:border-gold-primary focus:outline-none"
+          <div className="glass-card relative z-20 mt-14 grid grid-cols-1 gap-4 overflow-visible p-6 md:grid-cols-4 animate-slide-up">
+            <div className="group relative flex items-center">
+              <MapPin className="luxury-field-icon h-5 w-5" />
+              <input
+                type="text"
+                placeholder="Location"
+                value={filters.location}
+                onChange={(event) => setFilters((prev) => ({ ...prev, location: event.target.value }))}
+                className="luxury-input pl-12"
+              />
+            </div>
+            <LuxurySelect
+              className="h-full"
+              icon={Building}
+              placeholder="Property Type"
+              options={propertyTypeOptions}
+              value={filters.propertyType}
+              onChange={(next) => setFilters((prev) => ({ ...prev, propertyType: next }))}
             />
-            <select className="rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl focus:border-gold-primary focus:outline-none">
-              <option value="" hidden>
-                Property Type
-              </option>
-              <option value="apartment">Apartment</option>
-              <option value="penthouse">Penthouse</option>
-              <option value="villa">Villa</option>
-            </select>
-            <select className="rounded-full border border-gold-primary/30 bg-luxury-charcoal/60 px-5 py-3 text-sm text-platinum-pearl focus:border-gold-primary focus:outline-none">
-              <option value="" hidden>
-                Price Range
-              </option>
-              <option value="5000">Up to $5,000</option>
-              <option value="10000">$5,000 - $10,000</option>
-              <option value="15000">$10,000+</option>
-            </select>
+            <LuxurySelect
+              className="h-full"
+              icon={DollarSign}
+              placeholder="Price Range"
+              options={priceRangeOptions}
+              value={filters.priceRange}
+              onChange={(next) => setFilters((prev) => ({ ...prev, priceRange: next }))}
+            />
             <button
               type="button"
-              className="flex h-12 w-full items-center justify-center rounded-full bg-gradient-gold text-xs font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
+              className="flex min-h-[54px] w-full items-center justify-center rounded-[1.7rem] bg-gradient-gold px-8 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
             >
               <Search className="mr-2 h-5 w-5" />
               Search
@@ -146,10 +157,11 @@ const Properties = () => {
       <section className="container px-4 pb-24 lg:px-8">
         <div className="mb-16 grid gap-10 lg:grid-cols-[1fr,0.85fr]">
           <div className="glass-card space-y-6 p-10">
-            <p className="text-xs font-medium uppercase tracking-[0.4em] text-gold-primary/75">Collector&apos;s Brief</p>
+            <p className="text-xs font-medium uppercase tracking-[0.4em] text-gold-primary/75">Collector's Brief</p>
             <h2 className="text-3xl font-serif font-bold text-platinum-pearl">Private preview protocol</h2>
             <p className="text-sm leading-relaxed text-platinum-pearl/70">
-              Submit your intent and a concierge will choreograph a twilight walkthrough suited to your schedule. Expect chauffeured arrivals, sommelier pairings, and spatial technology demonstrations personalised to your preferences.
+              Submit your intent and a concierge will choreograph a twilight walkthrough suited to your schedule. Expect
+              chauffeured arrivals, sommelier pairings, and spatial technology demonstrations personalised to your preferences.
             </p>
             <div className="grid gap-3 text-xs uppercase tracking-[0.35em] text-platinum-pearl/60 sm:grid-cols-2">
               <div className="rounded-full border border-gold-primary/20 bg-luxury-black/40 px-4 py-3">Bespoke interior curation</div>
@@ -164,7 +176,7 @@ const Properties = () => {
             <h3 className="text-2xl font-serif text-platinum-pearl">Residency trends 2025</h3>
             <ul className="space-y-4 text-sm leading-relaxed text-platinum-pearl/70">
               <li>Mumbai coastal penthouses observe 18% YoY appreciation with limited inventory.</li>
-              <li>Gurgaon&apos;s biophilic villas in Golf Course micro-markets see increased NRI demand.</li>
+              <li>Gurgaon's biophilic villas in Golf Course micro-markets see increased NRI demand.</li>
               <li>Goan beachfront villas experience 2x booking velocity for hospitality co-ownership models.</li>
             </ul>
             <span className="inline-flex w-fit items-center rounded-full border border-gold-primary/20 px-5 py-2 text-xs uppercase tracking-[0.4em] text-gold-primary">
@@ -181,7 +193,7 @@ const Properties = () => {
             return (
               <article
                 key={propertyKey}
-                className="group glass-card overflow-hidden animate-scale-in"
+                className="group overflow-hidden rounded-[1.75rem] border border-gold-primary/20 bg-black/30 shadow-glass backdrop-blur-glass transition-all duration-500 hover:border-gold-primary/40 hover:shadow-luxury animate-scale-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="relative h-64 overflow-hidden">
@@ -197,16 +209,16 @@ const Properties = () => {
                       handleToggleSaved(property, index);
                     }}
                     className={`absolute top-4 right-4 rounded-full p-2 transition ${
-                      isSaved
-                        ? "bg-gold-primary text-luxury-black shadow-gold"
-                        : "bg-luxury-black/80 text-gold-primary"
+                      isSaved ? "bg-gold-primary text-luxury-black shadow-gold" : "bg-luxury-black/80 text-gold-primary"
                     }`}
                     aria-label={isSaved ? "Remove from saved" : "Save residence"}
                   >
                     <Heart className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
                   </button>
-                  <div className="absolute bottom-4 left-4 rounded-full bg-gradient-gold px-4 py-1 text-sm font-bold text-luxury-black">
-                    {property.price}
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="rounded-xl border border-gold-primary/30 bg-luxury-black/85 px-5 py-3 text-left text-lg font-bold text-gold-primary">
+                      {property.price}
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-6 p-6">
@@ -219,7 +231,7 @@ const Properties = () => {
                       <span>{property.location}</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-platinum-pearl/75">
+                  <div className="flex items-center justify-between border-t border-gold-primary/10 pt-4 text-sm text-platinum-pearl/75">
                     <div className="flex items-center gap-1">
                       <Bed className="h-4 w-4" />
                       <span>{property.beds} Beds</span>
@@ -230,7 +242,7 @@ const Properties = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Maximize className="h-4 w-4" />
-                      <span>{property.area}</span>
+                      <span>{property.area ?? property.sqft ?? property.size ?? ""}</span>
                     </div>
                   </div>
                   <button
@@ -251,5 +263,3 @@ const Properties = () => {
 };
 
 export default Properties;
-
-
