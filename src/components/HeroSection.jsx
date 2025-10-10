@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { DollarSign, Home, MapPin, Search } from "lucide-react";
 import LuxurySelect from "./LuxurySelect";
 import { priceRangeOptions, propertyTypeOptions } from "../data/filterOptions";
+import Prism from "./Prism";
 
 const stats = [
   { label: "Exclusive Properties", value: "500+" },
@@ -19,13 +20,26 @@ const HeroSection = () => {
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url(/assets/hero-skyline-B9OuM1TT.jpg)" }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-luxury-black/80 via-luxury-black/60 to-luxury-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/90 via-transparent to-luxury-black/55" />
+      {/* Prism Background */}
+      <div className="absolute inset-0">
+        <Prism
+          animationType="rotate"
+          timeScale={0.4}
+          height={3.5}
+          baseWidth={5.5}
+          scale={4}
+          hueShift={0}
+          colorFrequency={0.8}
+          noise={0.3}
+          glow={0.7}
+          bloom={0.8}
+          suspendWhenOffscreen={true}
+        />
       </div>
+
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-luxury-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/90 via-transparent to-luxury-black/55" />
       <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/8 via-transparent to-gold-primary/15" />
 
       <div className="relative z-20 container px-4 text-center lg:px-8">
@@ -34,14 +48,7 @@ const HeroSection = () => {
             <span className="mb-3 inline-block text-sm font-medium uppercase tracking-[0.2em] text-gold-primary/70">
               Premia Realty
             </span>
-            <h1 className="text-3xl font-normal leading-tight text-platinum-pearl md:text-5xl lg:text-6xl">
-              <span>Where exceptional properties</span>
-              <br />
-              <span className="text-gold-primary">meet discerning taste</span>
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-platinum-pearl/70 md:text-xl">
-              Curating the world's most exclusive residences for those who appreciate the finer things in life.
-            </p>
+            
           </div>
 
           <div className="glass-card relative z-20 mx-auto max-w-5xl overflow-visible animate-slide-up p-8">

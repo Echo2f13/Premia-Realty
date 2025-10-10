@@ -40,11 +40,30 @@ const Properties = () => {
     const fetchProperties = async () => {
       try {
         const fetchedProperties = await getAllProperties();
-        if (active && fetchedProperties.length) {
-          setListings(fetchedProperties);
+        console.log("🔥 Firebase properties fetched:", fetchedProperties);
+        console.log("📊 Static data count:", staticData.listings.length);
+
+        // Validate Firebase data has required fields
+        const validProperties = fetchedProperties.filter(prop => {
+          const hasRequired = prop.title && prop.location && prop.price && prop.image;
+          if (!hasRequired) {
+            console.warn("⚠️ Invalid property data:", prop);
+          }
+          return hasRequired;
+        });
+
+        console.log("✔️ Valid properties:", validProperties.length);
+
+        // Only update if we have valid properties from Firebase
+        if (active && validProperties.length > 0) {
+          console.log("✅ Updating listings with Firebase data");
+          setListings(validProperties);
+        } else {
+          console.log("ℹ️ Keeping static data - no valid Firebase properties");
         }
       } catch (error) {
-        console.error("Failed to load properties from Firestore", error);
+        console.error("❌ Failed to load properties from Firestore", error);
+        // On error, keep the static data - don't clear the listings
       }
     };
 

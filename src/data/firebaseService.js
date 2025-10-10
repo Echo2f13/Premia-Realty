@@ -8,6 +8,7 @@
   onSnapshot,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
@@ -15,7 +16,13 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { auth, db } from "../firebase";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { auth, db, storage } from "../firebase";
 
 const propertiesCollection = collection(db, "properties");
 const contactsCollection = collection(db, "contacts");
@@ -190,4 +197,146 @@ export const subscribeToContactRequests = (uid, callback) => {
     const items = snapshot.docs.map((contactDoc) => ({ id: contactDoc.id, ...contactDoc.data() }));
     callback(items);
   });
+};
+
+// ============================================
+// ADMIN PROPERTY CRUD OPERATIONS
+// ============================================
+
+/**
+ * Upload multiple images to Firebase Storage
+ * @param {File[]} files - Array of image files
+ * @param {string} propertyId - Property ID for organizing images
+ * @returns {Promise<string[]>} Array of download URLs
+ */
+export const uploadPropertyImages = async (files, propertyId) => {
+  if (!files || files.length === 0) return [];
+
+  const uploadPromises = files.map(async (file, index) => {
+    const timestamp = Date.now();
+    const fileName = `properties/${propertyId}/${timestamp}_${index}_${file.name}`;
+    const storageRef = ref(storage, fileName);
+
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+
+    return downloadURL;
+  });
+
+  return Promise.all(uploadPromises);
+};
+
+/**
+ * Delete an image from Firebase Storage
+ * @param {string} imageUrl - The download URL of the image
+ */
+export const deletePropertyImage = async (imageUrl) => {
+  try {
+    if (!imageUrl) return;
+
+    // Extract the storage path from the URL
+    const imageRef = ref(storage, imageUrl);
+    await deleteObject(imageRef);
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    // Don't throw - continue even if image delete fails
+  }
+};
+
+/**
+ * Create a new property with images
+ * @param {Object} propertyData - Property data including images
+ * @param {File[]} imageFiles - Array of image files
+ * @returns {Promise<string>} The created property ID
+ */
+export const createProperty = async (propertyData, imageFiles = []) => {
+  // Generate a unique ID for the property
+  const tempId = createRandomId();
+
+  // Upload images first
+  const imageUrls = await uploadPropertyImages(imageFiles, tempId);
+
+  // Create the property document
+  const docRef = await addDoc(propertiesCollection, {
+    ...propertyData,
+    images: imageUrls,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+
+  return docRef.id;
+};
+
+/**
+ * Get a single property by ID
+ * @param {string} propertyId - Property ID
+ * @returns {Promise<Object|null>} Property data or null
+ */
+export const getProperty = async (propertyId) => {
+  const docRef = doc(propertiesCollection, propertyId);
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) return null;
+
+  return { id: snapshot.id, ...snapshot.data() };
+};
+
+/**
+ * Update an existing property
+ * @param {string} propertyId - Property ID
+ * @param {Object} propertyData - Updated property data
+ * @param {File[]} newImageFiles - New images to add
+ * @param {string[]} imagesToDelete - URLs of images to delete
+ * @returns {Promise<void>}
+ */
+export const updateProperty = async (
+  propertyId,
+  propertyData,
+  newImageFiles = [],
+  imagesToDelete = []
+) => {
+  const docRef = doc(propertiesCollection, propertyId);
+
+  // Delete removed images from storage
+  await Promise.all(imagesToDelete.map(deletePropertyImage));
+
+  // Upload new images
+  const newImageUrls = await uploadPropertyImages(newImageFiles, propertyId);
+
+  // Get current images and filter out deleted ones
+  const currentProperty = await getProperty(propertyId);
+  const currentImages = currentProperty?.images || [];
+  const remainingImages = currentImages.filter(
+    (url) => !imagesToDelete.includes(url)
+  );
+
+  // Merge existing and new images
+  const updatedImages = [...remainingImages, ...newImageUrls];
+
+  // Update the document
+  await updateDoc(docRef, {
+    ...propertyData,
+    images: updatedImages,
+    updatedAt: serverTimestamp(),
+  });
+};
+
+/**
+ * Delete a property and all its images
+ * @param {string} propertyId - Property ID
+ * @returns {Promise<void>}
+ */
+export const deleteProperty = async (propertyId) => {
+  const docRef = doc(propertiesCollection, propertyId);
+
+  // Get the property to access its images
+  const property = await getProperty(propertyId);
+
+  // Delete all images from storage
+  if (property?.images && property.images.length > 0) {
+    await Promise.all(property.images.map(deletePropertyImage));
+  }
+
+  // Delete the Firestore document
+  await deleteDoc(docRef);
 };

@@ -13,11 +13,12 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     let profileUnsubscribe;
 
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
 
       if (profileUnsubscribe) {
@@ -25,12 +26,25 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (firebaseUser) {
+        // Check for admin custom claim
+        const tokenResult = await firebaseUser.getIdTokenResult();
+        const isUserAdmin = Boolean(tokenResult.claims.admin);
+        setIsAdmin(isUserAdmin);
+
+        console.log("🔐 Auth Context - Token Claims:", {
+          email: firebaseUser.email,
+          uid: firebaseUser.uid,
+          isAdmin: isUserAdmin,
+          claims: tokenResult.claims,
+        });
+
         profileUnsubscribe = subscribeToUserProfile(firebaseUser.uid, (nextProfile) => {
           setProfile(nextProfile);
           setLoading(false);
         });
       } else {
         setProfile(null);
+        setIsAdmin(false);
         setLoading(false);
       }
     });
@@ -50,8 +64,9 @@ export const AuthProvider = ({ children }) => {
       loading,
       signOut: signOutCustomer,
       isAuthenticated: Boolean(user),
+      isAdmin,
     }),
-    [user, profile, loading],
+    [user, profile, loading, isAdmin],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
