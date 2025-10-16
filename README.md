@@ -1,19 +1,68 @@
-﻿# Premia Goldclass Estate
+﻿# Main Tasks
+
+## Fixes
+### BE fixes:
+
++ Search - Home and Properties page
++ Map accuracy 
++ Login - direct and quick
++ DB properties access
++ Admin - images and Metrics
++ profile user details
+
+### UI fixes:
+
++ nav bar
++ Hero section
++ map colors
++ Login page
++ Signup page
++ Property cards
++ property page
++ About us and Contact us page 
++ footer
++ profile page
+
+### Content fixes:
+
++ Hero section
++ Home page more content
++ About us
++ Contact us
++ footer
+
+---
+---
+---
+---
+
+## Premia Goldclass Estate
 
 Premium real-estate experience built with React, Tailwind, and Firebase. The application showcases a luxury property portfolio, concierge contact flows, and authenticated dashboards for discerning clients.
 
 ---
 
 ## Contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [Available Scripts](#available-scripts)
-- [Core Modules](#core-modules)
-- [Data & Firebase Flow](#data--firebase-flow)
-- [Development Guidelines](#development-guidelines)
-- [Roadmap](#roadmap)
+- [Main Tasks](#main-tasks)
+  - [Fixes](#fixes)
+    - [BE fixes:](#be-fixes)
+    - [UI fixes:](#ui-fixes)
+    - [Content fixes:](#content-fixes)
+  - [Premia Goldclass Estate](#premia-goldclass-estate)
+  - [Contents](#contents)
+  - [Features](#features)
+  - [Tech Stack](#tech-stack)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Local Development](#local-development)
+    - [Production Build](#production-build)
+  - [Environment Variables](#environment-variables)
+  - [Available Scripts](#available-scripts)
+  - [Core Modules](#core-modules)
+  - [Data \& Firebase Flow](#data--firebase-flow)
+  - [Development Guidelines](#development-guidelines)
+  - [Roadmap](#roadmap)
 
 ---
 
