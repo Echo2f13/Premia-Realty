@@ -1,11 +1,11 @@
 ﻿import HeroSection from "../components/HeroSection";
-import FeaturedProperties from "../components/FeaturedProperties";
+import PropertiesMap from "../components/PropertiesMap";
 
 const Home = () => {
   return (
     <div className="bg-background text-platinum-pearl">
       <HeroSection />
-      <FeaturedProperties />
+      <PropertiesMap />
     </div>
   );
 };

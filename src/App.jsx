@@ -11,6 +11,9 @@ import Account from "./pages/Account";
 import Admin from "./pages/Admin";
 import AdminPropertyPageAdd from "./pages/AdminPropertyPageAdd";
 import AdminPropertyPageEdit from "./pages/AdminPropertyPageEdit";
+import AdminPropertiesTrash from "./pages/AdminPropertiesTrash";
+import AdminContacts from "./pages/AdminContacts";
+import AdminContactsTrash from "./pages/AdminContactsTrash";
 import RequireAdmin from "./components/RequireAdmin";
 import useAuth from "./hooks/useAuth";
 import { signOutCustomer } from "./data/firebaseService";
@@ -234,6 +237,9 @@ const AppContent = () => {
 
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
+          <Route path="/admin/trash" element={<RequireAdmin><AdminPropertiesTrash /></RequireAdmin>} />
+          <Route path="/admin/contacts" element={<RequireAdmin><AdminContacts /></RequireAdmin>} />
+          <Route path="/admin/contacts/trash" element={<RequireAdmin><AdminContactsTrash /></RequireAdmin>} />
           <Route path="/admin/properties/add" element={<RequireAdmin><AdminPropertyPageAdd /></RequireAdmin>} />
           <Route path="/admin/properties/edit/:propertyId" element={<RequireAdmin><AdminPropertyPageEdit /></RequireAdmin>} />
         </Routes>

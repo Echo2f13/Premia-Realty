@@ -1,18 +1,243 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2025, 11, 5);
+
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidStatus(status) {
+      return status in ['draft', 'published'];
+    }
+
+    function isValidIntent(intent) {
+      return intent in ['sale', 'rent'];
+    }
+
+    function isValidCurrency(currency) {
+      return currency in ['BHD', 'USD', 'EUR', 'GBP'];
+    }
+
+    function isValidHousekeepingFrequency(freq) {
+      return freq in ['weekly', 'biweekly', 'monthly'];
+    }
+
+    function isValidCommission(commission) {
+      return commission in ['none', 'tenant', 'landlord', 'split'];
+    }
+
+    // ============================================
+    // PROPERTIES COLLECTION
+    // ============================================
+
+    match /properties/{propertyId} {
+      // Public can read non-deleted properties, admins can read all
+      allow read: if isAdmin() || resource == null || resource.data.deletedAt == null;
+
+      // Only admins can write
+      allow create: if isAdmin() && isValidPropertyCreate();
+      allow update: if isAdmin() && isValidPropertyUpdate();
+      allow delete: if isAdmin();
+
+      // Validate property creation
+      function isValidPropertyCreate() {
+        let data = request.resource.data;
+        return
+          // Required fields
+          data.title is string && data.title.size() > 0 &&
+          data.slug is string && data.slug.size() > 0 &&
+          isValidIntent(data.intent) &&
+          isValidStatus(data.status) &&
+          data.type is string &&
+          data.price != null &&
+          data.currency is string && isValidCurrency(data.currency) &&
+
+          // Timestamps
+          data.createdAt == request.time &&
+          data.updatedAt == request.time &&
+          data.deletedAt == null &&
+
+          // User metadata
+          (data.createdBy == null || (
+            data.createdBy.uid is string &&
+            data.createdBy.displayName is string
+          )) &&
+          (data.updatedBy == null || (
+            data.updatedBy.uid is string &&
+            data.updatedBy.displayName is string
+          )) &&
+
+          // Optional booleans
+          (data.featured is bool || !('featured' in data)) &&
+          (data.socialHousing is bool || !('socialHousing' in data)) &&
+          (data.ewaIncluded is bool || !('ewaIncluded' in data)) &&
+          (data.priceInclusive is bool || !('priceInclusive' in data)) &&
+          (data.internetIncluded is bool || !('internetIncluded' in data)) &&
+
+          // Optional strings
+          (data.description is string || !('description' in data)) &&
+          (data.priceCadence is string || !('priceCadence' in data)) &&
+          (data.referenceCode is string || !('referenceCode' in data)) &&
+          (data.agentId is string || !('agentId' in data)) &&
+
+          // Optional numbers
+          (data.ewaLimit is number || !('ewaLimit' in data)) &&
+          (data.priority is number || !('priority' in data)) &&
+
+          // Arrays
+          (data.images is list || !('images' in data)) &&
+          (data.amenities is list || !('amenities' in data)) &&
+          (data.tags is list || !('tags' in data)) &&
+
+          // Validate nested objects if present
+          validateLocation(data) &&
+          validateSpecs(data) &&
+          validateLeaseTerms(data) &&
+          validateHousekeeping(data) &&
+          validateAgentContact(data) &&
+          validateSource(data);
+      }
+
+      // Validate property update
+      function isValidPropertyUpdate() {
+        let data = request.resource.data;
+        return
+          // Updated timestamp must be set
+          data.updatedAt == request.time &&
+
+          // Allow soft delete/restore operations OR normal updates with validation
+          (isSoftDeleteOrRestoreOperation() || (
+            // Status validation
+            (!('status' in data) || isValidStatus(data.status)) &&
+
+            // Intent validation
+            (!('intent' in data) || isValidIntent(data.intent)) &&
+
+            // Currency validation
+            (!('currency' in data) || isValidCurrency(data.currency)) &&
+
+            // User metadata
+            (!('updatedBy' in data) || (
+              data.updatedBy == null || (
+                data.updatedBy.uid is string &&
+                data.updatedBy.displayName is string
+              )
+            )) &&
+
+            // Validate nested objects if present
+            validateLocation(data) &&
+            validateSpecs(data) &&
+            validateLeaseTerms(data) &&
+            validateHousekeeping(data) &&
+            validateAgentContact(data) &&
+            validateSource(data)
+          ));
+      }
+
+      // Check if this is a soft delete or restore operation
+      function isSoftDeleteOrRestoreOperation() {
+        // Soft delete: deletedAt changes from null to timestamp
+        // Restore: deletedAt changes from timestamp to null
+        return 'deletedAt' in request.resource.data &&
+               request.resource.data.deletedAt != resource.data.get('deletedAt', null);
+      }
+
+      // Validate location object
+      function validateLocation(data) {
+        return !('location' in data) || (
+          (!('governorate' in data.location) || data.location.governorate is string) &&
+          (!('area' in data.location) || data.location.area is string) &&
+          (!('city' in data.location) || data.location.city is string) &&
+          (!('lat' in data.location) || data.location.lat is string) &&
+          (!('lng' in data.location) || data.location.lng is string)
+        );
+      }
+
+      // Validate specs object
+      function validateSpecs(data) {
+        return !('specs' in data) || (
+          (!('bedrooms' in data.specs) || data.specs.bedrooms is number) &&
+          (!('bathrooms' in data.specs) || data.specs.bathrooms is number) &&
+          (!('areaSqm' in data.specs) || data.specs.areaSqm is number) &&
+          (!('areaSqft' in data.specs) || data.specs.areaSqft is number) &&
+          (!('furnishing' in data.specs) || data.specs.furnishing is string) &&
+          (!('ac' in data.specs) || data.specs.ac is string) &&
+          (!('floor' in data.specs) || data.specs.floor is string) &&
+          (!('parking' in data.specs) || data.specs.parking is string) &&
+          (!('view' in data.specs) || data.specs.view is string) &&
+          (!('viewDetail' in data.specs) || data.specs.viewDetail is string) &&
+          (!('yearBuilt' in data.specs) || data.specs.yearBuilt is number) &&
+          (!('classification' in data.specs) || data.specs.classification is string)
+        );
+      }
+
+      // Validate leaseTerms object
+      function validateLeaseTerms(data) {
+        return !('leaseTerms' in data) || (
+          (!('minMonths' in data.leaseTerms) || data.leaseTerms.minMonths is number) &&
+          (!('depositMonths' in data.leaseTerms) || data.leaseTerms.depositMonths is number) &&
+          (!('commission' in data.leaseTerms) || isValidCommission(data.leaseTerms.commission)) &&
+          (!('commissionNote' in data.leaseTerms) || data.leaseTerms.commissionNote is string)
+        );
+      }
+
+      // Validate housekeeping object
+      function validateHousekeeping(data) {
+        return !('housekeeping' in data) || (
+          (!('included' in data.housekeeping) || data.housekeeping.included is bool) &&
+          (!('frequency' in data.housekeeping) || isValidHousekeepingFrequency(data.housekeeping.frequency))
+        );
+      }
+
+      // Validate agentContact object
+      function validateAgentContact(data) {
+        return !('agentContact' in data) || (
+          (!('phone' in data.agentContact) || data.agentContact.phone is string) &&
+          (!('whatsapp' in data.agentContact) || data.agentContact.whatsapp is string)
+        );
+      }
+
+      // Validate source object
+      function validateSource(data) {
+        return !('source' in data) || (
+          (!('name' in data.source) || data.source.name is string) &&
+          (!('url' in data.source) || data.source.url is string)
+        );
+      }
+    }
+
+    // ============================================
+    // CONTACTS COLLECTION
+    // ============================================
+
+    match /contacts/{contactId} {
+      allow create: if isAuthenticated();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ============================================
+    // USERS COLLECTION
+    // ============================================
+
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+
+      match /savedProperties/{propertyId} {
+        allow read, write: if isAuthenticated() && request.auth.uid == userId;
+      }
+
+      match /contactRequests/{requestId} {
+        allow read, write: if isAuthenticated() && request.auth.uid == userId;
+      }
     }
   }
 }

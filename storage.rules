@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Properties folder - Admin only for write, public for read
+    match /properties/{propertyId}/{allPaths=**} {
+      // Anyone can read property images
+      allow read: if true;
+
+      // Only admins can upload, update, or delete property images
+      allow write, delete: if isAdmin();
+    }
+
+    // Default rule - authenticated users only
+    match /{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+  }
+}

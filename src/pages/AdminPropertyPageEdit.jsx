@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProperty, updateProperty } from "../data/firebaseService";
 import { ArrowLeft, Upload, X } from "lucide-react";
+import useAuth from "../hooks/useAuth";
 
 const AdminPropertyPageEdit = () => {
   const navigate = useNavigate();
   const { propertyId } = useParams();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [imageFiles, setImageFiles] = useState([]);
@@ -20,16 +22,25 @@ const AdminPropertyPageEdit = () => {
     intent: "sale", // sale, rent
     type: "", // villa, apartment, townhouse, penthouse, etc.
     price: "",
-    priceCadence: "monthly", // monthly, yearly (for rent)
+    priceCadence: "/month", // /month, /year
+    currency: "BHD", // BHD, USD, EUR, GBP
+    status: "draft",
     ewaIncluded: false,
+    priceInclusive: false,
+    ewaLimit: "",
     featured: false,
     socialHousing: false,
     description: "",
     amenities: [],
+    tags: [],
+    priority: "",
+    referenceCode: "",
+    availableFrom: "",
 
     // Location
     location: {
       governorate: "",
+      city: "",
       area: "",
       lat: "",
       lng: "",
@@ -40,17 +51,41 @@ const AdminPropertyPageEdit = () => {
       bedrooms: "",
       bathrooms: "",
       furnishing: "", // furnished, unfurnished, semi-furnished
-      ac: "", // central, split, none
+      ac: "", // centralized, split, vrf, other
       areaSqm: "",
+      areaSqft: "",
       floor: "",
       parking: "",
       view: "",
+      viewDetail: "",
       yearBuilt: "",
-      classification: "", // A+, A, B, C, etc.
+      classification: "", // RA, RB, RHA, RHB, SP, COMM, MIX, NA
+    },
+
+    // Lease Terms (for rentals)
+    leaseTerms: {
+      minMonths: "",
+      depositMonths: "",
+      commission: "",
+      commissionNote: "",
+    },
+
+    // Agent Contact
+    agentId: "",
+    agentContact: {
+      phone: "",
+      whatsapp: "",
+    },
+
+    // Source
+    source: {
+      name: "",
+      url: "",
     },
   });
 
   const [amenitiesInput, setAmenitiesInput] = useState("");
+  const [tagsInput, setTagsInput] = useState("");
 
   // Fetch property data on mount
   useEffect(() => {
@@ -72,14 +107,23 @@ const AdminPropertyPageEdit = () => {
           intent: property.intent || "sale",
           type: property.type || "",
           price: property.price || "",
-          priceCadence: property.priceCadence || "monthly",
+          priceCadence: property.priceCadence || "/month",
+          currency: property.currency || "BHD",
+          status: property.status || "draft",
           ewaIncluded: property.ewaIncluded || false,
+          priceInclusive: property.priceInclusive || false,
+          ewaLimit: property.ewaLimit || "",
           featured: property.featured || false,
           socialHousing: property.socialHousing || false,
           description: property.description || "",
           amenities: property.amenities || [],
+          tags: property.tags || [],
+          priority: property.priority || "",
+          referenceCode: property.referenceCode || "",
+          availableFrom: property.availableFrom || "",
           location: {
             governorate: property.location?.governorate || "",
+            city: property.location?.city || "",
             area: property.location?.area || "",
             lat: property.location?.lat || "",
             lng: property.location?.lng || "",
@@ -90,11 +134,28 @@ const AdminPropertyPageEdit = () => {
             furnishing: property.specs?.furnishing || "",
             ac: property.specs?.ac || "",
             areaSqm: property.specs?.areaSqm || "",
+            areaSqft: property.specs?.areaSqft || "",
             floor: property.specs?.floor || "",
             parking: property.specs?.parking || "",
             view: property.specs?.view || "",
+            viewDetail: property.specs?.viewDetail || "",
             yearBuilt: property.specs?.yearBuilt || "",
             classification: property.specs?.classification || "",
+          },
+          leaseTerms: {
+            minMonths: property.leaseTerms?.minMonths || "",
+            depositMonths: property.leaseTerms?.depositMonths || "",
+            commission: property.leaseTerms?.commission || "",
+            commissionNote: property.leaseTerms?.commissionNote || "",
+          },
+          agentId: property.agentId || "",
+          agentContact: {
+            phone: property.agentContact?.phone || "",
+            whatsapp: property.agentContact?.whatsapp || "",
+          },
+          source: {
+            name: property.source?.name || "",
+            url: property.source?.url || "",
           },
         });
 
@@ -126,6 +187,24 @@ const AdminPropertyPageEdit = () => {
       setFormData((prev) => ({
         ...prev,
         specs: { ...prev.specs, [field]: value },
+      }));
+    } else if (name.startsWith("leaseTerms.")) {
+      const field = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        leaseTerms: { ...prev.leaseTerms, [field]: value },
+      }));
+    } else if (name.startsWith("agentContact.")) {
+      const field = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        agentContact: { ...prev.agentContact, [field]: value },
+      }));
+    } else if (name.startsWith("source.")) {
+      const field = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        source: { ...prev.source, [field]: value },
       }));
     } else {
       setFormData((prev) => ({
@@ -181,6 +260,24 @@ const AdminPropertyPageEdit = () => {
     }));
   };
 
+  const handleAddTag = () => {
+    const trimmed = tagsInput.trim();
+    if (trimmed && !formData.tags.includes(trimmed)) {
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...prev.tags, trimmed],
+      }));
+      setTagsInput("");
+    }
+  };
+
+  const handleRemoveTag = (tag) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((t) => t !== tag),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -197,6 +294,8 @@ const AdminPropertyPageEdit = () => {
     try {
       setIsSubmitting(true);
 
+      console.log("🚀 Starting property update...");
+
       // Generate slug if not provided
       const slug =
         formData.slug ||
@@ -205,30 +304,78 @@ const AdminPropertyPageEdit = () => {
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/(^-|-$)/g, "");
 
-      // Clean up specs (remove empty strings)
+      // Clean up nested objects (remove empty strings)
       const cleanedSpecs = Object.fromEntries(
         Object.entries(formData.specs).filter(([_, v]) => v !== "")
       );
 
-      // Clean up location
       const cleanedLocation = Object.fromEntries(
         Object.entries(formData.location).filter(([_, v]) => v !== "")
       );
 
+      const cleanedLeaseTerms = Object.fromEntries(
+        Object.entries(formData.leaseTerms).filter(([_, v]) => v !== "")
+      );
+
+      const cleanedAgentContact = Object.fromEntries(
+        Object.entries(formData.agentContact).filter(([_, v]) => v !== "")
+      );
+
+      const cleanedSource = Object.fromEntries(
+        Object.entries(formData.source).filter(([_, v]) => v !== "")
+      );
+
+      // Convert numeric strings to numbers
+      const price = formData.price ? Number(formData.price) : 0;
+      const ewaLimit = formData.ewaLimit ? Number(formData.ewaLimit) : null;
+      const priority = formData.priority ? Number(formData.priority) : null;
+
       const propertyData = {
         ...formData,
         slug,
+        price,
+        ewaLimit,
+        priority,
         specs: cleanedSpecs,
         location: cleanedLocation,
+        leaseTerms: Object.keys(cleanedLeaseTerms).length > 0 ? cleanedLeaseTerms : null,
+        agentContact: Object.keys(cleanedAgentContact).length > 0 ? cleanedAgentContact : null,
+        source: Object.keys(cleanedSource).length > 0 ? cleanedSource : null,
+        agentId: formData.agentId || null,
+        availableFrom: formData.availableFrom || null,
+        referenceCode: formData.referenceCode || null,
       };
 
-      await updateProperty(propertyId, propertyData, imageFiles, imagesToDelete);
+      // Remove empty optional fields
+      Object.keys(propertyData).forEach((key) => {
+        if (propertyData[key] === "" || propertyData[key] === null) {
+          delete propertyData[key];
+        }
+      });
 
-      alert("Property updated successfully!");
+      console.log("📋 Property data prepared:", propertyData);
+
+      await updateProperty(propertyId, propertyData, imageFiles, imagesToDelete, user);
+
+      alert("✅ Property updated successfully!");
       navigate("/admin");
     } catch (error) {
-      console.error("Failed to update property:", error);
-      alert("Failed to update property. Please try again.");
+      console.error("❌ Failed to update property:", error);
+
+      // Show more specific error message
+      let errorMessage = "Failed to update property. ";
+
+      if (error.code === "storage/unauthorized") {
+        errorMessage += "You don't have permission to upload/delete images. Please check Firebase Storage rules.";
+      } else if (error.code === "permission-denied") {
+        errorMessage += "You don't have permission to update properties. Please check Firestore rules.";
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += "Please check the console for details and try again.";
+      }
+
+      alert(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -342,10 +489,10 @@ const AdminPropertyPageEdit = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-platinum-pearl mb-2">
-                    Price (BHD) *
+                    Price *
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     name="price"
                     value={formData.price}
                     onChange={handleInputChange}
@@ -353,6 +500,24 @@ const AdminPropertyPageEdit = () => {
                     className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
                     required
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Currency *
+                  </label>
+                  <select
+                    name="currency"
+                    value={formData.currency}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    required
+                  >
+                    <option value="BHD">BHD</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                  </select>
                 </div>
 
                 <div>
@@ -365,8 +530,66 @@ const AdminPropertyPageEdit = () => {
                     onChange={handleInputChange}
                     className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
                   >
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
+                    <option value="/month">/month</option>
+                    <option value="/year">/year</option>
+                    <option value="">(None)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Priority (for sorting)
+                  </label>
+                  <input
+                    type="number"
+                    name="priority"
+                    value={formData.priority}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 1, 2, 3"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Reference Code
+                  </label>
+                  <input
+                    type="text"
+                    name="referenceCode"
+                    value={formData.referenceCode}
+                    onChange={handleInputChange}
+                    placeholder="e.g., PR-SEF-001"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Available From
+                  </label>
+                  <input
+                    type="date"
+                    name="availableFrom"
+                    value={formData.availableFrom}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Status *
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    required
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
                   </select>
                 </div>
               </div>
@@ -384,7 +607,7 @@ const AdminPropertyPageEdit = () => {
                 />
               </div>
 
-              <div className="mt-4 flex gap-6">
+              <div className="mt-4 flex flex-wrap gap-6">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -394,6 +617,17 @@ const AdminPropertyPageEdit = () => {
                     className="rounded border-gold-primary/20 bg-luxury-black/50 text-gold-primary focus:ring-gold-primary"
                   />
                   <span className="text-sm text-platinum-pearl">EWA Included</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="priceInclusive"
+                    checked={formData.priceInclusive}
+                    onChange={handleInputChange}
+                    className="rounded border-gold-primary/20 bg-luxury-black/50 text-gold-primary focus:ring-gold-primary"
+                  />
+                  <span className="text-sm text-platinum-pearl">Price Inclusive</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -418,6 +652,22 @@ const AdminPropertyPageEdit = () => {
                   <span className="text-sm text-platinum-pearl">Social Housing</span>
                 </label>
               </div>
+
+              {formData.ewaIncluded && (
+                <div className="mt-4">
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    EWA Limit (BHD)
+                  </label>
+                  <input
+                    type="number"
+                    name="ewaLimit"
+                    value={formData.ewaLimit}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 50"
+                    className="w-full md:w-64 rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Location */}
@@ -437,6 +687,20 @@ const AdminPropertyPageEdit = () => {
                     value={formData.location.governorate}
                     onChange={handleInputChange}
                     placeholder="e.g., Muharraq, Capital"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    name="location.city"
+                    value={formData.location.city}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Manama, Riffa"
                     className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
                   />
                 </div>
@@ -533,6 +797,19 @@ const AdminPropertyPageEdit = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Area (sqft)
+                  </label>
+                  <input
+                    type="number"
+                    name="specs.areaSqft"
+                    value={formData.specs.areaSqft}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
                     Furnishing
                   </label>
                   <select
@@ -559,9 +836,10 @@ const AdminPropertyPageEdit = () => {
                     className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
                   >
                     <option value="">Select...</option>
-                    <option value="central">Central AC</option>
-                    <option value="split">Split AC</option>
-                    <option value="none">None</option>
+                    <option value="centralized">Centralized</option>
+                    <option value="split">Split</option>
+                    <option value="vrf">VRF</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
 
@@ -602,7 +880,21 @@ const AdminPropertyPageEdit = () => {
                     name="specs.view"
                     value={formData.specs.view}
                     onChange={handleInputChange}
-                    placeholder="e.g., Sea view, Garden view"
+                    placeholder="e.g., sea, garden, city"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    View Detail
+                  </label>
+                  <input
+                    type="text"
+                    name="specs.viewDetail"
+                    value={formData.specs.viewDetail}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Full sea view facing north"
                     className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
                   />
                 </div>
@@ -625,14 +917,22 @@ const AdminPropertyPageEdit = () => {
                   <label className="block text-sm font-semibold text-platinum-pearl mb-2">
                     Classification
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="specs.classification"
                     value={formData.specs.classification}
                     onChange={handleInputChange}
-                    placeholder="e.g., A+, A, B"
                     className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
-                  />
+                  >
+                    <option value="">Select...</option>
+                    <option value="RA">RA - Residential A</option>
+                    <option value="RB">RB - Residential B</option>
+                    <option value="RHA">RHA - Residential High-rise A</option>
+                    <option value="RHB">RHB - Residential High-rise B</option>
+                    <option value="SP">SP - Social/Public</option>
+                    <option value="COMM">COMM - Commercial</option>
+                    <option value="MIX">MIX - Mixed Use</option>
+                    <option value="NA">NA - Not Applicable</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -677,6 +977,199 @@ const AdminPropertyPageEdit = () => {
                     </button>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+                Tags
+              </h2>
+
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  value={tagsInput}
+                  onChange={(e) => setTagsInput(e.target.value)}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && (e.preventDefault(), handleAddTag())
+                  }
+                  placeholder="Add tag (e.g., sea-view, luxury, family-friendly)"
+                  className="flex-1 rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddTag}
+                  className="rounded-lg bg-gold-primary/20 px-6 py-3 text-sm font-semibold text-gold-primary hover:bg-gold-primary/30 transition"
+                >
+                  Add
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {formData.tags.map((tag, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 rounded-full bg-blue-500/10 px-4 py-2 text-sm text-blue-400"
+                  >
+                    <span>{tag}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="text-blue-400/50 hover:text-blue-400"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Lease Terms */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+                Lease Terms (for rentals)
+              </h2>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Minimum Lease (months)
+                  </label>
+                  <input
+                    type="number"
+                    name="leaseTerms.minMonths"
+                    value={formData.leaseTerms.minMonths}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 12"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Deposit (months)
+                  </label>
+                  <input
+                    type="number"
+                    name="leaseTerms.depositMonths"
+                    value={formData.leaseTerms.depositMonths}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 1 or 2"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Commission Paid By
+                  </label>
+                  <select
+                    name="leaseTerms.commission"
+                    value={formData.leaseTerms.commission}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  >
+                    <option value="">Select...</option>
+                    <option value="none">None</option>
+                    <option value="tenant">Tenant Pays</option>
+                    <option value="landlord">Landlord Pays</option>
+                    <option value="split">Split</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Commission Note
+                  </label>
+                  <input
+                    type="text"
+                    name="leaseTerms.commissionNote"
+                    value={formData.leaseTerms.commissionNote}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Half month rent payable by tenant"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Agent & Source Information */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+                Agent & Source Information
+              </h2>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Agent ID
+                  </label>
+                  <input
+                    type="text"
+                    name="agentId"
+                    value={formData.agentId}
+                    onChange={handleInputChange}
+                    placeholder="Internal agent identifier"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Agent Phone
+                  </label>
+                  <input
+                    type="text"
+                    name="agentContact.phone"
+                    value={formData.agentContact.phone}
+                    onChange={handleInputChange}
+                    placeholder="e.g., +973 3333 1111"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Agent WhatsApp
+                  </label>
+                  <input
+                    type="text"
+                    name="agentContact.whatsapp"
+                    value={formData.agentContact.whatsapp}
+                    onChange={handleInputChange}
+                    placeholder="e.g., +973 3333 1111"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Source Name
+                  </label>
+                  <input
+                    type="text"
+                    name="source.name"
+                    value={formData.source.name}
+                    onChange={handleInputChange}
+                    placeholder="e.g., Direct Owner, Property Portal"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Source URL
+                  </label>
+                  <input
+                    type="url"
+                    name="source.url"
+                    value={formData.source.url}
+                    onChange={handleInputChange}
+                    placeholder="e.g., https://example.com/property/123"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
               </div>
             </div>
 

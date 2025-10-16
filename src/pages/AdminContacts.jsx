@@ -1,17 +1,21 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { getActivePropertiesPaginated, softDeleteProperty } from "../data/firebaseService";
-import { ShieldCheck, Plus, Trash2, Edit, X, Archive, Mail } from "lucide-react";
+import { getActiveContactsPaginated, softDeleteContact } from "../data/firebaseService";
+import { ShieldCheck, Trash2, Eye, X, Download, ArrowLeft, Archive } from "lucide-react";
 import Pagination from "../components/Pagination";
+import ContactViewModal from "../components/ContactViewModal";
+import ExportContactsModal from "../components/ExportContactsModal";
 
-const Admin = () => {
+const AdminContacts = () => {
   const navigate = useNavigate();
   const { user, loading, isAuthenticated, isAdmin } = useAuth();
-  const [properties, setProperties] = useState([]);
-  const [isLoadingProperties, setIsLoadingProperties] = useState(true);
+  const [contacts, setContacts] = useState([]);
+  const [isLoadingContacts, setIsLoadingContacts] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [viewContact, setViewContact] = useState(null);
+  const [showExportModal, setShowExportModal] = useState(false);
   const hasCheckedAuth = useRef(false);
 
   // Pagination state
@@ -20,22 +24,11 @@ const Admin = () => {
   const [hasPrev, setHasPrev] = useState(false);
   const [firstDoc, setFirstDoc] = useState(null);
   const [lastDoc, setLastDoc] = useState(null);
-  const [pageStack, setPageStack] = useState([]); // Stack to track page cursors
+  const [pageStack, setPageStack] = useState([]);
   const pageSize = 10;
 
-  // Debug logging
+  // Auth check
   useEffect(() => {
-    console.log("🔐 Admin Page - Auth State:", {
-      loading,
-      isAuthenticated,
-      isAdmin,
-      user: user?.email,
-      hasCheckedAuth: hasCheckedAuth.current,
-    });
-  }, [loading, isAuthenticated, isAdmin, user]);
-
-  useEffect(() => {
-    // Only check once when loading is done
     if (loading) return;
     if (hasCheckedAuth.current) return;
 
@@ -43,11 +36,10 @@ const Admin = () => {
 
     if (!isAuthenticated) {
       console.log("❌ Not authenticated - redirecting to login");
-      navigate("/login", { state: { from: "/admin" } });
+      navigate("/login", { state: { from: "/admin/contacts" } });
       return;
     }
 
-    // Check if user is admin (using custom claim)
     if (!isAdmin) {
       console.log("❌ Not admin - redirecting to home");
       navigate("/");
@@ -57,26 +49,26 @@ const Admin = () => {
     console.log("✅ Admin access granted!");
   }, [loading, isAuthenticated, isAdmin, navigate]);
 
-  const fetchProperties = async (direction = 'next', cursor = null) => {
+  const fetchContacts = async (direction = 'next') => {
     try {
-      setIsLoadingProperties(true);
+      setIsLoadingContacts(true);
 
-      const result = await getActivePropertiesPaginated(
+      const result = await getActiveContactsPaginated(
         pageSize,
         direction === 'next' ? lastDoc : null,
         direction === 'prev' ? firstDoc : null,
         direction
       );
 
-      setProperties(result.properties);
+      setContacts(result.contacts);
       setHasMore(result.hasMore);
       setHasPrev(result.hasPrev);
       setFirstDoc(result.firstDoc);
       setLastDoc(result.lastDoc);
     } catch (error) {
-      console.error("Failed to fetch properties:", error);
+      console.error("Failed to fetch contacts:", error);
     } finally {
-      setIsLoadingProperties(false);
+      setIsLoadingContacts(false);
     }
   };
 
@@ -84,7 +76,7 @@ const Admin = () => {
     if (hasMore) {
       setPageStack([...pageStack, { firstDoc, lastDoc }]);
       setCurrentPage(currentPage + 1);
-      fetchProperties('next');
+      fetchContacts('next');
     }
   };
 
@@ -95,26 +87,22 @@ const Admin = () => {
       setCurrentPage(currentPage - 1);
       setFirstDoc(prevPage.firstDoc);
       setLastDoc(prevPage.lastDoc);
-      fetchProperties('prev');
+      fetchContacts('prev');
     }
   };
 
   useEffect(() => {
     if (isAdmin) {
-      fetchProperties('next');
+      fetchContacts('next');
     }
   }, [isAdmin]);
 
-  const handleAddProperty = () => {
-    navigate("/admin/properties/add");
+  const handleViewClick = (contact) => {
+    setViewContact(contact);
   };
 
-  const handleEditProperty = (propertyId) => {
-    navigate(`/admin/properties/edit/${propertyId}`);
-  };
-
-  const handleDeleteClick = (property) => {
-    setDeleteConfirm(property);
+  const handleDeleteClick = (contact) => {
+    setDeleteConfirm(contact);
   };
 
   const handleDeleteConfirm = async () => {
@@ -122,15 +110,15 @@ const Admin = () => {
 
     try {
       setIsDeleting(true);
-      await softDeleteProperty(deleteConfirm.id, user);
+      await softDeleteContact(deleteConfirm.id, user);
 
-      // Refresh the properties list
-      await fetchProperties();
+      // Refresh the contacts list
+      await fetchContacts();
 
       setDeleteConfirm(null);
     } catch (error) {
-      console.error("Failed to delete property:", error);
-      alert("Failed to delete property. Please try again.");
+      console.error("Failed to delete contact:", error);
+      alert("Failed to delete contact. Please try again.");
     } finally {
       setIsDeleting(false);
     }
@@ -138,6 +126,20 @@ const Admin = () => {
 
   const handleDeleteCancel = () => {
     setDeleteConfirm(null);
+  };
+
+  const handleExportClick = () => {
+    setShowExportModal(true);
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "N/A";
+    try {
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return date.toLocaleDateString();
+    } catch (error) {
+      return "Invalid Date";
+    }
   };
 
   if (loading) {
@@ -148,7 +150,6 @@ const Admin = () => {
     );
   }
 
-  // If not admin, show access denied message instead of blank loading
   if (!isAdmin) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -179,7 +180,7 @@ const Admin = () => {
           <div className="glass-card p-8 max-w-md w-full mx-4">
             <div className="flex items-start justify-between mb-4">
               <h3 className="text-xl font-serif font-bold text-platinum-pearl">
-                Delete Property
+                Delete Contact
               </h3>
               <button
                 onClick={handleDeleteCancel}
@@ -190,11 +191,11 @@ const Admin = () => {
               </button>
             </div>
             <p className="text-platinum-pearl/70 mb-6">
-              Are you sure you want to delete{" "}
+              Are you sure you want to delete the contact from{" "}
               <span className="font-semibold text-gold-primary">
-                {deleteConfirm.title}
+                {deleteConfirm.name || deleteConfirm.email}
               </span>
-              ? This action cannot be undone and will delete all associated images.
+              ? You can restore it from the Trash later.
             </p>
             <div className="flex gap-3">
               <button
@@ -216,6 +217,21 @@ const Admin = () => {
         </div>
       )}
 
+      {/* View Contact Modal */}
+      {viewContact && (
+        <ContactViewModal
+          contact={viewContact}
+          onClose={() => setViewContact(null)}
+        />
+      )}
+
+      {/* Export Contacts Modal */}
+      {showExportModal && (
+        <ExportContactsModal
+          onClose={() => setShowExportModal(false)}
+        />
+      )}
+
       <section className="relative isolate overflow-hidden pt-32 pb-20">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-background via-luxury-black/70 to-luxury-black/40" />
@@ -224,68 +240,55 @@ const Admin = () => {
 
         <div className="relative container px-4 lg:px-8">
           <div className="flex items-center gap-4 mb-8">
+            <button
+              onClick={() => navigate("/admin")}
+              className="rounded-full p-2 text-platinum-pearl/70 transition hover:bg-platinum-pearl/10 hover:text-platinum-pearl"
+              aria-label="Back to Admin"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </button>
             <ShieldCheck className="h-12 w-12 text-gold-primary" />
             <div>
               <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
-                Admin Dashboard
+                Contact Submissions
               </h1>
               <p className="text-platinum-pearl/70 mt-2">
-                Manage properties and view analytics
+                View and manage contact form submissions
               </p>
-            </div>
-          </div>
-
-          {/* Contacts Section */}
-          <div className="glass-card p-8 mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-serif font-bold text-platinum-pearl">
-                  Submitted Contacts
-                </h2>
-                <p className="text-platinum-pearl/50 text-sm mt-1">
-                  Manage and view contact form submissions
-                </p>
-              </div>
-              <button
-                onClick={() => navigate("/admin/contacts")}
-                className="flex items-center gap-2 rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
-              >
-                <Mail className="h-5 w-5" />
-                View Contacts
-              </button>
             </div>
           </div>
 
           <div className="glass-card p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-serif font-bold text-platinum-pearl">
-                Properties
+                Contacts
               </h2>
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <button
-                  onClick={() => navigate("/admin/trash")}
+                  onClick={() => navigate("/admin/contacts/trash")}
                   className="flex items-center gap-2 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
+                  title="View deleted contacts"
                 >
                   <Archive className="h-5 w-5" />
                   Trash
                 </button>
                 <button
-                  onClick={handleAddProperty}
-                  className="flex items-center gap-2 rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
+                  onClick={handleExportClick}
+                  className="flex items-center gap-2 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
                 >
-                  <Plus className="h-5 w-5" />
-                  Add Property
+                  <Download className="h-5 w-5" />
+                  Export to Excel/CSV
                 </button>
               </div>
             </div>
 
-            {isLoadingProperties ? (
+            {isLoadingContacts ? (
               <div className="text-center text-platinum-pearl/70 py-12">
-                Loading properties...
+                Loading contacts...
               </div>
-            ) : properties.length === 0 ? (
+            ) : contacts.length === 0 ? (
               <div className="text-center text-platinum-pearl/70 py-12">
-                No properties found. Add your first property to get started.
+                No contacts found.
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -293,25 +296,19 @@ const Admin = () => {
                   <thead>
                     <tr className="border-b border-gold-primary/20">
                       <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Image
+                        Name
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Title
+                        Email
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Type
+                        Phone
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Location
+                        City
                       </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Price
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Beds/Baths
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Status
+                        Submitted
                       </th>
                       <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gold-primary">
                         Actions
@@ -319,89 +316,41 @@ const Admin = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gold-primary/10">
-                    {properties.map((property) => (
+                    {contacts.map((contact) => (
                       <tr
-                        key={property.id}
+                        key={contact.id}
                         className="transition-colors hover:bg-gold-primary/5"
                       >
-                        <td className="px-4 py-4">
-                          {property.images && property.images.length > 0 ? (
-                            <img
-                              src={property.images.find(url => url.includes('thumb_')) || property.images[0]}
-                              alt={property.title}
-                              className="w-16 h-16 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 bg-luxury-black/50 rounded-lg flex items-center justify-center">
-                              <span className="text-platinum-pearl/30 text-xs">No image</span>
-                            </div>
-                          )}
-                        </td>
                         <td className="px-4 py-4 text-sm text-platinum-pearl">
-                          <div className="max-w-xs truncate">{property.title}</div>
-                          {property.referenceCode && (
-                            <div className="text-xs text-platinum-pearl/50 mt-1">
-                              {property.referenceCode}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-4 py-4 text-sm">
-                          <span className="inline-flex items-center rounded-full bg-gold-primary/10 px-2.5 py-0.5 text-xs font-medium text-gold-primary capitalize">
-                            {property.type || 'N/A'}
-                          </span>
-                          {property.intent && (
-                            <div className="text-xs text-platinum-pearl/50 mt-1 capitalize">
-                              {property.intent}
-                            </div>
-                          )}
+                          {contact.name || "N/A"}
                         </td>
                         <td className="px-4 py-4 text-sm text-platinum-pearl/70">
-                          {typeof property.location === 'object'
-                            ? (
-                              <>
-                                <div>{property.location.area || property.location.city || ''}</div>
-                                <div className="text-xs text-platinum-pearl/50">{property.location.governorate || ''}</div>
-                              </>
-                            )
-                            : property.location || 'N/A'}
-                        </td>
-                        <td className="px-4 py-4 text-sm font-semibold text-gold-primary">
-                          <div>{property.currency || 'BHD'} {property.price?.toLocaleString() || 'N/A'}</div>
-                          {property.priceCadence && (
-                            <div className="text-xs text-platinum-pearl/50 font-normal">{property.priceCadence}</div>
-                          )}
+                          {contact.email || "N/A"}
                         </td>
                         <td className="px-4 py-4 text-sm text-platinum-pearl/70">
-                          {property.specs?.bedrooms || property.beds || 0}BD / {property.specs?.bathrooms || property.baths || 0}BA
-                          {property.specs?.areaSqm && (
-                            <div className="text-xs text-platinum-pearl/50">{property.specs.areaSqm} sqm</div>
-                          )}
+                          {contact.phone || "N/A"}
                         </td>
-                        <td className="px-4 py-4 text-sm">
-                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            property.status === 'published'
-                              ? 'bg-green-500/10 text-green-500'
-                              : 'bg-yellow-500/10 text-yellow-500'
-                          }`}>
-                            {property.status || 'draft'}
-                          </span>
-                          {property.featured && (
-                            <div className="text-xs text-gold-primary mt-1">★ Featured</div>
-                          )}
+                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                          {contact.city || "N/A"}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                          {formatDate(contact.createdAt)}
                         </td>
                         <td className="px-4 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
-                              onClick={() => handleEditProperty(property.id)}
+                              onClick={() => handleViewClick(contact)}
                               className="rounded-full p-2 text-gold-primary transition hover:bg-gold-primary/10"
-                              aria-label="Edit property"
+                              aria-label="View contact"
+                              title="View details"
                             >
-                              <Edit className="h-4 w-4" />
+                              <Eye className="h-4 w-4" />
                             </button>
                             <button
-                              onClick={() => handleDeleteClick(property)}
+                              onClick={() => handleDeleteClick(contact)}
                               className="rounded-full p-2 text-red-400 transition hover:bg-red-400/10"
-                              aria-label="Delete property"
+                              aria-label="Delete contact"
+                              title="Delete contact"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -413,14 +362,14 @@ const Admin = () => {
                 </table>
 
                 {/* Pagination */}
-                {properties.length > 0 && (
+                {contacts.length > 0 && (
                   <Pagination
                     currentPage={currentPage}
                     hasMore={hasMore}
                     hasPrev={currentPage > 1}
                     onNext={handleNextPage}
                     onPrev={handlePrevPage}
-                    isLoading={isLoadingProperties}
+                    isLoading={isLoadingContacts}
                   />
                 )}
               </div>
@@ -430,25 +379,25 @@ const Admin = () => {
           <div className="grid gap-6 md:grid-cols-3">
             <div className="glass-card p-6">
               <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Total Properties
+                Total Contacts
               </h3>
               <p className="text-4xl font-bold text-platinum-pearl">
-                {properties.length}
+                {contacts.length}
               </p>
             </div>
             <div className="glass-card p-6">
               <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Active Listings
+                This Page
               </h3>
               <p className="text-4xl font-bold text-platinum-pearl">
-                {properties.length}
+                {contacts.length}
               </p>
             </div>
             <div className="glass-card p-6">
               <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Total Inquiries
+                Page
               </h3>
-              <p className="text-4xl font-bold text-platinum-pearl">0</p>
+              <p className="text-4xl font-bold text-platinum-pearl">{currentPage}</p>
             </div>
           </div>
         </div>
@@ -457,4 +406,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default AdminContacts;
