@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   removeSavedProperty,
   subscribeToContactRequests,
@@ -7,6 +7,8 @@ import {
   updateUserProfile,
 } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
+import { saveSavedPropertiesToCookies } from "../utils/savedPropertiesCookies";
+import { KeyRound } from "lucide-react";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -32,10 +34,18 @@ const Account = () => {
     }
   }, [profile]);
 
+  // Sync saved properties with cookies
   useEffect(() => {
     if (!user) return undefined;
 
-    const unsubscribeSaved = subscribeToSavedProperties(user.uid, setSavedResidences);
+    const unsubscribeSaved = subscribeToSavedProperties(user.uid, (properties) => {
+      setSavedResidences(properties);
+
+      // Save property IDs to cookies (specific to this user)
+      const propertyIds = properties.map(p => p.id);
+      saveSavedPropertiesToCookies(user.uid, propertyIds);
+    });
+
     const unsubscribeContact = subscribeToContactRequests(user.uid, setContactHistory);
 
     return () => {
@@ -83,6 +93,11 @@ const Account = () => {
 
     try {
       await removeSavedProperty(user.uid, propertyId);
+
+      // Update cookies after removal
+      const updatedResidences = savedResidences.filter(r => r.id !== propertyId);
+      const propertyIds = updatedResidences.map(p => p.id);
+      saveSavedPropertiesToCookies(user.uid, propertyIds);
     } catch (error) {
       console.error("Failed to remove saved property", error);
       setStatus("We were unable to update your saved residences. Please try again.");
@@ -182,13 +197,23 @@ const Account = () => {
                 </button>
               </form>
 
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="mt-8 inline-flex items-center text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:text-gold-accent"
-              >
-                Sign out
-              </button>
+              <div className="mt-8 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="inline-flex items-center text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:text-gold-accent"
+                >
+                  Sign out
+                </button>
+                <span className="text-platinum-pearl/30">|</span>
+                <Link
+                  to="/change-password"
+                  className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:text-gold-accent"
+                >
+                  <KeyRound className="h-3 w-3" />
+                  Change Password
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -223,9 +248,25 @@ const Account = () => {
                   <div className="space-y-3 p-6">
                     <div>
                       <h3 className="text-lg font-serif text-platinum-pearl">{residence.title}</h3>
-                      {residence.location ? (
-                        <p className="text-sm text-platinum-pearl/60">{residence.location}</p>
-                      ) : null}
+                      <p className="text-sm text-platinum-pearl/60">
+                        {(() => {
+                          // Handle nested location object
+                          if (residence.location && typeof residence.location === 'object') {
+                            const parts = [
+                              residence.location.area,
+                              residence.location.city,
+                              residence.location.governorate
+                            ].filter(Boolean);
+                            return parts.length > 0 ? parts.join(", ") : "Location not specified";
+                          }
+                          // Handle flat structure or string
+                          if (typeof residence.location === 'string') {
+                            return residence.location;
+                          }
+                          const parts = [residence.area, residence.city, residence.governorate].filter(Boolean);
+                          return parts.length > 0 ? parts.join(", ") : "Location not specified";
+                        })()}
+                      </p>
                     </div>
                     <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-platinum-pearl/55">
                       {residence.price ? <span>{residence.price}</span> : <span />}

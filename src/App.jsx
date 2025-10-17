@@ -8,6 +8,8 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Account from "./pages/Account";
+import ChangePassword from "./pages/ChangePassword";
+import PropertyDetail from "./pages/PropertyDetail";
 import Admin from "./pages/Admin";
 import AdminPropertyPageAdd from "./pages/AdminPropertyPageAdd";
 import AdminPropertyPageEdit from "./pages/AdminPropertyPageEdit";
@@ -234,6 +236,8 @@ const AppContent = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/property/:id" element={<PropertyDetail />} />
 
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />

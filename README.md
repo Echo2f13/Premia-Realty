@@ -5,16 +5,15 @@
 
 + Search - Home and Properties page
 + Map accuracy 
-+ Login - direct and quick
++ Login - make it better
 + DB properties access
 + Admin - images and Metrics
-+ profile user details
++ liked proerties
 
 ### UI fixes:
 
 + nav bar
 + Hero section
-+ map colors
 + Login page
 + Signup page
 + Property cards

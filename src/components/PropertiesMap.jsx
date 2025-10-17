@@ -5,7 +5,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
-import { Bed, Bath, MapPin, Sun, Moon } from "lucide-react";
+import { Bed, Bath, MapPin } from "lucide-react";
 
 // Fix Leaflet default marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -25,19 +25,25 @@ const redIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-// Component to lock map bounds to Bahrain and apply custom styling
-const BahrainBoundsLock = ({ isDarkTheme }) => {
+// Component to lock map bounds to Bahrain and fit to portrait container
+const BahrainBoundsLock = () => {
   const map = useMap();
 
   useEffect(() => {
-    // Bahrain coordinates (approximate bounds)
+    // Bahrain administrative boundary coordinates
     const bahrainBounds = L.latLngBounds(
-      [25.55, 50.35], // Southwest
-      [26.35, 50.85]  // Northeast
+      [25.55, 50.35], // Southwest corner
+      [26.35, 50.85]  // Northeast corner
     );
 
-    // Set initial view
-    map.fitBounds(bahrainBounds);
+    // Invalidate size to ensure map renders correctly after any layout changes
+    map.invalidateSize();
+
+    // Fit bounds to exactly fill the portrait container
+    map.fitBounds(bahrainBounds, {
+      padding: [0, 0],  // No padding - fill to edges
+      maxZoom: 14       // Maximum zoom level
+    });
 
     // Lock the bounds - user can zoom but cannot pan outside Bahrain
     map.setMaxBounds(bahrainBounds);
@@ -49,17 +55,12 @@ const BahrainBoundsLock = ({ isDarkTheme }) => {
     map.setMinZoom(10);  // Prevents zooming too far out
     map.setMaxZoom(18);  // Allows close-up zoom
 
-  }, [map]);
+    // Re-invalidate size after bounds are set
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
 
-  // Apply subtle dark styling to map container
-  useEffect(() => {
-    const container = map.getContainer();
-    if (isDarkTheme) {
-      container.style.filter = 'brightness(0.9) contrast(1.1)';
-    } else {
-      container.style.filter = 'none';
-    }
-  }, [map, isDarkTheme]);
+  }, [map]);
 
   return null;
 };
@@ -69,7 +70,6 @@ const PropertiesMap = () => {
   const [loading, setLoading] = useState(true);
   const [hoveredProperty, setHoveredProperty] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isDarkTheme, setIsDarkTheme] = useState(true);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -118,22 +118,9 @@ const PropertiesMap = () => {
     return cadence ? `${formatted} BHD/${cadence}` : `${formatted} BHD`;
   };
 
-  const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
-  };
-
-  // Map tile URLs - using dark CARTO for dark theme
-  const tileLayerUrl = isDarkTheme
-    ? "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
-    : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-
-  const labelLayerUrl = isDarkTheme
-    ? "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png"
-    : null;
-
-  const tileLayerAttribution = isDarkTheme
-    ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-    : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  // Map tile URL - using standard OpenStreetMap
+  const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const tileLayerAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
   // Bahrain center coordinates
   const bahrainCenter = [26.0667, 50.5577];
@@ -161,33 +148,16 @@ const PropertiesMap = () => {
           </p>
         </div>
 
-        {/* Map Container with Gold Border */}
-        <div
-          className="relative rounded-2xl overflow-hidden shadow-2xl border-2 transition-all duration-500"
-          style={{
-            height: "600px",
-            borderColor: isDarkTheme ? 'rgba(212, 175, 55, 0.3)' : 'rgba(212, 175, 55, 0.1)',
-            boxShadow: isDarkTheme
-              ? '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.15)'
-              : '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-          }}
-        >
-
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className="absolute top-4 right-4 z-[1000] bg-gradient-to-br from-background/95 to-luxury-black/95 backdrop-blur-sm border-2 border-gold-primary/30 rounded-full p-3 shadow-xl transition-all hover:border-gold-primary/60 hover:scale-110 hover:shadow-2xl"
+        {/* Map Container - Portrait (3:4 aspect ratio) - Full Screen Size */}
+        <div className="flex justify-center">
+          <div
+            className="relative rounded-2xl overflow-hidden shadow-2xl border-2 w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl"
             style={{
-              boxShadow: '0 10px 25px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.1)'
+              aspectRatio: '6 / 4',
+              borderColor: 'rgba(212, 175, 55, 0.2)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
             }}
-            title={isDarkTheme ? "Switch to Light Theme" : "Switch to Dark Theme"}
           >
-            {isDarkTheme ? (
-              <Sun className="h-5 w-5 text-gold-primary drop-shadow-lg" />
-            ) : (
-              <Moon className="h-5 w-5 text-gold-primary drop-shadow-lg" />
-            )}
-          </button>
 
           {loading ? (
             <div className="flex items-center justify-center h-full bg-background-dark">
@@ -203,24 +173,13 @@ const PropertiesMap = () => {
               style={{ height: "100%", width: "100%" }}
               zoomControl={true}
               scrollWheelZoom={true}
-              key={isDarkTheme ? 'dark' : 'light'}
             >
-              {/* Base map layer */}
               <TileLayer
                 attribution={tileLayerAttribution}
                 url={tileLayerUrl}
-                className={isDarkTheme ? 'dark-theme-tiles' : ''}
               />
 
-              {/* Labels layer for dark theme */}
-              {isDarkTheme && labelLayerUrl && (
-                <TileLayer
-                  url={labelLayerUrl}
-                  pane="shadowPane"
-                />
-              )}
-
-              <BahrainBoundsLock isDarkTheme={isDarkTheme} />
+              <BahrainBoundsLock />
 
               <MarkerClusterGroup
                 chunkedLoading
@@ -264,48 +223,29 @@ const PropertiesMap = () => {
               </MarkerClusterGroup>
             </MapContainer>
           )}
+          </div>
         </div>
 
-        {/* Attribution */}
-        <div className="mt-4 text-center text-xs text-platinum-pearl/50">
-          {isDarkTheme ? (
-            <>Map data © OpenStreetMap contributors • Dark theme by CARTO</>
-          ) : (
-            <>Map data © OpenStreetMap contributors</>
-          )}
-        </div>
+        
       </div>
 
-      {/* Custom CSS for dark theme styling */}
+      {/* Custom CSS for map controls styling */}
       <style>{`
-        .dark-theme-tiles {
-          filter: brightness(0.95) contrast(1.05);
-        }
-
         .leaflet-control-zoom a {
-          background: rgba(18, 18, 24, 0.95) !important;
-          border: 2px solid rgba(212, 175, 55, 0.3) !important;
-          color: #d4af37 !important;
+          background: rgba(255, 255, 255, 0.9) !important;
+          border: 1px solid rgba(212, 175, 55, 0.2) !important;
+          color: #333 !important;
           transition: all 0.3s ease !important;
-          backdrop-filter: blur(10px);
         }
 
         .leaflet-control-zoom a:hover {
           background: rgba(212, 175, 55, 0.1) !important;
-          border-color: rgba(212, 175, 55, 0.6) !important;
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.3) !important;
+          border-color: rgba(212, 175, 55, 0.5) !important;
         }
 
         .leaflet-bar {
-          border: none !important;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2) !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
         }
-
-        ${isDarkTheme ? `
-          .leaflet-container {
-            background: #0b0b10 !important;
-          }
-        ` : ''}
       `}</style>
 
       {/* Cursor-Following Hover Card with Smooth Transition */}

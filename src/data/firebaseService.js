@@ -22,6 +22,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth";
 import {
   ref,
@@ -165,6 +168,44 @@ export const updateUserProfile = async (uid, data) => {
     },
     { merge: true },
   );
+};
+
+/**
+ * Change user password (requires current password for reauthentication)
+ * @param {Object} user - Current Firebase user
+ * @param {string} currentPassword - Current password for reauthentication
+ * @param {string} newPassword - New password
+ * @returns {Promise<void>}
+ */
+export const changeUserPassword = async (user, currentPassword, newPassword) => {
+  try {
+    // Get the user's email (or phone-based email)
+    const email = user.email;
+
+    // Create credential with current password
+    const credential = EmailAuthProvider.credential(email, currentPassword);
+
+    // Reauthenticate user
+    await reauthenticateWithCredential(user, credential);
+
+    // Update to new password
+    await updatePassword(user, newPassword);
+
+    console.log("✅ Password changed successfully");
+  } catch (error) {
+    console.error("❌ Error changing password:", error);
+
+    // Provide user-friendly error messages
+    if (error.code === "auth/wrong-password") {
+      throw new Error("Current password is incorrect");
+    } else if (error.code === "auth/weak-password") {
+      throw new Error("New password is too weak (minimum 6 characters)");
+    } else if (error.code === "auth/requires-recent-login") {
+      throw new Error("For security, please log out and log back in before changing your password");
+    } else {
+      throw new Error(`Failed to change password: ${error.message}`);
+    }
+  }
 };
 
 export const subscribeToSavedProperties = (uid, callback) => {

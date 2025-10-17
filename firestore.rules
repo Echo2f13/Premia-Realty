@@ -40,8 +40,9 @@ service cloud.firestore {
     // ============================================
 
     match /properties/{propertyId} {
-      // Public can read non-deleted properties, admins can read all
-      allow read: if isAdmin() || resource == null || resource.data.deletedAt == null;
+      // Public can read all properties (including deleted ones - filter client-side)
+      // Admins can read all
+      allow read: if true;
 
       // Only admins can write
       allow create: if isAdmin() && isValidPropertyCreate();

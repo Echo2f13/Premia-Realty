@@ -20,19 +20,19 @@
 export const priceRangeOptions = [
   {
     value: "500k-1m",
-    label: "$500K - $1M",
+    label: "500K - 1M BHD",
   },
   {
     value: "1m-2m",
-    label: "$1M - $2M",
+    label: "1M - 2M BHD",
   },
   {
     value: "2m-5m",
-    label: "$2M - $5M",
+    label: "2M - 5M BHD",
   },
   {
     value: "5m+",
-    label: "$5M+",
+    label: "5M+ BHD",
   },
 ];
 

@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bath, Bed, Building, DollarSign, Heart, MapPin, Maximize, Search } from "lucide-react";
-import staticData from "../data/properties.json";
+import { Bath, Bed, Building, DollarSign, Heart, MapPin, Maximize, Search, Loader2 } from "lucide-react";
 import {
-  getAllProperties,
   removeSavedProperty,
   savePropertyForUser,
   subscribeToSavedProperties,
 } from "../data/firebaseService";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 import useAuth from "../hooks/useAuth";
 import LuxurySelect from "../components/LuxurySelect";
 import { priceRangeOptions, propertyTypeOptions } from "../data/filterOptions";
@@ -30,40 +30,67 @@ const getPropertyKey = (property, fallback) => {
 const Properties = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  const [listings, setListings] = useState(staticData.listings);
+  const [listings, setListings] = useState([]);
+  const [allProperties, setAllProperties] = useState([]);
   const [filters, setFilters] = useState({ location: "", propertyType: "", priceRange: "" });
   const [savedResidences, setSavedResidences] = useState(new Map());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch all properties from Firestore
   useEffect(() => {
     let active = true;
 
     const fetchProperties = async () => {
-      try {
-        const fetchedProperties = await getAllProperties();
-        console.log("🔥 Firebase properties fetched:", fetchedProperties);
-        console.log("📊 Static data count:", staticData.listings.length);
+      setLoading(true);
+      setError(null);
 
-        // Validate Firebase data has required fields
-        const validProperties = fetchedProperties.filter(prop => {
-          const hasRequired = prop.title && prop.location && prop.price && prop.image;
-          if (!hasRequired) {
-            console.warn("⚠️ Invalid property data:", prop);
-          }
-          return hasRequired;
+      try {
+        console.log("📥 Starting to fetch properties from Firestore...");
+        const propertiesCollection = collection(db, "properties");
+
+        // Fetch ALL documents first (simpler query, no index needed)
+        const snapshot = await getDocs(propertiesCollection);
+
+        console.log("📦 Total documents fetched:", snapshot.docs.length);
+
+        // Filter out deleted properties in JavaScript
+        let fetchedProperties = snapshot.docs
+          .map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }))
+          .filter(prop => !prop.deletedAt); // Filter non-deleted
+
+        console.log("✅ Non-deleted properties:", fetchedProperties.length);
+
+        // Sort by createdAt in JavaScript
+        fetchedProperties = fetchedProperties.sort((a, b) => {
+          const aTime = a.createdAt?.seconds || 0;
+          const bTime = b.createdAt?.seconds || 0;
+          return bTime - aTime; // Newest first
         });
 
-        console.log("✔️ Valid properties:", validProperties.length);
+        console.log("🎯 Final properties to display:", fetchedProperties);
 
-        // Only update if we have valid properties from Firebase
-        if (active && validProperties.length > 0) {
-          console.log("✅ Updating listings with Firebase data");
-          setListings(validProperties);
-        } else {
-          console.log("ℹ️ Keeping static data - no valid Firebase properties");
+        if (active) {
+          setAllProperties(fetchedProperties);
+          setListings(fetchedProperties);
+          console.log("✨ State updated with properties");
         }
       } catch (error) {
-        console.error("❌ Failed to load properties from Firestore", error);
-        // On error, keep the static data - don't clear the listings
+        console.error("❌ Error fetching properties:", error);
+        console.error("❌ Error code:", error.code);
+        console.error("❌ Error message:", error.message);
+
+        if (active) {
+          setError(`Failed to load properties: ${error.message}`);
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+          console.log("🏁 Loading complete");
+        }
       }
     };
 
@@ -113,6 +140,110 @@ const Properties = () => {
   };
 
   const savedIdentifiers = useMemo(() => new Set(savedResidences.keys()), [savedResidences]);
+
+  // Apply filters
+  const handleSearch = useCallback(() => {
+    let filtered = [...allProperties];
+
+    // Filter by location (search in governorate, city, area, and address)
+    if (filters.location.trim()) {
+      const searchTerm = filters.location.toLowerCase().trim();
+      filtered = filtered.filter(property => {
+        // Handle nested location object
+        let governorate = '';
+        let city = '';
+        let area = '';
+        let address = '';
+
+        if (property.location && typeof property.location === 'object') {
+          governorate = (property.location.governorate || '').toLowerCase();
+          city = (property.location.city || '').toLowerCase();
+          area = (property.location.area || '').toLowerCase();
+        } else {
+          // Handle flat structure
+          governorate = (property.governorate || '').toLowerCase();
+          city = (property.city || '').toLowerCase();
+          area = (property.area || '').toLowerCase();
+        }
+
+        address = (property.address || '').toLowerCase();
+
+        return governorate.includes(searchTerm) ||
+               city.includes(searchTerm) ||
+               area.includes(searchTerm) ||
+               address.includes(searchTerm);
+      });
+    }
+
+    // Filter by property type
+    if (filters.propertyType) {
+      filtered = filtered.filter(property =>
+        property.propertyType === filters.propertyType
+      );
+    }
+
+    // Filter by price range
+    if (filters.priceRange) {
+      filtered = filtered.filter(property => {
+        const price = parseFloat(property.price) || 0;
+
+        switch (filters.priceRange) {
+          case '500k-1m':
+            return price >= 500000 && price < 1000000;
+          case '1m-2m':
+            return price >= 1000000 && price < 2000000;
+          case '2m-5m':
+            return price >= 2000000 && price < 5000000;
+          case '5m+':
+            return price >= 5000000;
+          default:
+            return true;
+        }
+      });
+    }
+
+    setListings(filtered);
+  }, [allProperties, filters.location, filters.propertyType, filters.priceRange]);
+
+  // Apply filters automatically whenever they change
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
+
+  // Format price for display
+  const formatPrice = (price, priceCadence) => {
+    if (!price) return "Contact for price";
+
+    const numPrice = typeof price === 'number' ? price : parseFloat(price);
+
+    if (isNaN(numPrice)) return "Contact for price";
+
+    const formatted = new Intl.NumberFormat("en-US").format(numPrice);
+
+    return priceCadence ? `${formatted} BHD/${priceCadence}` : `${formatted} BHD`;
+  };
+
+  // Format area for display
+  const formatArea = (property) => {
+    // Check for nested specs object first
+    if (property.specs && typeof property.specs === 'object') {
+      if (property.specs.areaSqft) return `${property.specs.areaSqft} sqft`;
+      if (property.specs.areaSqm) return `${property.specs.areaSqm} sqm`;
+    }
+    // Check flat structure
+    if (property.area && typeof property.area === 'string') return property.area;
+    if (property.sqft) return `${property.sqft} sqft`;
+    if (property.size) return property.size;
+    return "N/A";
+  };
+
+  // Debug logging
+  console.log("🎨 Rendering Properties component", {
+    loading,
+    error,
+    listingsCount: listings.length,
+    allPropertiesCount: allProperties.length
+  });
 
   return (
     <div className="bg-background text-platinum-pearl">
@@ -164,6 +295,7 @@ const Properties = () => {
             />
             <button
               type="button"
+              onClick={handleSearch}
               className="flex min-h-[54px] w-full items-center justify-center rounded-[1.7rem] bg-gradient-gold px-8 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
             >
               <Search className="mr-2 h-5 w-5" />
@@ -174,6 +306,22 @@ const Properties = () => {
       </section>
 
       <section className="container px-4 pb-24 lg:px-8">
+        {/* Results Header */}
+        <div className="mb-8">
+          <p className="text-sm text-platinum-pearl/60">
+            {loading ? (
+              <span>Loading properties...</span>
+            ) : (
+              <span>
+                Showing <span className="text-gold-primary font-semibold">{listings.length}</span> {listings.length === 1 ? 'property' : 'properties'}
+                {allProperties.length !== listings.length && (
+                  <span> of {allProperties.length} total</span>
+                )}
+              </span>
+            )}
+          </p>
+        </div>
+
         <div className="mb-16 grid gap-10 lg:grid-cols-[1fr,0.85fr]">
           <div className="glass-card space-y-6 p-10">
             <p className="text-xs font-medium uppercase tracking-[0.4em] text-gold-primary/75">Collector's Brief</p>
@@ -204,78 +352,173 @@ const Properties = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {listings.map((property, index) => {
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-12 h-12 text-gold-primary animate-spin" />
+            <p className="mt-4 text-platinum-pearl/60">Loading properties...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div className="glass-card border-red-500/30 bg-red-500/5 p-10 text-center">
+            <p className="text-red-400">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 rounded-full border border-gold-primary/40 px-6 py-2 text-sm font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && listings.length === 0 && (
+          <div className="glass-card p-10 text-center">
+            <p className="text-platinum-pearl/60">
+              {allProperties.length === 0
+                ? "No properties available at this time."
+                : "No properties match your search criteria. Try adjusting your filters."}
+            </p>
+            {allProperties.length > 0 && (
+              <button
+                onClick={() => {
+                  setFilters({ location: "", propertyType: "", priceRange: "" });
+                  setListings(allProperties);
+                }}
+                className="mt-4 rounded-full border border-gold-primary/40 px-6 py-2 text-sm font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Properties Grid */}
+        {!loading && !error && listings.length > 0 && (
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {listings.map((property, index) => {
             const propertyKey = getPropertyKey(property, index);
             const isSaved = savedIdentifiers.has(propertyKey);
 
-            return (
-              <article
-                key={propertyKey}
-                className="group overflow-hidden rounded-[1.75rem] border border-gold-primary/20 bg-black/30 shadow-glass backdrop-blur-glass transition-all duration-500 hover:border-gold-primary/40 hover:shadow-luxury animate-scale-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={property.image}
-                    alt={property.title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <button
-                    type="button"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      handleToggleSaved(property, index);
-                    }}
-                    className={`absolute top-4 right-4 rounded-full p-2 transition ${
-                      isSaved ? "bg-gold-primary text-luxury-black shadow-gold" : "bg-luxury-black/80 text-gold-primary"
-                    }`}
-                    aria-label={isSaved ? "Remove from saved" : "Save residence"}
-                  >
-                    <Heart className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
-                  </button>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="rounded-xl border border-gold-primary/30 bg-luxury-black/85 px-5 py-3 text-left text-lg font-bold text-gold-primary">
-                      {property.price}
+              return (
+                <article
+                  key={propertyKey}
+                  className="group overflow-hidden rounded-[1.75rem] border border-gold-primary/20 bg-black/30 shadow-glass backdrop-blur-glass transition-all duration-500 hover:border-gold-primary/40 hover:shadow-luxury animate-scale-in cursor-pointer"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                  onClick={() => navigate(`/property/${property.id}`)}
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={property.images?.[0] || property.image || 'https://via.placeholder.com/400x300?text=No+Image'}
+                      alt={property.title}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        handleToggleSaved(property, index);
+                      }}
+                      className={`absolute top-4 right-4 rounded-full p-2 transition ${
+                        isSaved ? "bg-gold-primary text-luxury-black shadow-gold" : "bg-luxury-black/80 text-gold-primary"
+                      }`}
+                      aria-label={isSaved ? "Remove from saved" : "Save residence"}
+                    >
+                      <Heart className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
+                    </button>
+
+                    {/* Inclusive Badge */}
+                    {property.inclusive && (
+                      <div className="absolute top-4 left-4 bg-gradient-to-r from-gold-primary to-[#f5d37f] text-background px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                        Inclusive
+                      </div>
+                    )}
+
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="rounded-xl border border-gold-primary/30 bg-luxury-black/85 px-5 py-3 text-left text-lg font-bold text-gold-primary">
+                        {formatPrice(property.price, property.priceCadence)}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="space-y-6 p-6">
-                  <div>
-                    <h3 className="text-xl font-serif font-bold text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
-                      {property.title}
-                    </h3>
-                    <div className="mt-2 flex items-center text-sm text-platinum-pearl/70">
-                      <MapPin className="mr-1.5 h-4 w-4" />
-                      <span>{property.location}</span>
+                  <div className="space-y-6 p-6">
+                    <div>
+                      <h3 className="text-xl font-serif font-bold text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
+                        {property.title}
+                      </h3>
+                      <div className="mt-2 flex items-center text-sm text-platinum-pearl/70">
+                        <MapPin className="mr-1.5 h-4 w-4" />
+                        <span>
+                          {(() => {
+                            // Handle location object from nested structure
+                            if (property.location && typeof property.location === 'object') {
+                              const parts = [
+                                property.location.area,
+                                property.location.city,
+                                property.location.governorate
+                              ].filter(Boolean);
+                              return parts.length > 0 ? parts.join(", ") : "Location not specified";
+                            }
+                            // Handle flat structure
+                            const parts = [property.area, property.city, property.governorate]
+                              .filter(Boolean);
+                            return parts.length > 0 ? parts.join(", ") : "Location not specified";
+                          })()}
+                        </span>
+                      </div>
                     </div>
+                    <div className="flex items-center justify-between border-t border-gold-primary/10 pt-4 text-sm text-platinum-pearl/75">
+                      {(() => {
+                        const bedrooms = property.specs?.bedrooms || property.bedrooms;
+                        return bedrooms ? (
+                          <div className="flex items-center gap-1">
+                            <Bed className="h-4 w-4" />
+                            <span>{bedrooms} Bed{bedrooms !== 1 ? 's' : ''}</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 opacity-50">
+                            <Bed className="h-4 w-4" />
+                            <span>N/A</span>
+                          </div>
+                        );
+                      })()}
+                      {(() => {
+                        const bathrooms = property.specs?.bathrooms || property.bathrooms;
+                        return bathrooms ? (
+                          <div className="flex items-center gap-1">
+                            <Bath className="h-4 w-4" />
+                            <span>{bathrooms} Bath{bathrooms !== 1 ? 's' : ''}</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 opacity-50">
+                            <Bath className="h-4 w-4" />
+                            <span>N/A</span>
+                          </div>
+                        );
+                      })()}
+                      <div className="flex items-center gap-1">
+                        <Maximize className="h-4 w-4" />
+                        <span>{formatArea(property)}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        navigate(`/property/${property.id}`);
+                      }}
+                      className="w-full rounded-full border border-gold-primary/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
+                    >
+                      View Residence
+                    </button>
                   </div>
-                  <div className="flex items-center justify-between border-t border-gold-primary/10 pt-4 text-sm text-platinum-pearl/75">
-                    <div className="flex items-center gap-1">
-                      <Bed className="h-4 w-4" />
-                      <span>{property.beds} Beds</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath className="h-4 w-4" />
-                      <span>{property.baths} Baths</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Maximize className="h-4 w-4" />
-                      <span>{property.area ?? property.sqft ?? property.size ?? ""}</span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => navigate("/contact")}
-                    className="w-full rounded-full border border-gold-primary/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
-                  >
-                    View Residence
-                  </button>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </section>
     </div>
   );

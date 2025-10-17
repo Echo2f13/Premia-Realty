@@ -15,6 +15,7 @@
     "firebase-admin": "^13.5.0",
     "googleapis": "^162.0.0",
     "gsap": "^3.13.0",
+    "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",
     "ogl": "^1.0.11",
