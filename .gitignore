@@ -27,3 +27,6 @@ dist-ssr
 db/
 
 .claude/
+
+# Firebase service account keys (SENSITIVE!)
+serviceAccountKey.json
