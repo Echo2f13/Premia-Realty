@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bath, Bed, Building, DollarSign, Heart, MapPin, Maximize, Search, Loader2 } from "lucide-react";
+import { Bath, Bed, Heart, MapPin, Maximize, Loader2 } from "lucide-react";
 import {
   removeSavedProperty,
   savePropertyForUser,
@@ -9,8 +9,7 @@ import {
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import useAuth from "../hooks/useAuth";
-import LuxurySelect from "../components/LuxurySelect";
-import { priceRangeOptions, propertyTypeOptions } from "../data/filterOptions";
+import { useToast } from "../components/Toast";
 
 const getPropertyKey = (property, fallback) => {
   if (property?.id) return String(property.id);
@@ -30,9 +29,10 @@ const getPropertyKey = (property, fallback) => {
 const Properties = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const toast = useToast();
   const [listings, setListings] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
-  const [filters, setFilters] = useState({ location: "", propertyType: "", priceRange: "" });
+  const [filters, setFilters] = useState({ location: "", propertyType: "", priceRange: "", bedrooms: "" });
   const [savedResidences, setSavedResidences] = useState(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -130,12 +130,14 @@ const Properties = () => {
     try {
       if (savedResidences.has(propertyKey)) {
         await removeSavedProperty(user.uid, propertyKey);
+        toast.info("Property removed from saved list");
       } else {
         await savePropertyForUser(user.uid, property);
+        toast.success("Property saved successfully!");
       }
     } catch (error) {
       console.error("Failed to toggle saved property", error);
-      alert("We were unable to update your saved residences. Please try again.");
+      toast.error("We were unable to update your saved residences. Please try again.");
     }
   };
 
@@ -188,22 +190,29 @@ const Properties = () => {
         const price = parseFloat(property.price) || 0;
 
         switch (filters.priceRange) {
+          case '0-500k':
+            return price < 500000;
           case '500k-1m':
             return price >= 500000 && price < 1000000;
-          case '1m-2m':
-            return price >= 1000000 && price < 2000000;
-          case '2m-5m':
-            return price >= 2000000 && price < 5000000;
-          case '5m+':
-            return price >= 5000000;
+          case '1m+':
+            return price >= 1000000;
           default:
             return true;
         }
       });
     }
 
+    // Filter by bedrooms
+    if (filters.bedrooms) {
+      filtered = filtered.filter(property => {
+        const beds = property.specs?.bedrooms || property.bedrooms || 0;
+        const minBeds = parseInt(filters.bedrooms);
+        return beds >= minBeds;
+      });
+    }
+
     setListings(filtered);
-  }, [allProperties, filters.location, filters.propertyType, filters.priceRange]);
+  }, [allProperties, filters.location, filters.propertyType, filters.priceRange, filters.bedrooms]);
 
   // Apply filters automatically whenever they change
   useEffect(() => {
@@ -211,7 +220,7 @@ const Properties = () => {
   }, [handleSearch]);
 
   // Format price for display
-  const formatPrice = (price, priceCadence) => {
+  const formatPrice = (price) => {
     if (!price) return "Contact for price";
 
     const numPrice = typeof price === 'number' ? price : parseFloat(price);
@@ -220,7 +229,7 @@ const Properties = () => {
 
     const formatted = new Intl.NumberFormat("en-US").format(numPrice);
 
-    return priceCadence ? `${formatted} BHD/${priceCadence}` : `${formatted} BHD`;
+    return `BD ${formatted}`;
   };
 
   // Format area for display
@@ -246,280 +255,209 @@ const Properties = () => {
   });
 
   return (
-    <div className="bg-background text-platinum-pearl">
-      <section className="relative isolate overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-luxury-black/70 to-luxury-black/40" />
-          <div className="absolute right-0 top-1/3 h-96 w-96 translate-x-1/3 rounded-full bg-gold-primary/20 blur-[160px]" />
-          <div className="absolute left-0 top-0 hidden h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-gold-primary/15 blur-[200px] md:block" />
-        </div>
-        <div className="relative container px-4 lg:px-8">
-          <div className="text-center animate-fade-in">
-            <span className="text-xs font-medium uppercase tracking-[0.45em] text-gold-primary/75">
-              Curated Portfolio
-            </span>
-            <h1 className="mt-6 text-4xl font-serif font-bold text-platinum-pearl md:text-5xl">
-              Reserve access to the world's finest residences
-            </h1>
-            <p className="mt-6 mx-auto max-w-2xl text-base leading-relaxed text-platinum-pearl/70">
-              Each listing is handpicked for architectural merit, location prominence, and bespoke lifestyle privileges.
-            </p>
+    <div className="min-h-screen bg-background">
+      <div className="pt-24">
+        {/* Header */}
+        <section className="py-20 border-b border-border/50">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="text-center max-w-3xl mx-auto">
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">EXCLUSIVE PORTFOLIO</div>
+              <h1 className="text-6xl md:text-7xl mb-6">Our Properties</h1>
+              <p className="text-xl text-foreground/60 font-light leading-relaxed">
+                Discover meticulously curated estates across Bahrain's most prestigious addresses
+              </p>
+            </div>
           </div>
+        </section>
 
-          <div className="glass-card relative z-20 mt-14 grid grid-cols-1 gap-4 overflow-visible p-6 md:grid-cols-4 animate-slide-up">
-            <div className="group relative flex items-center">
-              <MapPin className="luxury-field-icon h-5 w-5" />
+        {/* Filters */}
+        <section className="py-12 border-b border-border/50">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="grid md:grid-cols-4 gap-6">
               <input
                 type="text"
-                placeholder="Location"
+                placeholder="Search location..."
                 value={filters.location}
-                onChange={(event) => setFilters((prev) => ({ ...prev, location: event.target.value }))}
-                className="luxury-input pl-12"
+                onChange={(e) => setFilters((prev) => ({ ...prev, location: e.target.value }))}
+                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
               />
-            </div>
-            <LuxurySelect
-              className="h-full"
-              icon={Building}
-              placeholder="Property Type"
-              options={propertyTypeOptions}
-              value={filters.propertyType}
-              onChange={(next) => setFilters((prev) => ({ ...prev, propertyType: next }))}
-            />
-            <LuxurySelect
-              className="h-full"
-              icon={DollarSign}
-              placeholder="Price Range"
-              options={priceRangeOptions}
-              value={filters.priceRange}
-              onChange={(next) => setFilters((prev) => ({ ...prev, priceRange: next }))}
-            />
-            <button
-              type="button"
-              onClick={handleSearch}
-              className="flex min-h-[54px] w-full items-center justify-center rounded-[1.7rem] bg-gradient-gold px-8 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
-            >
-              <Search className="mr-2 h-5 w-5" />
-              Search
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section className="container px-4 pb-24 lg:px-8">
-        {/* Results Header */}
-        <div className="mb-8">
-          <p className="text-sm text-platinum-pearl/60">
-            {loading ? (
-              <span>Loading properties...</span>
-            ) : (
-              <span>
-                Showing <span className="text-gold-primary font-semibold">{listings.length}</span> {listings.length === 1 ? 'property' : 'properties'}
-                {allProperties.length !== listings.length && (
-                  <span> of {allProperties.length} total</span>
-                )}
-              </span>
-            )}
-          </p>
-        </div>
-
-        <div className="mb-16 grid gap-10 lg:grid-cols-[1fr,0.85fr]">
-          <div className="glass-card space-y-6 p-10">
-            <p className="text-xs font-medium uppercase tracking-[0.4em] text-gold-primary/75">Collector's Brief</p>
-            <h2 className="text-3xl font-serif font-bold text-platinum-pearl">Private preview protocol</h2>
-            <p className="text-sm leading-relaxed text-platinum-pearl/70">
-              Submit your intent and a concierge will choreograph a twilight walkthrough suited to your schedule. Expect
-              chauffeured arrivals, sommelier pairings, and spatial technology demonstrations personalised to your preferences.
-            </p>
-            <div className="grid gap-3 text-xs uppercase tracking-[0.35em] text-platinum-pearl/60 sm:grid-cols-2">
-              <div className="rounded-full border border-gold-primary/20 bg-luxury-black/40 px-4 py-3">Bespoke interior curation</div>
-              <div className="rounded-full border border-gold-primary/20 bg-luxury-black/40 px-4 py-3">Metaverse digital twin tour</div>
-              <div className="rounded-full border border-gold-primary/20 bg-luxury-black/40 px-4 py-3">Private chef tasting</div>
-              <div className="rounded-full border border-gold-primary/20 bg-luxury-black/40 px-4 py-3">Financial structuring assistance</div>
+              <select
+                value={filters.propertyType}
+                onChange={(e) => setFilters((prev) => ({ ...prev, propertyType: e.target.value }))}
+                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
+              >
+                <option value="">Property Type</option>
+                <option value="Villa">Villa</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Penthouse">Penthouse</option>
+                <option value="Townhouse">Townhouse</option>
+              </select>
+              <select
+                value={filters.priceRange}
+                onChange={(e) => setFilters((prev) => ({ ...prev, priceRange: e.target.value }))}
+                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
+              >
+                <option value="">Price Range</option>
+                <option value="0-500k">Below BD 500,000</option>
+                <option value="500k-1m">BD 500,000 - 1,000,000</option>
+                <option value="1m+">Above BD 1,000,000</option>
+              </select>
+              <select
+                value={filters.bedrooms}
+                onChange={(e) => setFilters((prev) => ({ ...prev, bedrooms: e.target.value }))}
+                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
+              >
+                <option value="">Bedrooms</option>
+                <option value="2">2+ Bedrooms</option>
+                <option value="3">3+ Bedrooms</option>
+                <option value="4">4+ Bedrooms</option>
+                <option value="5">5+ Bedrooms</option>
+              </select>
             </div>
           </div>
-
-          <div className="glass-card space-y-6 bg-luxury-black/55 p-10">
-            <p className="text-xs font-medium uppercase tracking-[0.42em] text-gold-primary/75">Market Insights</p>
-            <h3 className="text-2xl font-serif text-platinum-pearl">Residency trends 2025</h3>
-            <ul className="space-y-4 text-sm leading-relaxed text-platinum-pearl/70">
-              <li>Mumbai coastal penthouses observe 18% YoY appreciation with limited inventory.</li>
-              <li>Gurgaon's biophilic villas in Golf Course micro-markets see increased NRI demand.</li>
-              <li>Goan beachfront villas experience 2x booking velocity for hospitality co-ownership models.</li>
-            </ul>
-            <span className="inline-flex w-fit items-center rounded-full border border-gold-primary/20 px-5 py-2 text-xs uppercase tracking-[0.4em] text-gold-primary">
-              Concierge insight desk
-            </span>
-          </div>
-        </div>
+        </section>
 
         {/* Loading State */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-12 h-12 text-gold-primary animate-spin" />
-            <p className="mt-4 text-platinum-pearl/60">Loading properties...</p>
-          </div>
+          <section className="py-20">
+            <div className="container mx-auto px-6 lg:px-12">
+              <div className="flex flex-col items-center justify-center py-20">
+                <Loader2 className="w-12 h-12 text-accent animate-spin" />
+                <p className="mt-4 text-foreground/60">Loading properties...</p>
+              </div>
+            </div>
+          </section>
         )}
 
         {/* Error State */}
         {error && !loading && (
-          <div className="glass-card border-red-500/30 bg-red-500/5 p-10 text-center">
-            <p className="text-red-400">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 rounded-full border border-gold-primary/40 px-6 py-2 text-sm font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
-            >
-              Try Again
-            </button>
-          </div>
+          <section className="py-20">
+            <div className="container mx-auto px-6 lg:px-12">
+              <div className="border border-destructive/30 bg-destructive/5 p-10 text-center">
+                <p className="text-destructive">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="mt-4 border border-accent px-6 py-2 text-sm tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </section>
         )}
 
         {/* Empty State */}
         {!loading && !error && listings.length === 0 && (
-          <div className="glass-card p-10 text-center">
-            <p className="text-platinum-pearl/60">
-              {allProperties.length === 0
-                ? "No properties available at this time."
-                : "No properties match your search criteria. Try adjusting your filters."}
-            </p>
-            {allProperties.length > 0 && (
-              <button
-                onClick={() => {
-                  setFilters({ location: "", propertyType: "", priceRange: "" });
-                  setListings(allProperties);
-                }}
-                className="mt-4 rounded-full border border-gold-primary/40 px-6 py-2 text-sm font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
-              >
-                Clear Filters
-              </button>
-            )}
-          </div>
+          <section className="py-20">
+            <div className="container mx-auto px-6 lg:px-12">
+              <div className="text-center py-20">
+                <p className="text-foreground/60 mb-6">
+                  {allProperties.length === 0
+                    ? "No properties available at this time."
+                    : "No properties match your search criteria. Try adjusting your filters."}
+                </p>
+                {allProperties.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setFilters({ location: "", propertyType: "", priceRange: "", bedrooms: "" });
+                      setListings(allProperties);
+                    }}
+                    className="border border-accent px-8 py-3 text-sm tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
+            </div>
+          </section>
         )}
 
         {/* Properties Grid */}
         {!loading && !error && listings.length > 0 && (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {listings.map((property, index) => {
-            const propertyKey = getPropertyKey(property, index);
-            const isSaved = savedIdentifiers.has(propertyKey);
+          <section className="py-20">
+            <div className="container mx-auto px-6 lg:px-12">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {listings.map((property, index) => {
+                  const propertyKey = getPropertyKey(property, index);
+                  const isSaved = savedIdentifiers.has(propertyKey);
 
-              return (
-                <article
-                  key={propertyKey}
-                  className="group overflow-hidden rounded-[1.75rem] border border-gold-primary/20 bg-black/30 shadow-glass backdrop-blur-glass transition-all duration-500 hover:border-gold-primary/40 hover:shadow-luxury animate-scale-in cursor-pointer"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  onClick={() => navigate(`/property/${property.id}`)}
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    <img
-                      src={property.images?.[0] || property.image || 'https://via.placeholder.com/400x300?text=No+Image'}
-                      alt={property.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        handleToggleSaved(property, index);
-                      }}
-                      className={`absolute top-4 right-4 rounded-full p-2 transition ${
-                        isSaved ? "bg-gold-primary text-luxury-black shadow-gold" : "bg-luxury-black/80 text-gold-primary"
-                      }`}
-                      aria-label={isSaved ? "Remove from saved" : "Save residence"}
-                    >
-                      <Heart className={`h-5 w-5 ${isSaved ? "fill-current" : ""}`} />
-                    </button>
-
-                    {/* Inclusive Badge */}
-                    {property.inclusive && (
-                      <div className="absolute top-4 left-4 bg-gradient-to-r from-gold-primary to-[#f5d37f] text-background px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                        Inclusive
+                  return (
+                    <div key={propertyKey} className="group hover-lift">
+                      <div className="relative h-[400px] mb-6 overflow-hidden hover-zoom-image">
+                        <img
+                          src={property.images?.[0] || property.image || 'https://via.placeholder.com/400x300?text=No+Image'}
+                          alt={property.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 cursor-pointer"
+                          onClick={() => navigate(`/property/${property.id}`)}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent opacity-60" />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleSaved(property, index);
+                          }}
+                          className="absolute top-6 right-6 w-10 h-10 border border-foreground/20 bg-background/20 backdrop-blur-sm flex items-center justify-center hover:bg-accent hover:border-accent transition-all group/heart"
+                        >
+                          <Heart
+                            className={`w-5 h-5 transition-all ${isSaved
+                                ? 'fill-accent text-accent'
+                                : 'text-foreground/60 group-hover/heart:text-background'
+                              }`}
+                            strokeWidth={1}
+                          />
+                        </button>
                       </div>
-                    )}
 
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="rounded-xl border border-gold-primary/30 bg-luxury-black/85 px-5 py-3 text-left text-lg font-bold text-gold-primary">
-                        {formatPrice(property.price, property.priceCadence)}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-6 p-6">
-                    <div>
-                      <h3 className="text-xl font-serif font-bold text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
-                        {property.title}
-                      </h3>
-                      <div className="mt-2 flex items-center text-sm text-platinum-pearl/70">
-                        <MapPin className="mr-1.5 h-4 w-4" />
-                        <span>
+                      <div className="space-y-4 cursor-pointer" onClick={() => navigate(`/property/${property.id}`)}>
+                        <div>
+                          <div className="text-sm text-accent tracking-wider mb-2">
+                            {(() => {
+                              // Handle location object from nested structure
+                              if (property.location && typeof property.location === 'object') {
+                                return property.location.area || property.location.governorate || "Bahrain";
+                              }
+                              // Handle flat structure
+                              return property.area || property.governorate || "Bahrain";
+                            })()}
+                          </div>
+                          <h3 className="text-2xl mb-2">{property.title}</h3>
+                        </div>
+
+                        <div className="flex items-center gap-6 text-sm text-foreground/60">
                           {(() => {
-                            // Handle location object from nested structure
-                            if (property.location && typeof property.location === 'object') {
-                              const parts = [
-                                property.location.area,
-                                property.location.city,
-                                property.location.governorate
-                              ].filter(Boolean);
-                              return parts.length > 0 ? parts.join(", ") : "Location not specified";
-                            }
-                            // Handle flat structure
-                            const parts = [property.area, property.city, property.governorate]
-                              .filter(Boolean);
-                            return parts.length > 0 ? parts.join(", ") : "Location not specified";
+                            const bedrooms = property.specs?.bedrooms || property.bedrooms;
+                            return bedrooms ? (
+                              <div className="flex items-center gap-2">
+                                <Bed className="w-4 h-4" strokeWidth={1} />
+                                <span>{bedrooms}</span>
+                              </div>
+                            ) : null;
                           })()}
-                        </span>
+                          {(() => {
+                            const bathrooms = property.specs?.bathrooms || property.bathrooms;
+                            return bathrooms ? (
+                              <div className="flex items-center gap-2">
+                                <Bath className="w-4 h-4" strokeWidth={1} />
+                                <span>{bathrooms}</span>
+                              </div>
+                            ) : null;
+                          })()}
+                          <div className="flex items-center gap-2">
+                            <Maximize className="w-4 h-4" strokeWidth={1} />
+                            <span>{formatArea(property)}</span>
+                          </div>
+                        </div>
+
+                        <div className="text-2xl text-accent pt-2">{formatPrice(property.price)}</div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between border-t border-gold-primary/10 pt-4 text-sm text-platinum-pearl/75">
-                      {(() => {
-                        const bedrooms = property.specs?.bedrooms || property.bedrooms;
-                        return bedrooms ? (
-                          <div className="flex items-center gap-1">
-                            <Bed className="h-4 w-4" />
-                            <span>{bedrooms} Bed{bedrooms !== 1 ? 's' : ''}</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-1 opacity-50">
-                            <Bed className="h-4 w-4" />
-                            <span>N/A</span>
-                          </div>
-                        );
-                      })()}
-                      {(() => {
-                        const bathrooms = property.specs?.bathrooms || property.bathrooms;
-                        return bathrooms ? (
-                          <div className="flex items-center gap-1">
-                            <Bath className="h-4 w-4" />
-                            <span>{bathrooms} Bath{bathrooms !== 1 ? 's' : ''}</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-1 opacity-50">
-                            <Bath className="h-4 w-4" />
-                            <span>N/A</span>
-                          </div>
-                        );
-                      })()}
-                      <div className="flex items-center gap-1">
-                        <Maximize className="h-4 w-4" />
-                        <span>{formatArea(property)}</span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        navigate(`/property/${property.id}`);
-                      }}
-                      className="w-full rounded-full border border-gold-primary/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-gold-primary transition hover:border-gold-primary hover:bg-gold-primary/10"
-                    >
-                      View Residence
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
         )}
-      </section>
+      </div>
     </div>
   );
 };

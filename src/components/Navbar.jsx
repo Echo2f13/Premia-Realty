@@ -1,29 +1,18 @@
 ﻿import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Building, Menu, User, X } from "lucide-react";
+import { Building2, Menu, User, X } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 
 const links = [
-  { label: "Home", to: "/" },
-  { label: "Properties", to: "/properties" },
-  { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
+  { label: "HOME", to: "/" },
+  { label: "PROPERTIES", to: "/properties" },
+  { label: "ABOUT", to: "/about" },
+  { label: "CONTACT", to: "/contact" },
 ];
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 12);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const { isAuthenticated, isAdmin } = useAuth();
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -32,92 +21,101 @@ const Navbar = () => {
     };
   }, [menuOpen]);
 
-  const navClass = scrolled
-    ? "bg-luxury-black/85 backdrop-blur-2xl border-b border-gold-primary/20"
-    : "bg-transparent";
-
   return (
-    <nav className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${navClass}`}>
-      <div className="container flex h-20 items-center justify-between px-4 lg:px-8">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-gold text-luxury-black shadow-gold">
-            <Building className="h-6 w-6" />
-          </div>
-          <div className="leading-tight">
-            <p className="text-xl font-serif text-gold-primary">Premia Realty</p>
-            <p className="text-[0.65rem] uppercase tracking-[0.5em] text-platinum-pearl/70">Luxury Properties</p>
-          </div>
-        </Link>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="flex items-center justify-between h-24">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-12 h-12 border border-accent/30 flex items-center justify-center">
+              <Building2 className="w-7 h-7 text-accent" strokeWidth={1} />
+            </div>
+            <div className="hidden sm:block">
+              <div className="text-xl tracking-[0.2em] text-foreground">PREMIA</div>
+              <div className="text-[10px] tracking-[0.3em] text-accent -mt-1">REALTY</div>
+            </div>
+          </Link>
 
-        <div className="hidden items-center gap-10 lg:flex">
-          <div className="flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8">
             {links.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  `text-sm font-medium uppercase tracking-[0.35em] transition-colors duration-300 ${
-                    isActive ? "text-gold-primary" : "text-platinum-pearl/70 hover:text-gold-primary"
+                  `text-base font-medium tracking-[0.15em] transition-colors ${
+                    isActive ? "text-accent" : "text-foreground/70 hover:text-foreground"
                   }`
                 }
               >
                 {link.label}
               </NavLink>
             ))}
-          </div>
 
-          <div className="flex items-center gap-3">
+            {isAdmin && (
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  `text-base font-medium tracking-[0.15em] transition-colors ${
+                    isActive ? "text-accent" : "text-foreground/70 hover:text-foreground"
+                  }`
+                }
+              >
+                ADMIN
+              </NavLink>
+            )}
+
+            <div className="w-px h-6 bg-border/50" />
+
             {isAuthenticated ? (
               <Link
                 to="/account"
-                className="inline-flex items-center gap-2 rounded-full border border-gold-primary/40 bg-black/30 px-6 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-gold-primary transition hover:border-gold-primary hover:text-gold-accent"
+                className="inline-flex items-center gap-2 text-base font-medium tracking-[0.15em] text-foreground/70 hover:text-foreground transition-colors"
               >
                 <User className="h-4 w-4" />
-                My Account
+                ACCOUNT
               </Link>
             ) : (
               <>
                 <Link
                   to="/login"
-                  className="text-xs font-semibold uppercase tracking-[0.4em] text-platinum-pearl/70 transition hover:text-gold-primary"
+                  className="text-base font-medium tracking-[0.15em] text-foreground/70 hover:text-foreground transition-colors"
                 >
-                  Sign In
+                  LOGIN
                 </Link>
                 <Link
                   to="/signup"
-                  className="rounded-full bg-gradient-gold px-6 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
+                  className="px-6 py-2.5 border border-accent text-accent text-base font-medium tracking-[0.15em] hover:bg-accent hover:text-background transition-all"
                 >
-                  Get Started
+                  INQUIRE
                 </Link>
               </>
             )}
           </div>
-        </div>
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          onClick={() => setMenuOpen((prev) => !prev)}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-gold-primary/30 text-platinum-pearl transition hover:border-gold-primary hover:text-gold-primary lg:hidden"
-        >
-          {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="flex h-12 w-12 items-center justify-center border border-accent/30 text-foreground transition hover:border-accent hover:text-accent lg:hidden"
+          >
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
-      {menuOpen ? (
+      {menuOpen && (
         <div className="lg:hidden">
-          <div className="border-t border-gold-primary/20 bg-luxury-black/95 px-4 pb-10 pt-6 shadow-luxury">
-            <div className="flex flex-col gap-5">
+          <div className="border-t border-border/50 bg-background/98 px-6 pb-10 pt-6">
+            <div className="flex flex-col gap-4">
               {links.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
-                    `rounded-full border border-gold-primary/30 px-5 py-3 text-xs font-semibold uppercase tracking-[0.45em] transition ${
+                    `border border-accent/30 px-5 py-3 text-base font-medium tracking-[0.15em] transition ${
                       isActive
-                        ? "bg-gradient-gold text-luxury-black"
-                        : "text-platinum-pearl/70 hover:border-gold-primary hover:text-gold-primary"
+                        ? "bg-accent text-background"
+                        : "text-foreground/70 hover:border-accent hover:text-foreground"
                     }`
                   }
                 >
@@ -125,31 +123,47 @@ const Navbar = () => {
                 </NavLink>
               ))}
 
+              {isAdmin && (
+                <NavLink
+                  to="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `border border-accent/30 px-5 py-3 text-base font-medium tracking-[0.15em] transition ${
+                      isActive
+                        ? "bg-accent text-background"
+                        : "text-foreground/70 hover:border-accent hover:text-foreground"
+                    }`
+                  }
+                >
+                  ADMIN
+                </NavLink>
+              )}
+
               <div className="mt-2 flex flex-col gap-3">
                 {isAuthenticated ? (
                   <Link
                     to="/account"
                     onClick={() => setMenuOpen(false)}
-                    className="inline-flex items-center justify-center gap-2 rounded-full border border-gold-primary/40 bg-black/30 px-5 py-3 text-xs font-semibold uppercase tracking-[0.45em] text-gold-primary transition hover:border-gold-primary hover:text-gold-accent"
+                    className="inline-flex items-center justify-center gap-2 border border-accent/30 px-5 py-3 text-base font-medium tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
                   >
                     <User className="h-4 w-4" />
-                    My Account
+                    ACCOUNT
                   </Link>
                 ) : (
                   <>
                     <Link
                       to="/login"
                       onClick={() => setMenuOpen(false)}
-                      className="text-center text-xs font-semibold uppercase tracking-[0.45em] text-platinum-pearl/70 transition hover:text-gold-primary"
+                      className="text-center text-base font-medium tracking-[0.15em] text-foreground/70 transition hover:text-foreground"
                     >
-                      Sign In
+                      LOGIN
                     </Link>
                     <Link
                       to="/signup"
                       onClick={() => setMenuOpen(false)}
-                      className="inline-flex items-center justify-center rounded-full bg-gradient-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.45em] text-luxury-black shadow-gold transition hover:shadow-luxury"
+                      className="inline-flex items-center justify-center border border-accent px-6 py-3 text-base font-medium tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
                     >
-                      Get Started
+                      INQUIRE
                     </Link>
                   </>
                 )}
@@ -157,7 +171,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </nav>
   );
 };
