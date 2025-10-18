@@ -137,13 +137,14 @@ const PropertiesMap = () => {
         <div className="absolute right-0 bottom-1/3 h-96 w-96 translate-x-1/3 rounded-full bg-gold-primary/10 blur-[160px]" />
       </div>
 
-      <div className="relative container px-4 lg:px-8">
+      <div className="relative container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="mb-12 text-center">
-          <h2 className="text-4xl font-serif font-bold text-platinum-pearl lg:text-5xl">
-            Explore Properties in Bahrain
+          <div className="text-accent text-xs tracking-[0.3em] mb-4">DISCOVER BAHRAIN</div>
+          <h2 className="text-5xl lg:text-6xl mb-6">
+            Explore Properties
           </h2>
-          <p className="mt-4 text-platinum-pearl/70 max-w-2xl mx-auto">
+          <p className="mt-4 text-foreground/60 max-w-2xl mx-auto font-light leading-relaxed">
             Discover premium real estate locations across the Kingdom of Bahrain
           </p>
         </div>
@@ -226,7 +227,7 @@ const PropertiesMap = () => {
           </div>
         </div>
 
-        
+
       </div>
 
       {/* Custom CSS for map controls styling */}
@@ -261,10 +262,9 @@ const PropertiesMap = () => {
       >
         {hoveredProperty && (
           <div
-            className="bg-gradient-to-br from-background via-luxury-black to-background-dark rounded-xl overflow-hidden w-80 transition-all duration-300 border-2"
+            className="bg-card border border-border/50 overflow-hidden w-80 transition-all duration-300"
             style={{
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.2)',
-              borderColor: 'rgba(212, 175, 55, 0.3)'
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
             }}
           >
             {/* Property Image */}
@@ -275,10 +275,10 @@ const PropertiesMap = () => {
                   alt={hoveredProperty.title}
                   className="w-full h-full object-cover transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 {hoveredProperty.inclusive && (
-                  <div className="absolute top-2 right-2 bg-gradient-to-r from-gold-primary to-[#f5d37f] text-background px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
-                    Inclusive
+                  <div className="absolute top-2 right-2 bg-accent text-background px-3 py-1 text-xs font-bold shadow-lg tracking-wider">
+                    INCLUSIVE
                   </div>
                 )}
               </div>
@@ -286,19 +286,19 @@ const PropertiesMap = () => {
 
             {/* Property Details */}
             <div className="p-4">
-              <h3 className="text-platinum-pearl font-bold text-base mb-2 line-clamp-2">
+              <h3 className="text-foreground font-bold text-base mb-3 line-clamp-2">
                 {hoveredProperty.title}
               </h3>
 
               <div className="flex items-center gap-1 mb-3">
-                <span className="text-gold-primary text-xl font-bold bg-gold-primary/10 px-3 py-1 rounded-lg border border-gold-primary/20">
+                <span className="text-accent text-xl font-bold bg-accent/10 px-3 py-1 border border-accent/20">
                   {formatPrice(hoveredProperty.price, hoveredProperty.priceCadence)}
                 </span>
               </div>
 
               {/* Location */}
-              <div className="flex items-center gap-2 text-platinum-pearl/70 text-xs mb-3 bg-platinum-pearl/5 rounded-lg px-3 py-2">
-                <MapPin className="h-4 w-4 flex-shrink-0 text-gold-primary" />
+              <div className="flex items-center gap-2 text-foreground/70 text-xs mb-3 bg-background/50 border border-border/30 px-3 py-2">
+                <MapPin className="h-4 w-4 flex-shrink-0 text-accent" strokeWidth={1} />
                 <span className="line-clamp-1">
                   {[
                     hoveredProperty.area,
@@ -311,16 +311,16 @@ const PropertiesMap = () => {
               </div>
 
               {/* Bed/Bath */}
-              <div className="flex items-center gap-4 text-platinum-pearl/70 text-sm">
+              <div className="flex items-center gap-4 text-foreground/70 text-sm">
                 {hoveredProperty.bedrooms && (
-                  <div className="flex items-center gap-2 bg-platinum-pearl/5 rounded-lg px-3 py-1.5">
-                    <Bed className="h-4 w-4 text-gold-primary" />
+                  <div className="flex items-center gap-2 bg-background/50 border border-border/30 px-3 py-1.5">
+                    <Bed className="h-4 w-4 text-accent" strokeWidth={1} />
                     <span>{hoveredProperty.bedrooms} Bed</span>
                   </div>
                 )}
                 {hoveredProperty.bathrooms && (
-                  <div className="flex items-center gap-2 bg-platinum-pearl/5 rounded-lg px-3 py-1.5">
-                    <Bath className="h-4 w-4 text-gold-primary" />
+                  <div className="flex items-center gap-2 bg-background/50 border border-border/30 px-3 py-1.5">
+                    <Bath className="h-4 w-4 text-accent" strokeWidth={1} />
                     <span>{hoveredProperty.bathrooms} Bath</span>
                   </div>
                 )}

@@ -57,8 +57,8 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Cormorant Garamond', 'Georgia', 'serif'],
-        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+        sans: ['Bodoni Moda', 'Georgia', 'serif'],
+        serif: ['Bodoni Moda', 'Georgia', 'serif'],
       },
       boxShadow: {
         glass: '0 24px 54px rgba(10, 10, 15, 0.45)',
