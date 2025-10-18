@@ -20,6 +20,8 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut,
   updateProfile,
   updatePassword,
@@ -144,6 +146,33 @@ export const signInCustomer = async ({ contactValue, password }) => {
   const email = value.includes("@") ? value.toLowerCase() : phoneToEmail(value);
   const credential = await signInWithEmailAndPassword(auth, email, password);
   return credential.user;
+};
+
+export const signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({
+    prompt: 'select_account'
+  });
+
+  const result = await signInWithPopup(auth, provider);
+  const user = result.user;
+
+  // Create or update user profile in Firestore
+  await setDoc(
+    userDocRef(user.uid),
+    {
+      fullName: user.displayName || "",
+      email: user.email,
+      phone: null,
+      contactType: "email",
+      photoURL: user.photoURL || null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
+
+  return user;
 };
 
 export const signOutCustomer = () => signOut(auth);

@@ -1,7 +1,8 @@
-﻿import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Building2, Menu, User, X } from "lucide-react";
+﻿import { useEffect, useState, useRef } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Building2, Menu, User, X, LogOut, Settings } from "lucide-react";
 import useAuth from "../hooks/useAuth";
+import { signOutCustomer } from "../data/firebaseService";
 
 const links = [
   { label: "HOME", to: "/" },
@@ -12,7 +13,10 @@ const links = [
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const { isAuthenticated, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -20,6 +24,33 @@ const Navbar = () => {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setAccountDropdownOpen(false);
+      }
+    };
+
+    if (accountDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [accountDropdownOpen]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOutCustomer();
+      setAccountDropdownOpen(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
@@ -66,13 +97,36 @@ const Navbar = () => {
             <div className="w-px h-6 bg-border/50" />
 
             {isAuthenticated ? (
-              <Link
-                to="/account"
-                className="inline-flex items-center gap-2 text-base font-medium tracking-[0.15em] text-foreground/70 hover:text-foreground transition-colors"
-              >
-                <User className="h-4 w-4" />
-                ACCOUNT
-              </Link>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
+                  className="inline-flex items-center gap-2 text-base font-medium tracking-[0.15em] text-foreground/70 hover:text-foreground transition-colors"
+                >
+                  <User className="h-4 w-4" />
+                  ACCOUNT
+                </button>
+
+                {/* Dropdown Menu */}
+                {accountDropdownOpen && (
+                  <div className="absolute right-0 mt-4 w-48 bg-card border border-border/50 shadow-lg">
+                    <Link
+                      to="/account"
+                      onClick={() => setAccountDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-sm tracking-[0.15em] text-foreground/70 hover:bg-accent/10 hover:text-accent transition-colors border-b border-border/30"
+                    >
+                      <User className="h-4 w-4" strokeWidth={1.5} />
+                      PROFILE
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm tracking-[0.15em] text-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-colors"
+                    >
+                      <LogOut className="h-4 w-4" strokeWidth={1.5} />
+                      SIGN OUT
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <Link

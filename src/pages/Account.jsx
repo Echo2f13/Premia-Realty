@@ -211,15 +211,7 @@ const Account = () => {
                 </button>
               </form>
 
-              <div className="mt-8 flex flex-wrap items-center gap-6">
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  className="text-sm tracking-[0.15em] text-foreground/70 hover:text-accent transition-colors"
-                >
-                  Sign Out
-                </button>
-                <span className="text-border">|</span>
+              <div className="mt-8">
                 <Link
                   to="/change-password"
                   className="inline-flex items-center gap-2 text-sm tracking-[0.15em] text-foreground/70 hover:text-accent transition-colors"
