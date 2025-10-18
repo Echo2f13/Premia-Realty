@@ -1,9 +1,11 @@
-﻿import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+﻿import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import BackToTop from "./components/BackToTop";
 import ScrollToTop from "./components/ScrollToTop";
 import Breadcrumbs from "./components/Breadcrumbs";
+import LoadingScreen from "./components/LoadingScreen";
 import { ToastProvider } from "./components/Toast";
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
@@ -23,7 +25,6 @@ import AdminContactsTrash from "./pages/AdminContactsTrash";
 import RequireAdmin from "./components/RequireAdmin";
 
 const AppContent = () => {
-
   return (
     <>
       <Navbar />
@@ -55,16 +56,30 @@ const AppContent = () => {
 };
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Minimum loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <Router>
-      <ScrollToTop />
-      <ToastProvider>
-        <div className="flex min-h-screen flex-col bg-background text-platinum-pearl">
-          <AppContent />
-          <BackToTop />
-        </div>
-      </ToastProvider>
-    </Router>
+    <>
+      {isLoading && <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />}
+      <Router>
+        <ScrollToTop />
+        <ToastProvider>
+          <div className="flex min-h-screen flex-col bg-background text-platinum-pearl">
+            <AppContent />
+            <BackToTop />
+          </div>
+        </ToastProvider>
+      </Router>
+    </>
   );
 };
 

@@ -521,4 +521,37 @@ a {
   .link-underline:hover::after {
     width: 100%;
   }
+
+  /* Page Transitions */
+  .page-transition {
+    animation-duration: 0.15s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+
+  .page-transition.fadeOut {
+    animation-name: pageTransitionOut;
+  }
+
+  .page-transition.fadeIn {
+    animation-name: pageTransitionIn;
+  }
+
+  @keyframes pageTransitionOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes pageTransitionIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
