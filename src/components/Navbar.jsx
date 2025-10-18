@@ -1,22 +1,25 @@
 ﻿import { useEffect, useState, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Building2, Menu, User, X, LogOut, Settings } from "lucide-react";
+import { Building2, Menu, User, X, LogOut, Languages } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { signOutCustomer } from "../data/firebaseService";
-
-const links = [
-  { label: "HOME", to: "/" },
-  { label: "PROPERTIES", to: "/properties" },
-  { label: "ABOUT", to: "/about" },
-  { label: "CONTACT", to: "/contact" },
-];
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const { isAuthenticated, isAdmin } = useAuth();
+  const { language, toggleLanguage, t } = useLanguage();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+
+  const links = [
+    { label: t(translations.nav.home), to: "/" },
+    { label: t(translations.nav.properties), to: "/properties" },
+    { label: t(translations.nav.about), to: "/about" },
+    { label: t(translations.nav.contact), to: "/contact" },
+  ];
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -90,9 +93,19 @@ const Navbar = () => {
                   }`
                 }
               >
-                ADMIN
+                {t(translations.nav.admin)}
               </NavLink>
             )}
+
+            {/* Language Toggle Button */}
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-2 text-base font-medium tracking-[0.15em] text-foreground/70 hover:text-accent transition-colors"
+              aria-label="Toggle language"
+            >
+              <Languages className="h-5 w-5" strokeWidth={1.5} />
+              <span>{language === "en" ? "ع" : "EN"}</span>
+            </button>
 
             <div className="w-px h-6 bg-border/50" />
 
@@ -103,7 +116,7 @@ const Navbar = () => {
                   className="inline-flex items-center gap-2 text-base font-medium tracking-[0.15em] text-foreground/70 hover:text-foreground transition-colors"
                 >
                   <User className="h-4 w-4" />
-                  ACCOUNT
+                  {t(translations.nav.account)}
                 </button>
 
                 {/* Dropdown Menu */}
@@ -115,14 +128,14 @@ const Navbar = () => {
                       className="flex items-center gap-3 px-4 py-3 text-sm tracking-[0.15em] text-foreground/70 hover:bg-accent/10 hover:text-accent transition-colors border-b border-border/30"
                     >
                       <User className="h-4 w-4" strokeWidth={1.5} />
-                      PROFILE
+                      {t(translations.nav.profile)}
                     </Link>
                     <button
                       onClick={handleSignOut}
                       className="w-full flex items-center gap-3 px-4 py-3 text-sm tracking-[0.15em] text-foreground/70 hover:bg-destructive/10 hover:text-destructive transition-colors"
                     >
                       <LogOut className="h-4 w-4" strokeWidth={1.5} />
-                      SIGN OUT
+                      {t(translations.nav.signOut)}
                     </button>
                   </div>
                 )}
@@ -133,13 +146,13 @@ const Navbar = () => {
                   to="/login"
                   className="text-base font-medium tracking-[0.15em] text-foreground/70 hover:text-foreground transition-colors"
                 >
-                  LOGIN
+                  {t(translations.nav.login)}
                 </Link>
                 <Link
                   to="/signup"
                   className="px-6 py-2.5 border border-accent text-accent text-base font-medium tracking-[0.15em] hover:bg-accent hover:text-background transition-all"
                 >
-                  INQUIRE
+                  {t(translations.nav.signup)}
                 </Link>
               </>
             )}
@@ -189,9 +202,18 @@ const Navbar = () => {
                     }`
                   }
                 >
-                  ADMIN
+                  {t(translations.nav.admin)}
                 </NavLink>
               )}
+
+              {/* Language Toggle Button - Mobile */}
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center justify-center gap-2 border border-accent/30 px-5 py-3 text-base font-medium tracking-[0.15em] text-foreground/70 hover:border-accent hover:text-accent transition"
+              >
+                <Languages className="h-5 w-5" strokeWidth={1.5} />
+                <span>{language === "en" ? "العربية" : "English"}</span>
+              </button>
 
               <div className="mt-2 flex flex-col gap-3">
                 {isAuthenticated ? (
@@ -201,7 +223,7 @@ const Navbar = () => {
                     className="inline-flex items-center justify-center gap-2 border border-accent/30 px-5 py-3 text-base font-medium tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
                   >
                     <User className="h-4 w-4" />
-                    ACCOUNT
+                    {t(translations.nav.account)}
                   </Link>
                 ) : (
                   <>
@@ -210,14 +232,14 @@ const Navbar = () => {
                       onClick={() => setMenuOpen(false)}
                       className="text-center text-base font-medium tracking-[0.15em] text-foreground/70 transition hover:text-foreground"
                     >
-                      LOGIN
+                      {t(translations.nav.login)}
                     </Link>
                     <Link
                       to="/signup"
                       onClick={() => setMenuOpen(false)}
                       className="inline-flex items-center justify-center border border-accent px-6 py-3 text-base font-medium tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
                     >
-                      INQUIRE
+                      {t(translations.nav.signup)}
                     </Link>
                   </>
                 )}

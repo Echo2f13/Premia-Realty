@@ -6,6 +6,8 @@ import "leaflet/dist/leaflet.css";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import { Bed, Bath, MapPin } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 // Fix Leaflet default marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -66,6 +68,7 @@ const BahrainBoundsLock = () => {
 };
 
 const PropertiesMap = () => {
+  const { t } = useLanguage();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hoveredProperty, setHoveredProperty] = useState(null);
@@ -140,12 +143,12 @@ const PropertiesMap = () => {
       <div className="relative container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="mb-12 text-center">
-          <div className="text-accent text-xs tracking-[0.3em] mb-4">DISCOVER BAHRAIN</div>
+          <div className="text-accent text-xs tracking-[0.3em] mb-4">{t(translations.home.map.subtitle)}</div>
           <h2 className="text-5xl lg:text-6xl mb-6">
-            Explore Properties
+            {t(translations.home.map.title)}
           </h2>
           <p className="mt-4 text-foreground/60 max-w-2xl mx-auto font-light leading-relaxed">
-            Discover premium real estate locations across the Kingdom of Bahrain
+            {t(translations.home.map.description)}
           </p>
         </div>
 
@@ -164,7 +167,7 @@ const PropertiesMap = () => {
             <div className="flex items-center justify-center h-full bg-background-dark">
               <div className="flex flex-col items-center gap-4">
                 <div className="w-12 h-12 border-4 border-gold-primary/20 border-t-gold-primary rounded-full animate-spin"></div>
-                <div className="text-gold-primary font-semibold">Loading map...</div>
+                <div className="text-gold-primary font-semibold">{t(translations.home.map.loading)}</div>
               </div>
             </div>
           ) : (

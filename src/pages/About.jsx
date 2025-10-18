@@ -1,8 +1,12 @@
 import { Building2, Users, Award } from "lucide-react";
 import ScrollReveal from "../components/ScrollReveal";
 import LazyImage from "../components/LazyImage";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 const About = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-gradient-diagonal-subtle">
       <div className="pt-24">
@@ -10,10 +14,10 @@ const About = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
-              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">OUR LEGACY</div>
-              <h1 className="text-6xl md:text-7xl mb-6">About Premia</h1>
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">{t(translations.about.subtitle)}</div>
+              <h1 className="text-6xl md:text-7xl mb-6">{t(translations.about.title)}</h1>
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
-                For over a decade, we have redefined luxury real estate in Bahrain
+                {t(translations.about.section1.description)}
               </p>
             </div>
           </div>
@@ -24,13 +28,13 @@ const About = () => {
           <div className="container mx-auto px-6 lg:px-12">
             <div className="grid md:grid-cols-2 gap-16 items-center">
               <div>
-                <div className="text-accent text-xs tracking-[0.3em] mb-6">ESTABLISHED EXCELLENCE</div>
-                <h2 className="text-4xl mb-8">Our Story</h2>
+                <div className="text-accent text-xs tracking-[0.3em] mb-6">{t(translations.about.subtitle)}</div>
+                <h2 className="text-4xl mb-8">{t(translations.about.section1.title)}</h2>
                 <p className="text-foreground/60 text-lg mb-6 font-light leading-relaxed">
-                  Founded with a vision to transform the luxury real estate landscape, Premia Realty has become synonymous with excellence, trust, and sophistication.
+                  {t(translations.about.section1.description)}
                 </p>
                 <p className="text-foreground/60 text-lg font-light leading-relaxed">
-                  Our journey began with a belief that every client deserves an extraordinary experience when finding their dream property. Today, we stand as a beacon of premium service, offering an exclusive portfolio of the finest properties.
+                  {t(translations.about.section2.description)}
                 </p>
               </div>
               <div className="relative h-[500px] hover-zoom-image">
@@ -53,21 +57,21 @@ const About = () => {
                 <div className="text-center">
                   <Building2 className="w-12 h-12 text-accent mx-auto mb-6" strokeWidth={1} aria-hidden="true" />
                   <div className="text-5xl mb-3 text-accent">500+</div>
-                  <div className="text-sm tracking-[0.2em] text-foreground/60">PREMIUM PROPERTIES</div>
+                  <div className="text-sm tracking-[0.2em] text-foreground/60">{t(translations.about.section3.reason2.title)}</div>
                 </div>
               </ScrollReveal>
               <ScrollReveal animation="fade-in-up" delay={200}>
                 <div className="text-center">
                   <Users className="w-12 h-12 text-accent mx-auto mb-6" strokeWidth={1} aria-hidden="true" />
                   <div className="text-5xl mb-3 text-accent">2,000+</div>
-                  <div className="text-sm tracking-[0.2em] text-foreground/60">HAPPY CLIENTS</div>
+                  <div className="text-sm tracking-[0.2em] text-foreground/60">{t(translations.about.section3.reason3.title)}</div>
                 </div>
               </ScrollReveal>
               <ScrollReveal animation="fade-in-up" delay={300}>
                 <div className="text-center">
                   <Award className="w-12 h-12 text-accent mx-auto mb-6" strokeWidth={1} aria-hidden="true" />
                   <div className="text-5xl mb-3 text-accent">15+</div>
-                  <div className="text-sm tracking-[0.2em] text-foreground/60">YEARS EXPERIENCE</div>
+                  <div className="text-sm tracking-[0.2em] text-foreground/60">{t(translations.about.section3.reason1.title)}</div>
                 </div>
               </ScrollReveal>
             </div>
@@ -78,36 +82,44 @@ const About = () => {
         <section className="py-24">
           <div className="container mx-auto px-6 lg:px-12">
             <ScrollReveal animation="fade-in">
-              <div className="text-center max-w-3xl mx-auto mb-16">
-                <div className="text-accent text-xs tracking-[0.3em] mb-4">OUR VALUES</div>
-                <h2 className="text-5xl mb-6">Our Philosophy</h2>
+              <div className="text-center max-w-3xl mx-auto">
+                <h2 className="text-4xl mb-8">{t(translations.about.section2.title)}</h2>
+                <p className="text-foreground/60 text-lg font-light leading-relaxed">
+                  {t(translations.about.section2.description)}
+                </p>
               </div>
             </ScrollReveal>
+          </div>
+        </section>
 
+        {/* Values */}
+        <section className="py-24 bg-card/50">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl mb-6">{t(translations.about.section3.title)}</h2>
+            </div>
             <div className="grid md:grid-cols-3 gap-12">
               <ScrollReveal animation="fade-in-up" delay={100}>
-                <div className="text-center">
-                  <h3 className="text-2xl text-accent mb-4">Excellence</h3>
+                <div className="bg-background border border-border/50 p-8 hover-glow transition-all">
+                  <h3 className="text-xl mb-4 text-accent">{t(translations.about.section3.reason1.title)}</h3>
                   <p className="text-foreground/60 font-light leading-relaxed">
-                    We maintain the highest standards in every aspect of our service, from property selection to client care
+                    {t(translations.about.section3.reason1.description)}
                   </p>
                 </div>
               </ScrollReveal>
-
               <ScrollReveal animation="fade-in-up" delay={200}>
-                <div className="text-center">
-                  <h3 className="text-2xl text-accent mb-4">Integrity</h3>
+                <div className="bg-background border border-border/50 p-8 hover-glow transition-all">
+                  <h3 className="text-xl mb-4 text-accent">{t(translations.about.section3.reason2.title)}</h3>
                   <p className="text-foreground/60 font-light leading-relaxed">
-                    Transparency and honesty form the foundation of our relationships with clients and partners
+                    {t(translations.about.section3.reason2.description)}
                   </p>
                 </div>
               </ScrollReveal>
-
               <ScrollReveal animation="fade-in-up" delay={300}>
-                <div className="text-center">
-                  <h3 className="text-2xl text-accent mb-4">Innovation</h3>
+                <div className="bg-background border border-border/50 p-8 hover-glow transition-all">
+                  <h3 className="text-xl mb-4 text-accent">{t(translations.about.section3.reason3.title)}</h3>
                   <p className="text-foreground/60 font-light leading-relaxed">
-                    We embrace cutting-edge technology and creative solutions to deliver exceptional results
+                    {t(translations.about.section3.reason3.description)}
                   </p>
                 </div>
               </ScrollReveal>

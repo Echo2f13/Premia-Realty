@@ -570,4 +570,59 @@ a {
     -webkit-font-smoothing: subpixel-antialiased;
   }
 
+  /* RTL Support for Arabic */
+  [dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+
+  [dir="rtl"] .text-left {
+    text-align: right;
+  }
+
+  [dir="rtl"] .text-right {
+    text-align: left;
+  }
+
+  [dir="rtl"] .flex-row {
+    flex-direction: row-reverse;
+  }
+
+  [dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+  }
+
+  /* RTL Padding/Margin Adjustments */
+  [dir="rtl"] .pl-6 {
+    padding-left: 0;
+    padding-right: 1.5rem;
+  }
+
+  [dir="rtl"] .pr-6 {
+    padding-right: 0;
+    padding-left: 1.5rem;
+  }
+
+  [dir="rtl"] .ml-auto {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  [dir="rtl"] .mr-auto {
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  /* Arabic Font Optimization */
+  [dir="rtl"] body,
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4,
+  [dir="rtl"] h5,
+  [dir="rtl"] h6,
+  [dir="rtl"] p {
+    font-family: 'Bodoni Moda', 'Tajawal', 'Cairo', Arial, sans-serif;
+  }
+
 }

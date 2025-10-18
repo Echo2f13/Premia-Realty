@@ -4,6 +4,8 @@ import { addContactForm } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
 import { useToast } from "../components/Toast";
 import ScrollReveal from "../components/ScrollReveal";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 const initialFormState = {
   name: "",
@@ -13,6 +15,7 @@ const initialFormState = {
 };
 
 const Contact = () => {
+  const { t } = useLanguage();
   const { user, profile, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,10 +67,10 @@ const Contact = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
-              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">GET IN TOUCH</div>
-              <h1 className="text-6xl md:text-7xl mb-6">Contact Us</h1>
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">{t(translations.contact.subtitle)}</div>
+              <h1 className="text-6xl md:text-7xl mb-6">{t(translations.contact.title)}</h1>
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
-                Let us help you find your perfect luxury property
+                {t(translations.contact.description)}
               </p>
             </div>
           </div>
@@ -82,31 +85,31 @@ const Contact = () => {
                     <div className="flex items-start gap-4">
                       <Phone className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
                       <div>
-                        <div className="text-sm text-accent tracking-wider mb-1">PHONE</div>
+                        <div className="text-sm text-accent tracking-wider mb-1">{t(translations.contact.info.phone)}</div>
                         <div className="text-lg">+973 1234 5678</div>
                       </div>
                     </div>
                     <div className="flex items-start gap-4">
                       <Mail className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
                       <div>
-                        <div className="text-sm text-accent tracking-wider mb-1">EMAIL</div>
+                        <div className="text-sm text-accent tracking-wider mb-1">{t(translations.contact.info.email)}</div>
                         <div className="text-lg">concierge@premiarealty.com</div>
                       </div>
                     </div>
                     <div className="flex items-start gap-4">
                       <MapPin className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
                       <div>
-                        <div className="text-sm text-accent tracking-wider mb-1">ADDRESS</div>
-                        <div className="text-lg">Manama, Kingdom of Bahrain</div>
+                        <div className="text-sm text-accent tracking-wider mb-1">{t(translations.contact.info.address)}</div>
+                        <div className="text-lg">{t(translations.footer.address)}</div>
                       </div>
                     </div>
                   </div>
 
                   <div className="pt-6 border-t border-border/50">
-                    <div className="text-sm text-accent tracking-wider mb-3">HOURS</div>
+                    <div className="text-sm text-accent tracking-wider mb-3">{t(translations.contact.info.hours)}</div>
                     <div className="space-y-2 text-foreground/60">
-                      <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-                      <p>Private viewings by appointment</p>
+                      <p>{t(translations.contact.info.weekdays)}</p>
+                      <p>{t(translations.contact.info.weekend)}</p>
                     </div>
                   </div>
                 </div>
@@ -115,11 +118,11 @@ const Contact = () => {
               <ScrollReveal animation="fade-in-up" delay={200}>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label className="text-sm text-accent tracking-wider mb-2 block">FULL NAME</label>
+                    <label className="text-sm text-accent tracking-wider mb-2 block">{t(translations.contact.form.name)}</label>
                     <input
                       type="text"
                       name="name"
-                      placeholder="Your name"
+                      placeholder={t(translations.contact.form.namePlaceholder)}
                       className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
                       value={formData.name}
                       onChange={handleInputChange}
@@ -128,11 +131,11 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm text-accent tracking-wider mb-2 block">EMAIL</label>
+                    <label className="text-sm text-accent tracking-wider mb-2 block">{t(translations.contact.form.email)}</label>
                     <input
                       type="email"
                       name="email"
-                      placeholder="your@email.com"
+                      placeholder={t(translations.contact.form.emailPlaceholder)}
                       className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
                       value={formData.email}
                       onChange={handleInputChange}
@@ -141,11 +144,11 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm text-accent tracking-wider mb-2 block">PHONE</label>
+                    <label className="text-sm text-accent tracking-wider mb-2 block">{t(translations.contact.form.phone)}</label>
                     <input
                       type="tel"
                       name="phone"
-                      placeholder="+973 XXXX XXXX"
+                      placeholder={t(translations.contact.form.phonePlaceholder)}
                       className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
                       value={formData.phone}
                       onChange={handleInputChange}
@@ -154,10 +157,10 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm text-accent tracking-wider mb-2 block">MESSAGE</label>
+                    <label className="text-sm text-accent tracking-wider mb-2 block">{t(translations.contact.form.message)}</label>
                     <textarea
                       name="requirements"
-                      placeholder="Your requirements..."
+                      placeholder={t(translations.contact.form.messagePlaceholder)}
                       className="w-full bg-card border border-border/50 min-h-32 px-4 py-3 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors resize-none"
                       value={formData.requirements}
                       onChange={handleInputChange}
@@ -169,7 +172,7 @@ const Contact = () => {
                     disabled={isSubmitting}
                     className="w-full px-10 py-4 bg-accent text-background text-sm tracking-[0.2em] hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? "SENDING..." : "SEND MESSAGE"}
+                    {isSubmitting ? t(translations.contact.form.sending) : t(translations.contact.form.submit)}
                   </button>
                 </form>
               </ScrollReveal>

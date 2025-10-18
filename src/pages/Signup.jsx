@@ -2,16 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { signUpCustomer } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
-
-const contactTypes = [
-  { value: "email", label: "Email" },
-  { value: "phone", label: "Phone" },
-];
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 const Signup = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
+
+  const contactTypes = [
+    { value: "email", label: t(translations.signup.email) },
+    { value: "phone", label: t(translations.signup.phone) },
+  ];
   const [contactType, setContactType] = useState("email");
   const [form, setForm] = useState({
     fullName: "",
@@ -84,17 +87,17 @@ const Signup = () => {
     <div className="min-h-screen bg-background flex items-center justify-center px-6 py-24">
       <div className="w-full max-w-md">
         <div className="text-center mb-12">
-          <div className="text-accent text-xs tracking-[0.3em] mb-4">JOIN PREMIA</div>
-          <h1 className="text-5xl mb-4">Create Account</h1>
+          <div className="text-accent text-xs tracking-[0.3em] mb-4">{t(translations.signup.joinPremi)}</div>
+          <h1 className="text-5xl mb-4">{t(translations.signup.title)}</h1>
           <p className="text-foreground/60 font-light">
-            Start your journey to finding luxury properties
+            {t(translations.signup.description)}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="fullName" className="text-sm text-accent tracking-wider mb-2 block">
-              FULL NAME
+              {t(translations.signup.fullName)}
             </label>
             <input
               id="fullName"
@@ -103,14 +106,14 @@ const Signup = () => {
               required
               value={form.fullName}
               onChange={handleChange}
-              placeholder="John Doe"
+              placeholder={t(translations.signup.fullNamePlaceholder)}
               className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
             />
           </div>
 
           <div>
             <label className="text-sm text-accent tracking-wider mb-2 block">
-              PREFERRED CONTACT METHOD
+              {t(translations.signup.preferredContact)}
             </label>
             <div className="flex gap-3 mb-4">
               {contactTypes.map((option) => (
@@ -137,7 +140,7 @@ const Signup = () => {
                 value={form.email}
                 onChange={handleChange}
                 required={contactType === "email"}
-                placeholder="you@example.com"
+                placeholder={t(translations.signup.emailPlaceholder)}
                 className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
               />
             ) : (
@@ -148,7 +151,7 @@ const Signup = () => {
                 value={form.phone}
                 onChange={handleChange}
                 required={contactType === "phone"}
-                placeholder="+973 XXXX XXXX"
+                placeholder={t(translations.signup.phonePlaceholder)}
                 className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
               />
             )}
@@ -157,7 +160,7 @@ const Signup = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="password" className="text-sm text-accent tracking-wider mb-2 block">
-                PASSWORD
+                {t(translations.signup.password)}
               </label>
               <input
                 id="password"
@@ -166,13 +169,13 @@ const Signup = () => {
                 value={form.password}
                 onChange={handleChange}
                 required
-                placeholder="Min 8 characters"
+                placeholder={t(translations.signup.passwordPlaceholder)}
                 className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
               />
             </div>
             <div>
               <label htmlFor="confirmPassword" className="text-sm text-accent tracking-wider mb-2 block">
-                CONFIRM
+                {t(translations.signup.confirm)}
               </label>
               <input
                 id="confirmPassword"
@@ -181,7 +184,7 @@ const Signup = () => {
                 value={form.confirmPassword}
                 onChange={handleChange}
                 required
-                placeholder="Confirm password"
+                placeholder={t(translations.signup.confirmPlaceholder)}
                 className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
               />
             </div>
@@ -198,14 +201,14 @@ const Signup = () => {
             disabled={isSubmitting}
             className="w-full px-10 py-4 bg-accent text-background text-sm tracking-[0.2em] hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
+            {isSubmitting ? t(translations.signup.creatingAccount) : t(translations.signup.createAccount)}
           </button>
         </form>
 
         <p className="mt-8 text-center text-sm text-foreground/60">
-          Already have an account?{" "}
+          {t(translations.signup.haveAccount)}{" "}
           <Link to="/login" className="text-accent hover:text-accent/80 transition-colors">
-            Sign In
+            {t(translations.signup.signIn)}
           </Link>
         </p>
       </div>

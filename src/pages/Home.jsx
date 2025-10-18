@@ -3,8 +3,11 @@ import { Building2, Award, Users } from "lucide-react";
 import PropertiesMap from "../components/PropertiesMap";
 import ScrollReveal from "../components/ScrollReveal";
 import { useRef, useEffect } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 const Home = () => {
+  const { t } = useLanguage();
   const parallaxRef = useRef(null);
 
   useEffect(() => {
@@ -48,12 +51,12 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/85 to-background z-10" />
 
         <div className="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
-          <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">BAHRAIN'S FINEST</div>
+          <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">{t(translations.home.hero.subtitle)}</div>
           <h1 className="text-6xl md:text-7xl lg:text-8xl mb-8 text-foreground leading-tight animation-delay-200">
-            Luxury Redefined
+            {t(translations.home.hero.title)}
           </h1>
           <p className="text-xl md:text-2xl text-foreground/60 mb-12 max-w-3xl mx-auto font-light leading-relaxed animation-delay-300">
-            Discover exceptional properties that embody sophistication, elegance, and timeless design
+            {t(translations.home.hero.description)}
           </p>
 
           <div className="flex gap-6 justify-center flex-wrap animation-delay-400">
@@ -62,14 +65,14 @@ const Home = () => {
               className="px-10 py-4 bg-accent text-background text-sm tracking-[0.2em] hover:bg-accent/90 transition-all btn-primary hover-glow"
               aria-label="Explore our properties"
             >
-              EXPLORE PROPERTIES
+              {t(translations.home.hero.exploreButton)}
             </Link>
             <Link
               to="/contact"
               className="px-10 py-4 border border-accent text-accent text-sm tracking-[0.2em] hover:bg-accent hover:text-background transition-all"
               aria-label="Schedule a property viewing"
             >
-              SCHEDULE VIEWING
+              {t(translations.home.hero.learnMore)}
             </Link>
           </div>
         </div>
