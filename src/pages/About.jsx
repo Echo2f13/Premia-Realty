@@ -4,7 +4,7 @@ import LazyImage from "../components/LazyImage";
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-diagonal-subtle">
       <div className="pt-24">
         {/* Header */}
         <section className="py-20 border-b border-border/50">

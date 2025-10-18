@@ -2,21 +2,52 @@ import { Link } from "react-router-dom";
 import { Building2, Award, Users } from "lucide-react";
 import PropertiesMap from "../components/PropertiesMap";
 import ScrollReveal from "../components/ScrollReveal";
+import { useRef, useEffect } from "react";
 
 const Home = () => {
+  const parallaxRef = useRef(null);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const updateParallax = () => {
+      if (parallaxRef.current) {
+        const scrolled = window.pageYOffset;
+        const yPos = -(scrolled * 0.5);
+        parallaxRef.current.style.transform = `translate3d(0, ${yPos}px, 0)`;
+      }
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-diagonal-subtle">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div
-          className="absolute inset-0 opacity-20 bg-cover bg-center"
+          ref={parallaxRef}
+          className="parallax-bg absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2000')"
+            backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2000')",
+            top: "-20%",
+            height: "120%",
+            backgroundPosition: "center center",
+            backgroundSize: "cover"
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/85 to-background z-10" />
 
-        <div className="relative z-10 text-center px-6 max-w-5xl animate-fade-in">
+        <div className="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
           <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">BAHRAIN'S FINEST</div>
           <h1 className="text-6xl md:text-7xl lg:text-8xl mb-8 text-foreground leading-tight animation-delay-200">
             Luxury Redefined

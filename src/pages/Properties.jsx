@@ -10,6 +10,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import useAuth from "../hooks/useAuth";
 import { useToast } from "../components/Toast";
+import ScrollReveal from "../components/ScrollReveal";
 
 const getPropertyKey = (property, fallback) => {
   if (property?.id) return String(property.id);
@@ -255,12 +256,12 @@ const Properties = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-diagonal-subtle">
       <div className="pt-24">
         {/* Header */}
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
-            <div className="text-center max-w-3xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto animate-fade-in">
               <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">EXCLUSIVE PORTFOLIO</div>
               <h1 className="text-6xl md:text-7xl mb-6">Our Properties</h1>
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
@@ -382,7 +383,8 @@ const Properties = () => {
                   const isSaved = savedIdentifiers.has(propertyKey);
 
                   return (
-                    <div key={propertyKey} className="group hover-lift">
+                    <ScrollReveal key={propertyKey} animation="fade-in-up" delay={index * 50}>
+                      <div className="group hover-lift">
                       <div className="relative h-[400px] mb-6 overflow-hidden hover-zoom-image">
                         <img
                           src={property.images?.[0] || property.image || 'https://via.placeholder.com/400x300?text=No+Image'}
@@ -450,7 +452,8 @@ const Properties = () => {
 
                         <div className="text-2xl text-accent pt-2">{formatPrice(property.price)}</div>
                       </div>
-                    </div>
+                      </div>
+                    </ScrollReveal>
                   );
                 })}
               </div>

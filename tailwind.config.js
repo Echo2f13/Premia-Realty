@@ -68,6 +68,7 @@ export default {
       backgroundImage: {
         'gradient-gold': 'linear-gradient(135deg, #f5d37f 0%, #d4af37 100%)',
         'gradient-luxury': 'radial-gradient(circle at top, rgba(212, 175, 55, 0.18), transparent 60%)',
+        'gradient-diagonal-subtle': 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.03) 30%, transparent 50%), linear-gradient(to bottom, hsl(0, 0%, 7%), hsl(0, 0%, 7%))',
       },
       backdropBlur: {
         glass: '18px',

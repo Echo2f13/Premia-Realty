@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { addContactForm } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
 import { useToast } from "../components/Toast";
+import ScrollReveal from "../components/ScrollReveal";
 
 const initialFormState = {
   name: "",
@@ -58,11 +59,11 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-diagonal-subtle">
       <div className="pt-24">
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
-            <div className="text-center max-w-3xl mx-auto">
+            <div className="text-center max-w-3xl mx-auto animate-fade-in">
               <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">GET IN TOUCH</div>
               <h1 className="text-6xl md:text-7xl mb-6">Contact Us</h1>
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
@@ -75,41 +76,43 @@ const Contact = () => {
         <section className="py-20">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="grid md:grid-cols-2 gap-16 max-w-6xl mx-auto">
-              <div className="space-y-12">
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <Phone className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
-                    <div>
-                      <div className="text-sm text-accent tracking-wider mb-1">PHONE</div>
-                      <div className="text-lg">+973 1234 5678</div>
+              <ScrollReveal animation="fade-in-up" delay={100}>
+                <div className="space-y-12">
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <Phone className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
+                      <div>
+                        <div className="text-sm text-accent tracking-wider mb-1">PHONE</div>
+                        <div className="text-lg">+973 1234 5678</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <Mail className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
+                      <div>
+                        <div className="text-sm text-accent tracking-wider mb-1">EMAIL</div>
+                        <div className="text-lg">concierge@premiarealty.com</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <MapPin className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
+                      <div>
+                        <div className="text-sm text-accent tracking-wider mb-1">ADDRESS</div>
+                        <div className="text-lg">Manama, Kingdom of Bahrain</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <Mail className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
-                    <div>
-                      <div className="text-sm text-accent tracking-wider mb-1">EMAIL</div>
-                      <div className="text-lg">concierge@premiarealty.com</div>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <MapPin className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
-                    <div>
-                      <div className="text-sm text-accent tracking-wider mb-1">ADDRESS</div>
-                      <div className="text-lg">Manama, Kingdom of Bahrain</div>
+
+                  <div className="pt-6 border-t border-border/50">
+                    <div className="text-sm text-accent tracking-wider mb-3">HOURS</div>
+                    <div className="space-y-2 text-foreground/60">
+                      <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                      <p>Private viewings by appointment</p>
                     </div>
                   </div>
                 </div>
+              </ScrollReveal>
 
-                <div className="pt-6 border-t border-border/50">
-                  <div className="text-sm text-accent tracking-wider mb-3">HOURS</div>
-                  <div className="space-y-2 text-foreground/60">
-                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-                    <p>Private viewings by appointment</p>
-                  </div>
-                </div>
-              </div>
-
-              <div>
+              <ScrollReveal animation="fade-in-up" delay={200}>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label className="text-sm text-accent tracking-wider mb-2 block">FULL NAME</label>
@@ -169,7 +172,7 @@ const Contact = () => {
                     {isSubmitting ? "SENDING..." : "SEND MESSAGE"}
                   </button>
                 </form>
-              </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>

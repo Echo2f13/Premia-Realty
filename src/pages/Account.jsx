@@ -9,6 +9,7 @@ import {
 import useAuth from "../hooks/useAuth";
 import { saveSavedPropertiesToCookies } from "../utils/savedPropertiesCookies";
 import { KeyRound, Loader2 } from "lucide-react";
+import ScrollReveal from "../components/ScrollReveal";
 
 const Account = () => {
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ const Account = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-diagonal-subtle">
       <div className="pt-24">
         {/* Header */}
         <section className="py-20 border-b border-border/50">
@@ -150,8 +151,9 @@ const Account = () => {
         {/* Profile Details */}
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
-            <div className="max-w-2xl">
-              <h2 className="text-3xl mb-4">Personal Details</h2>
+            <ScrollReveal animation="fade-in-up" delay={100}>
+              <div className="max-w-2xl">
+                <h2 className="text-3xl mb-4">Personal Details</h2>
               <p className="text-foreground/60 mb-8 font-light">
                 Update your information so our concierge can tailor recommendations to your preferences.
               </p>
@@ -220,19 +222,22 @@ const Account = () => {
                   Change Password
                 </Link>
               </div>
-            </div>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
 
         {/* Saved Properties */}
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
-            <div className="mb-12">
-              <h2 className="text-3xl mb-4">Saved Properties</h2>
+            <ScrollReveal animation="fade-in-up" delay={100}>
+              <div className="mb-12">
+                <h2 className="text-3xl mb-4">Saved Properties</h2>
               <p className="text-foreground/60 font-light">
                 Your curated shortlist of properties awaiting private preview.
               </p>
-            </div>
+              </div>
+            </ScrollReveal>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {savedResidences.length === 0 ? (
@@ -248,8 +253,9 @@ const Account = () => {
                   </Link>
                 </div>
               ) : (
-                savedResidences.map((residence) => (
-                  <article key={residence.id} className="group border border-border/50 bg-card overflow-hidden">
+                savedResidences.map((residence, index) => (
+                  <ScrollReveal key={residence.id} animation="fade-in-up" delay={index * 50}>
+                    <article className="group border border-border/50 bg-card overflow-hidden">
                     {residence.image ? (
                       <div className="relative h-64 overflow-hidden">
                         <img
@@ -298,7 +304,8 @@ const Account = () => {
                         </button>
                       </div>
                     </div>
-                  </article>
+                    </article>
+                  </ScrollReveal>
                 ))
               )}
             </div>
@@ -309,12 +316,14 @@ const Account = () => {
         <section className="py-20">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="max-w-4xl">
-              <div className="mb-12">
-                <h2 className="text-3xl mb-4">Contact History</h2>
+              <ScrollReveal animation="fade-in-up" delay={100}>
+                <div className="mb-12">
+                  <h2 className="text-3xl mb-4">Contact History</h2>
                 <p className="text-foreground/60 font-light">
                   Keep track of properties you've enquired about and follow up with your concierge.
                 </p>
-              </div>
+                </div>
+              </ScrollReveal>
 
               <div className="space-y-4">
                 {contactHistory.length === 0 ? (

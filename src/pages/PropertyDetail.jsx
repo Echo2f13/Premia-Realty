@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { savePropertyForUser, removeSavedProperty } from "../data/firebaseService";
+import ScrollReveal from "../components/ScrollReveal";
 
 const PropertyDetail = () => {
   const { id } = useParams();
@@ -296,7 +297,8 @@ const PropertyDetail = () => {
           {/* Left Column - Property Details */}
           <div className="space-y-8">
             {/* Pricing & Summary */}
-            <div className="glass-card p-8 border border-gold-primary/20">
+            <ScrollReveal animation="fade-in-up" delay={100}>
+              <div className="glass-card p-8 border border-gold-primary/20">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="text-4xl font-bold text-gold-primary">
@@ -339,10 +341,12 @@ const PropertyDetail = () => {
                   <div className="text-xs text-platinum-pearl/60">Location</div>
                 </div>
               </div>
-            </div>
+              </div>
+            </ScrollReveal>
 
             {/* Title & Description */}
-            <div>
+            <ScrollReveal animation="fade-in-up" delay={200}>
+              <div>
               <h1 className="text-3xl lg:text-4xl font-serif font-bold text-platinum-pearl mb-4">
                 {property.title}
               </h1>
@@ -371,10 +375,12 @@ const PropertyDetail = () => {
                   <span>Available from: <strong className="text-platinum-pearl">{formatDate(property.availableFrom)}</strong></span>
                 </div>
               )}
-            </div>
+              </div>
+            </ScrollReveal>
 
             {/* Property Details Table */}
-            <div className="glass-card p-8 border border-gold-primary/20">
+            <ScrollReveal animation="fade-in-up" delay={300}>
+              <div className="glass-card p-8 border border-gold-primary/20">
               <h2 className="text-2xl font-serif font-bold text-platinum-pearl mb-6">Property Details</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <DetailRow label="Property Type" value={property.propertyType || property.type || 'N/A'} />
@@ -384,11 +390,13 @@ const PropertyDetail = () => {
                 <DetailRow label="Furnished" value={property.furnished ? 'Yes' : 'No'} />
                 <DetailRow label="Reference ID" value={property.referenceCode || property.id} />
               </div>
-            </div>
+              </div>
+            </ScrollReveal>
 
             {/* Amenities */}
             {property.amenities && property.amenities.length > 0 && (
-              <div className="glass-card p-8 border border-gold-primary/20">
+              <ScrollReveal animation="fade-in-up" delay={400}>
+                <div className="glass-card p-8 border border-gold-primary/20">
                 <h2 className="text-2xl font-serif font-bold text-platinum-pearl mb-6">Amenities</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {(showAllAmenities ? property.amenities : property.amenities.slice(0, 12)).map((amenity, idx) => (
@@ -406,14 +414,16 @@ const PropertyDetail = () => {
                     {showAllAmenities ? 'Show less' : `See all amenities (${property.amenities.length})`}
                   </button>
                 )}
-              </div>
+                </div>
+              </ScrollReveal>
             )}
           </div>
 
           {/* Right Column - Agent & Map */}
           <div className="space-y-6 lg:sticky lg:top-24 h-fit">
             {/* Agent Card - Placeholder for now */}
-            <div className="glass-card p-6 border border-gold-primary/20">
+            <ScrollReveal animation="fade-in-up" delay={100}>
+              <div className="glass-card p-6 border border-gold-primary/20">
               <h3 className="text-xl font-serif font-bold text-platinum-pearl mb-4">Contact Agent</h3>
               <div className="space-y-4">
                 <button className="w-full flex items-center justify-center gap-2 bg-gradient-gold rounded-full px-6 py-3 text-luxury-black font-semibold hover:shadow-luxury transition">
@@ -425,11 +435,13 @@ const PropertyDetail = () => {
                   WhatsApp
                 </button>
               </div>
-            </div>
+              </div>
+            </ScrollReveal>
 
             {/* Map Preview - Placeholder */}
             {property.location?.lat && property.location?.lng && (
-              <div className="glass-card p-6 border border-gold-primary/20">
+              <ScrollReveal animation="fade-in-up" delay={200}>
+                <div className="glass-card p-6 border border-gold-primary/20">
                 <h3 className="text-xl font-serif font-bold text-platinum-pearl mb-4">Location</h3>
                 <div className="h-64 bg-luxury-charcoal rounded-xl flex items-center justify-center text-platinum-pearl/60">
                   <MapPin className="w-12 h-12" />
@@ -437,7 +449,8 @@ const PropertyDetail = () => {
                 <p className="mt-4 text-sm text-platinum-pearl/70">
                   {[property.location.area, property.location.city, property.location.governorate].filter(Boolean).join(', ')}
                 </p>
-              </div>
+                </div>
+              </ScrollReveal>
             )}
           </div>
         </div>

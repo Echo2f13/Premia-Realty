@@ -10,6 +10,7 @@ const ScrollReveal = ({
 }) => {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [hasChecked, setHasChecked] = useState(false);
 
   useEffect(() => {
     const element = ref.current;
@@ -17,6 +18,18 @@ const ScrollReveal = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        // Check immediately if element is already in view on mount
+        if (!hasChecked) {
+          setHasChecked(true);
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            if (triggerOnce) {
+              observer.unobserve(element);
+            }
+            return;
+          }
+        }
+
         if (entry.isIntersecting) {
           setIsVisible(true);
           if (triggerOnce) {
@@ -39,7 +52,7 @@ const ScrollReveal = ({
         observer.unobserve(element);
       }
     };
-  }, [threshold, triggerOnce]);
+  }, [threshold, triggerOnce, hasChecked]);
 
   const animationClass = isVisible ? `animate-${animation}` : 'opacity-0';
   const delayClass = delay > 0 ? `animation-delay-${delay}` : '';
