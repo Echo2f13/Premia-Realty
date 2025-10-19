@@ -14,6 +14,7 @@ const AdminPropertyPageAdd = () => {
   const [formData, setFormData] = useState({
     // Basic Info
     title: "",
+    title_ar: "", // Arabic translation
     slug: "",
     intent: "sale", // sale, rent
     type: "", // villa, apartment, townhouse, penthouse, etc.
@@ -27,6 +28,7 @@ const AdminPropertyPageAdd = () => {
     featured: false,
     socialHousing: false,
     description: "",
+    description_ar: "", // Arabic translation
     amenities: [],
     tags: [],
     priority: "",
@@ -322,7 +324,7 @@ const AdminPropertyPageAdd = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-semibold text-platinum-pearl mb-2">
-                    Property Title *
+                    Property Title (English) *
                   </label>
                   <input
                     type="text"
@@ -330,6 +332,22 @@ const AdminPropertyPageAdd = () => {
                     value={formData.title}
                     onChange={handleInputChange}
                     className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Property Title (Arabic) *
+                  </label>
+                  <input
+                    type="text"
+                    name="title_ar"
+                    value={formData.title_ar}
+                    onChange={handleInputChange}
+                    placeholder="العنوان بالعربية"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    dir="rtl"
                     required
                   />
                 </div>
@@ -485,17 +503,34 @@ const AdminPropertyPageAdd = () => {
                 </div>
               </div>
 
-              <div className="mt-4">
-                <label className="block text-sm font-semibold text-platinum-pearl mb-2">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
-                />
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Description (English)
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                    Description (Arabic)
+                  </label>
+                  <textarea
+                    name="description_ar"
+                    value={formData.description_ar}
+                    onChange={handleInputChange}
+                    rows={4}
+                    placeholder="الوصف بالعربية"
+                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    dir="rtl"
+                  />
+                </div>
               </div>
 
               <div className="mt-4 grid gap-4 md:grid-cols-2">

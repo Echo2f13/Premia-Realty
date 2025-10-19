@@ -4,6 +4,7 @@ import useAuth from "../hooks/useAuth";
 import { getActivePropertiesPaginated, softDeleteProperty } from "../data/firebaseService";
 import { ShieldCheck, Plus, Trash2, Edit, X, Archive, Mail } from "lucide-react";
 import Pagination from "../components/Pagination";
+import ScrollReveal from "../components/ScrollReveal";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-platinum-pearl">
+    <div className="min-h-screen bg-gradient-diagonal-subtle text-foreground">
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-luxury-black/80 backdrop-blur-sm">
@@ -217,112 +218,119 @@ const Admin = () => {
       )}
 
       <section className="relative isolate overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-luxury-black/70 to-luxury-black/40" />
-          <div className="absolute right-0 top-1/3 h-96 w-96 translate-x-1/3 rounded-full bg-gold-primary/20 blur-[160px]" />
-        </div>
-
         <div className="relative container px-4 lg:px-8">
-          <div className="flex items-center gap-4 mb-8">
-            <ShieldCheck className="h-12 w-12 text-gold-primary" />
-            <div>
-              <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
-                Admin Dashboard
-              </h1>
-              <p className="text-platinum-pearl/70 mt-2">
-                Manage properties and view analytics
-              </p>
-            </div>
-          </div>
-
-          {/* Contacts Section */}
-          <div className="glass-card p-8 mb-8">
-            <div className="flex items-center justify-between mb-6">
+          <ScrollReveal animation="fade-in-up">
+            <div className="flex items-center gap-4 mb-12">
+              <div className="p-4 bg-accent/10 border border-accent/20">
+                <ShieldCheck className="h-12 w-12 text-accent" strokeWidth={1} />
+              </div>
               <div>
-                <h2 className="text-2xl font-serif font-bold text-platinum-pearl">
-                  Submitted Contacts
-                </h2>
-                <p className="text-platinum-pearl/50 text-sm mt-1">
-                  Manage and view contact form submissions
+                <div className="text-accent text-xs tracking-[0.3em] mb-2">ADMIN PANEL</div>
+                <h1 className="text-5xl lg:text-6xl">
+                  Dashboard
+                </h1>
+                <p className="text-foreground/60 mt-2 font-light">
+                  Manage properties and view analytics
                 </p>
               </div>
-              <button
-                onClick={() => navigate("/admin/contacts")}
-                className="flex items-center gap-2 rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
-              >
-                <Mail className="h-5 w-5" />
-                View Contacts
-              </button>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="glass-card p-8 mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-serif font-bold text-platinum-pearl">
-                Properties
-              </h2>
-              <div className="flex gap-3">
+          {/* Contacts Section */}
+          <ScrollReveal animation="fade-in-up" delay={100}>
+            <div className="bg-card border border-border/50 p-8 mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <div className="text-accent text-xs tracking-[0.3em] mb-2">COMMUNICATIONS</div>
+                  <h2 className="text-3xl">
+                    Submitted Contacts
+                  </h2>
+                  <p className="text-foreground/60 text-sm mt-2 font-light">
+                    Manage and view contact form submissions
+                  </p>
+                </div>
                 <button
-                  onClick={() => navigate("/admin/trash")}
-                  className="flex items-center gap-2 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
+                  onClick={() => navigate("/admin/contacts")}
+                  className="flex items-center gap-2 px-8 py-3 bg-accent text-background text-sm tracking-[0.15em] hover:bg-accent/90 transition-all"
                 >
-                  <Archive className="h-5 w-5" />
-                  Trash
-                </button>
-                <button
-                  onClick={handleAddProperty}
-                  className="flex items-center gap-2 rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
-                >
-                  <Plus className="h-5 w-5" />
-                  Add Property
+                  <Mail className="h-5 w-5" strokeWidth={1.5} />
+                  VIEW CONTACTS
                 </button>
               </div>
             </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-in-up" delay={200}>
+            <div className="bg-card border border-border/50 p-8 mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <div className="text-accent text-xs tracking-[0.3em] mb-2">PORTFOLIO</div>
+                  <h2 className="text-3xl">
+                    Properties
+                  </h2>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => navigate("/admin/trash")}
+                    className="flex items-center gap-2 border border-border/50 px-6 py-3 text-sm tracking-[0.15em] text-foreground/70 hover:border-accent hover:text-accent transition-all"
+                  >
+                    <Archive className="h-5 w-5" strokeWidth={1.5} />
+                    TRASH
+                  </button>
+                  <button
+                    onClick={handleAddProperty}
+                    className="flex items-center gap-2 px-8 py-3 bg-accent text-background text-sm tracking-[0.15em] hover:bg-accent/90 transition-all"
+                  >
+                    <Plus className="h-5 w-5" strokeWidth={1.5} />
+                    ADD PROPERTY
+                  </button>
+                </div>
+              </div>
 
             {isLoadingProperties ? (
-              <div className="text-center text-platinum-pearl/70 py-12">
+              <div className="text-center text-foreground/70 py-12">
                 Loading properties...
               </div>
             ) : properties.length === 0 ? (
-              <div className="text-center text-platinum-pearl/70 py-12">
+              <div className="text-center text-foreground/70 py-12">
                 No properties found. Add your first property to get started.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gold-primary/20">
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                    <tr className="border-b border-border/50">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Image
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Title
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Type
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Location
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Price
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Beds/Baths
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Status
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-accent">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gold-primary/10">
+                  <tbody className="divide-y divide-border/30">
                     {properties.map((property) => (
                       <tr
                         key={property.id}
-                        className="transition-colors hover:bg-gold-primary/5"
+                        className="transition-colors hover:bg-accent/5"
                       >
                         <td className="px-4 py-4">
                           {property.images && property.images.length > 0 ? (
@@ -337,44 +345,44 @@ const Admin = () => {
                             </div>
                           )}
                         </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl">
+                        <td className="px-4 py-4 text-sm text-foreground">
                           <div className="max-w-xs truncate">{property.title}</div>
                           {property.referenceCode && (
-                            <div className="text-xs text-platinum-pearl/50 mt-1">
+                            <div className="text-xs text-foreground/50 mt-1">
                               {property.referenceCode}
                             </div>
                           )}
                         </td>
                         <td className="px-4 py-4 text-sm">
-                          <span className="inline-flex items-center rounded-full bg-gold-primary/10 px-2.5 py-0.5 text-xs font-medium text-gold-primary capitalize">
+                          <span className="inline-flex items-center rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent capitalize">
                             {property.type || 'N/A'}
                           </span>
                           {property.intent && (
-                            <div className="text-xs text-platinum-pearl/50 mt-1 capitalize">
+                            <div className="text-xs text-foreground/50 mt-1 capitalize">
                               {property.intent}
                             </div>
                           )}
                         </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                        <td className="px-4 py-4 text-sm text-foreground/70">
                           {typeof property.location === 'object'
                             ? (
                               <>
                                 <div>{property.location.area || property.location.city || ''}</div>
-                                <div className="text-xs text-platinum-pearl/50">{property.location.governorate || ''}</div>
+                                <div className="text-xs text-foreground/50">{property.location.governorate || ''}</div>
                               </>
                             )
                             : property.location || 'N/A'}
                         </td>
-                        <td className="px-4 py-4 text-sm font-semibold text-gold-primary">
+                        <td className="px-4 py-4 text-sm font-semibold text-accent">
                           <div>{property.currency || 'BHD'} {property.price?.toLocaleString() || 'N/A'}</div>
                           {property.priceCadence && (
-                            <div className="text-xs text-platinum-pearl/50 font-normal">{property.priceCadence}</div>
+                            <div className="text-xs text-foreground/50 font-normal">{property.priceCadence}</div>
                           )}
                         </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                        <td className="px-4 py-4 text-sm text-foreground/70">
                           {property.specs?.bedrooms || property.beds || 0}BD / {property.specs?.bathrooms || property.baths || 0}BA
                           {property.specs?.areaSqm && (
-                            <div className="text-xs text-platinum-pearl/50">{property.specs.areaSqm} sqm</div>
+                            <div className="text-xs text-foreground/50">{property.specs.areaSqm} sqm</div>
                           )}
                         </td>
                         <td className="px-4 py-4 text-sm">
@@ -386,24 +394,24 @@ const Admin = () => {
                             {property.status || 'draft'}
                           </span>
                           {property.featured && (
-                            <div className="text-xs text-gold-primary mt-1">★ Featured</div>
+                            <div className="text-xs text-accent mt-1">★ Featured</div>
                           )}
                         </td>
                         <td className="px-4 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleEditProperty(property.id)}
-                              className="rounded-full p-2 text-gold-primary transition hover:bg-gold-primary/10"
+                              className="p-2 text-accent transition hover:bg-accent/10 border border-transparent hover:border-accent/20"
                               aria-label="Edit property"
                             >
-                              <Edit className="h-4 w-4" />
+                              <Edit className="h-4 w-4" strokeWidth={1.5} />
                             </button>
                             <button
                               onClick={() => handleDeleteClick(property)}
-                              className="rounded-full p-2 text-red-400 transition hover:bg-red-400/10"
+                              className="p-2 text-red-400 transition hover:bg-red-400/10 border border-transparent hover:border-red-400/20"
                               aria-label="Delete property"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4" strokeWidth={1.5} />
                             </button>
                           </div>
                         </td>
@@ -425,32 +433,25 @@ const Admin = () => {
                 )}
               </div>
             )}
-          </div>
+            </div>
+          </ScrollReveal>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Total Properties
-              </h3>
-              <p className="text-4xl font-bold text-platinum-pearl">
-                {properties.length}
-              </p>
+          <ScrollReveal animation="fade-in-up" delay={300}>
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="bg-card border border-border/50 p-8 text-center">
+                <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">TOTAL PROPERTIES</div>
+                <div className="text-4xl text-accent">{properties.length}</div>
+              </div>
+              <div className="bg-card border border-border/50 p-8 text-center">
+                <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">ACTIVE LISTINGS</div>
+                <div className="text-4xl text-accent">{properties.length}</div>
+              </div>
+              <div className="bg-card border border-border/50 p-8 text-center">
+                <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">TOTAL INQUIRIES</div>
+                <div className="text-4xl text-accent">0</div>
+              </div>
             </div>
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Active Listings
-              </h3>
-              <p className="text-4xl font-bold text-platinum-pearl">
-                {properties.length}
-              </p>
-            </div>
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Total Inquiries
-              </h3>
-              <p className="text-4xl font-bold text-platinum-pearl">0</p>
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
     </div>

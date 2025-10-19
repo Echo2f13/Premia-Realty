@@ -23,11 +23,14 @@ import {
 import useAuth from "../hooks/useAuth";
 import { savePropertyForUser, removeSavedProperty } from "../data/firebaseService";
 import ScrollReveal from "../components/ScrollReveal";
+import { useLanguage } from "../contexts/LanguageContext";
+import { getPropertyField, translateAmenity, translatePropertyType, translateLocation } from "../utils/propertyTranslations";
 
 const PropertyDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const { language } = useLanguage();
 
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -97,12 +100,13 @@ const PropertyDetail = () => {
   // Handle share
   const handleShare = async () => {
     const url = window.location.href;
+    const shareTitle = getPropertyField(property, 'title', language);
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: property.title,
-          text: `Check out this property: ${property.title}`,
+          title: shareTitle,
+          text: `Check out this property: ${shareTitle}`,
           url: url,
         });
       } catch (err) {
@@ -186,6 +190,13 @@ const PropertyDetail = () => {
   const areaSqft = property.specs?.areaSqft || property.areaSqft || null;
   const areaSqm = areaSqft ? sqftToSqm(areaSqft) : (property.specs?.areaSqm || null);
 
+  // Get translated property content
+  const title = getPropertyField(property, 'title', language);
+  const description = getPropertyField(property, 'description', language);
+  const propertyType = translatePropertyType(property.propertyType || property.type, language);
+  const translatedAmenities = property.amenities?.map(amenity => translateAmenity(amenity, language)) || [];
+  const translatedLocation = property.location ? translateLocation(property.location, language) : {};
+
   return (
     <div className="bg-gradient-diagonal-subtle text-foreground min-h-screen">
       {/* Header Breadcrumb */}
@@ -196,7 +207,7 @@ const PropertyDetail = () => {
             <span>/</span>
             <Link to="/properties" className="hover:text-accent transition">Properties</Link>
             <span>/</span>
-            <span className="text-foreground">{property.title}</span>
+            <span className="text-foreground">{title}</span>
           </div>
         </div>
       </div>
@@ -209,7 +220,7 @@ const PropertyDetail = () => {
             <div className="relative h-[400px] lg:h-[600px] overflow-hidden">
               <img
                 src={images[currentImageIndex] || 'https://via.placeholder.com/1200x600?text=No+Image'}
-                alt={property.title}
+                alt={title}
                 className="w-full h-full object-cover"
               />
 
@@ -348,17 +359,17 @@ const PropertyDetail = () => {
             <ScrollReveal animation="fade-in-up" delay={200}>
               <div>
               <h1 className="text-4xl lg:text-5xl mb-6">
-                {property.title}
+                {title}
               </h1>
 
               <div className="prose max-w-none">
                 <p className="text-foreground/70 leading-relaxed text-lg font-light">
                   {showFullDescription
-                    ? property.description
-                    : `${property.description?.substring(0, 300)}${property.description?.length > 300 ? '...' : ''}`
+                    ? description
+                    : `${description?.substring(0, 300)}${description?.length > 300 ? '...' : ''}`
                   }
                 </p>
-                {property.description?.length > 300 && (
+                {description?.length > 300 && (
                   <button
                     onClick={() => setShowFullDescription(!showFullDescription)}
                     className="mt-4 text-accent hover:text-accent/80 transition flex items-center gap-2 text-sm tracking-wider"
@@ -383,7 +394,7 @@ const PropertyDetail = () => {
               <div className="bg-card border border-border/50 p-8">
               <h2 className="text-3xl mb-6">Property Details</h2>
               <div className="grid md:grid-cols-2 gap-4">
-                <DetailRow label="Property Type" value={property.propertyType || property.type || 'N/A'} />
+                <DetailRow label="Property Type" value={propertyType || 'N/A'} />
                 <DetailRow label="Size" value={`${areaSqft || 'N/A'} sqft ${areaSqm ? `(${areaSqm}m²)` : ''}`} />
                 <DetailRow label="Bedrooms" value={bedrooms} />
                 <DetailRow label="Bathrooms" value={bathrooms} />
@@ -394,24 +405,24 @@ const PropertyDetail = () => {
             </ScrollReveal>
 
             {/* Amenities */}
-            {property.amenities && property.amenities.length > 0 && (
+            {translatedAmenities && translatedAmenities.length > 0 && (
               <ScrollReveal animation="fade-in-up" delay={400}>
                 <div className="bg-card border border-border/50 p-8">
                 <h2 className="text-3xl mb-6">Amenities</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {(showAllAmenities ? property.amenities : property.amenities.slice(0, 12)).map((amenity, idx) => (
+                  {(showAllAmenities ? translatedAmenities : translatedAmenities.slice(0, 12)).map((amenity, idx) => (
                     <div key={idx} className="flex items-center gap-2 text-foreground/70">
                       <div className="w-2 h-2 bg-accent rounded-full"></div>
                       <span className="font-light">{amenity}</span>
                     </div>
                   ))}
                 </div>
-                {property.amenities.length > 12 && (
+                {translatedAmenities.length > 12 && (
                   <button
                     onClick={() => setShowAllAmenities(!showAllAmenities)}
                     className="mt-6 text-accent hover:text-accent/80 transition text-sm tracking-wider"
                   >
-                    {showAllAmenities ? 'SHOW LESS' : `SEE ALL AMENITIES (${property.amenities.length})`}
+                    {showAllAmenities ? 'SHOW LESS' : `SEE ALL AMENITIES (${translatedAmenities.length})`}
                   </button>
                 )}
                 </div>

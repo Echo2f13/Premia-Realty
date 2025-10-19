@@ -6,6 +6,7 @@ import { ShieldCheck, Trash2, Eye, X, Download, ArrowLeft, Archive } from "lucid
 import Pagination from "../components/Pagination";
 import ContactViewModal from "../components/ContactViewModal";
 import ExportContactsModal from "../components/ExportContactsModal";
+import ScrollReveal from "../components/ScrollReveal";
 
 const AdminContacts = () => {
   const navigate = useNavigate();
@@ -144,26 +145,26 @@ const AdminContacts = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-gold-primary">Loading...</div>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-diagonal-subtle">
+        <div className="text-accent">Loading...</div>
       </div>
     );
   }
 
   if (!isAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="glass-card p-8 text-center max-w-md">
-          <ShieldCheck className="h-16 w-16 text-gold-primary mx-auto mb-4" />
-          <h2 className="text-2xl font-serif font-bold text-platinum-pearl mb-2">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-diagonal-subtle">
+        <div className="bg-card border border-border/50 p-8 text-center max-w-md">
+          <ShieldCheck className="h-16 w-16 text-accent mx-auto mb-4" strokeWidth={1} />
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             Access Denied
           </h2>
-          <p className="text-platinum-pearl/70 mb-6">
+          <p className="text-foreground/60 mb-6">
             You need admin privileges to access this page.
           </p>
           <button
             onClick={() => navigate("/")}
-            className="rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury"
+            className="px-8 py-3 bg-accent text-background text-sm tracking-[0.15em] uppercase hover:bg-accent/90 transition-colors"
           >
             Go Home
           </button>
@@ -173,26 +174,26 @@ const AdminContacts = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-platinum-pearl">
+    <div className="min-h-screen bg-gradient-diagonal-subtle text-foreground">
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-luxury-black/80 backdrop-blur-sm">
-          <div className="glass-card p-8 max-w-md w-full mx-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="bg-card border border-border/50 p-8 max-w-md w-full mx-4">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="text-xl font-serif font-bold text-platinum-pearl">
+              <h3 className="text-xl font-bold text-foreground">
                 Delete Contact
               </h3>
               <button
                 onClick={handleDeleteCancel}
-                className="text-platinum-pearl/50 hover:text-platinum-pearl transition"
+                className="text-foreground/50 hover:text-foreground transition"
                 disabled={isDeleting}
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <p className="text-platinum-pearl/70 mb-6">
+            <p className="text-foreground/60 mb-6">
               Are you sure you want to delete the contact from{" "}
-              <span className="font-semibold text-gold-primary">
+              <span className="font-semibold text-accent">
                 {deleteConfirm.name || deleteConfirm.email}
               </span>
               ? You can restore it from the Trash later.
@@ -200,14 +201,14 @@ const AdminContacts = () => {
             <div className="flex gap-3">
               <button
                 onClick={handleDeleteCancel}
-                className="flex-1 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
+                className="flex-1 px-6 py-3 bg-foreground/10 text-sm uppercase tracking-[0.15em] text-foreground transition hover:bg-foreground/20"
                 disabled={isDeleting}
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteConfirm}
-                className="flex-1 rounded-full bg-red-500 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-white shadow-lg transition hover:bg-red-600"
+                className="flex-1 px-6 py-3 bg-red-500 text-sm uppercase tracking-[0.15em] text-white transition hover:bg-red-600"
                 disabled={isDeleting}
               >
                 {isDeleting ? "Deleting..." : "Delete"}
@@ -233,173 +234,166 @@ const AdminContacts = () => {
       )}
 
       <section className="relative isolate overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-luxury-black/70 to-luxury-black/40" />
-          <div className="absolute right-0 top-1/3 h-96 w-96 translate-x-1/3 rounded-full bg-gold-primary/20 blur-[160px]" />
-        </div>
-
         <div className="relative container px-4 lg:px-8">
-          <div className="flex items-center gap-4 mb-8">
-            <button
-              onClick={() => navigate("/admin")}
-              className="rounded-full p-2 text-platinum-pearl/70 transition hover:bg-platinum-pearl/10 hover:text-platinum-pearl"
-              aria-label="Back to Admin"
-            >
-              <ArrowLeft className="h-6 w-6" />
-            </button>
-            <ShieldCheck className="h-12 w-12 text-gold-primary" />
-            <div>
-              <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
-                Contact Submissions
-              </h1>
-              <p className="text-platinum-pearl/70 mt-2">
-                View and manage contact form submissions
-              </p>
-            </div>
-          </div>
-
-          <div className="glass-card p-8 mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-serif font-bold text-platinum-pearl">
-                Contacts
-              </h2>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => navigate("/admin/contacts/trash")}
-                  className="flex items-center gap-2 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
-                  title="View deleted contacts"
-                >
-                  <Archive className="h-5 w-5" />
-                  Trash
-                </button>
-                <button
-                  onClick={handleExportClick}
-                  className="flex items-center gap-2 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
-                >
-                  <Download className="h-5 w-5" />
-                  Export to Excel/CSV
-                </button>
+          <ScrollReveal animation="fade-in-up">
+            <div className="flex items-center gap-4 mb-12">
+              <button
+                onClick={() => navigate("/admin")}
+                className="p-2 text-foreground/70 transition hover:bg-accent/10 hover:text-foreground"
+                aria-label="Back to Admin"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+              <div className="p-4 bg-accent/10 border border-accent/20">
+                <ShieldCheck className="h-12 w-12 text-accent" strokeWidth={1} />
+              </div>
+              <div>
+                <div className="text-accent text-xs tracking-[0.3em] mb-2">ADMIN PANEL</div>
+                <h1 className="text-5xl lg:text-6xl">Contact Submissions</h1>
+                <p className="text-foreground/60 mt-2">
+                  View and manage contact form submissions
+                </p>
               </div>
             </div>
+          </ScrollReveal>
 
-            {isLoadingContacts ? (
-              <div className="text-center text-platinum-pearl/70 py-12">
-                Loading contacts...
+          <ScrollReveal animation="fade-in-up" delay={200}>
+            <div className="bg-card border border-border/50 p-8 mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <div className="text-accent text-xs tracking-[0.3em] mb-2">INBOX</div>
+                  <h2 className="text-3xl">Contacts</h2>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => navigate("/admin/contacts/trash")}
+                    className="flex items-center gap-2 px-6 py-3 bg-foreground/10 text-sm uppercase tracking-[0.15em] text-foreground transition hover:bg-foreground/20"
+                    title="View deleted contacts"
+                  >
+                    <Archive className="h-5 w-5" />
+                    Trash
+                  </button>
+                  <button
+                    onClick={handleExportClick}
+                    className="flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm uppercase tracking-[0.15em] transition hover:bg-accent/90"
+                  >
+                    <Download className="h-5 w-5" />
+                    Export to Excel/CSV
+                  </button>
+                </div>
               </div>
-            ) : contacts.length === 0 ? (
-              <div className="text-center text-platinum-pearl/70 py-12">
-                No contacts found.
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gold-primary/20">
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Name
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Email
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Phone
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        City
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Submitted
-                      </th>
-                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gold-primary">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gold-primary/10">
-                    {contacts.map((contact) => (
-                      <tr
-                        key={contact.id}
-                        className="transition-colors hover:bg-gold-primary/5"
-                      >
-                        <td className="px-4 py-4 text-sm text-platinum-pearl">
-                          {contact.name || "N/A"}
-                        </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
-                          {contact.email || "N/A"}
-                        </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
-                          {contact.phone || "N/A"}
-                        </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
-                          {contact.city || "N/A"}
-                        </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
-                          {formatDate(contact.createdAt)}
-                        </td>
-                        <td className="px-4 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleViewClick(contact)}
-                              className="rounded-full p-2 text-gold-primary transition hover:bg-gold-primary/10"
-                              aria-label="View contact"
-                              title="View details"
-                            >
-                              <Eye className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteClick(contact)}
-                              className="rounded-full p-2 text-red-400 transition hover:bg-red-400/10"
-                              aria-label="Delete contact"
-                              title="Delete contact"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </td>
+
+              {isLoadingContacts ? (
+                <div className="text-center text-foreground/60 py-12">
+                  Loading contacts...
+                </div>
+              ) : contacts.length === 0 ? (
+                <div className="text-center text-foreground/60 py-12">
+                  No contacts found.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border/50">
+                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
+                          Name
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
+                          Email
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
+                          Phone
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
+                          City
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
+                          Submitted
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-accent">
+                          Actions
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {contacts.map((contact) => (
+                        <tr
+                          key={contact.id}
+                          className="transition-colors hover:bg-accent/5"
+                        >
+                          <td className="px-4 py-4 text-sm text-foreground">
+                            {contact.name || "N/A"}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-foreground/70">
+                            {contact.email || "N/A"}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-foreground/70">
+                            {contact.phone || "N/A"}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-foreground/70">
+                            {contact.city || "N/A"}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-foreground/70">
+                            {formatDate(contact.createdAt)}
+                          </td>
+                          <td className="px-4 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleViewClick(contact)}
+                                className="p-2 text-accent transition hover:bg-accent/10"
+                                aria-label="View contact"
+                                title="View details"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClick(contact)}
+                                className="p-2 text-red-400 transition hover:bg-red-400/10"
+                                aria-label="Delete contact"
+                                title="Delete contact"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
 
-                {/* Pagination */}
-                {contacts.length > 0 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    hasMore={hasMore}
-                    hasPrev={currentPage > 1}
-                    onNext={handleNextPage}
-                    onPrev={handlePrevPage}
-                    isLoading={isLoadingContacts}
-                  />
-                )}
+                  {/* Pagination */}
+                  {contacts.length > 0 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      hasMore={hasMore}
+                      hasPrev={currentPage > 1}
+                      onNext={handleNextPage}
+                      onPrev={handlePrevPage}
+                      isLoading={isLoadingContacts}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-in-up" delay={400}>
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="bg-card border border-border/50 p-8 text-center">
+                <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">TOTAL CONTACTS</div>
+                <div className="text-4xl text-accent">{contacts.length}</div>
               </div>
-            )}
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Total Contacts
-              </h3>
-              <p className="text-4xl font-bold text-platinum-pearl">
-                {contacts.length}
-              </p>
+              <div className="bg-card border border-border/50 p-8 text-center">
+                <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">THIS PAGE</div>
+                <div className="text-4xl text-accent">{contacts.length}</div>
+              </div>
+              <div className="bg-card border border-border/50 p-8 text-center">
+                <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">PAGE</div>
+                <div className="text-4xl text-accent">{currentPage}</div>
+              </div>
             </div>
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                This Page
-              </h3>
-              <p className="text-4xl font-bold text-platinum-pearl">
-                {contacts.length}
-              </p>
-            </div>
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-semibold text-gold-primary mb-2">
-                Page
-              </h3>
-              <p className="text-4xl font-bold text-platinum-pearl">{currentPage}</p>
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
     </div>

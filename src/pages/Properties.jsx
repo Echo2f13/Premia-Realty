@@ -13,6 +13,7 @@ import { useToast } from "../components/Toast";
 import ScrollReveal from "../components/ScrollReveal";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
+import { getPropertyField, translateLocation } from "../utils/propertyTranslations";
 
 const getPropertyKey = (property, fallback) => {
   if (property?.id) return String(property.id);
@@ -32,7 +33,7 @@ const getPropertyKey = (property, fallback) => {
 const Properties = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const toast = useToast();
   const [listings, setListings] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
@@ -419,13 +420,14 @@ const Properties = () => {
                             {(() => {
                               // Handle location object from nested structure
                               if (property.location && typeof property.location === 'object') {
-                                return property.location.area || property.location.governorate || "Bahrain";
+                                const translatedLocation = translateLocation(property.location, language);
+                                return translatedLocation.area || translatedLocation.governorate || (language === 'ar' ? 'البحرين' : 'Bahrain');
                               }
                               // Handle flat structure
-                              return property.area || property.governorate || "Bahrain";
+                              return property.area || property.governorate || (language === 'ar' ? 'البحرين' : 'Bahrain');
                             })()}
                           </div>
-                          <h3 className="text-2xl mb-2">{property.title}</h3>
+                          <h3 className="text-2xl mb-2">{getPropertyField(property, 'title', language)}</h3>
                         </div>
 
                         <div className="flex items-center gap-6 text-sm text-foreground/60">

@@ -5,6 +5,7 @@ import { getDeletedContactsPaginated, restoreContact, hardDeleteContact } from "
 import { ArrowLeft, RotateCcw, Trash2, X, Eye } from "lucide-react";
 import Pagination from "../components/Pagination";
 import ContactViewModal from "../components/ContactViewModal";
+import ScrollReveal from "../components/ScrollReveal";
 
 const AdminContactsTrash = () => {
   const navigate = useNavigate();
@@ -130,8 +131,8 @@ const AdminContactsTrash = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-gold-primary">Loading...</div>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-diagonal-subtle">
+        <div className="text-accent">Loading...</div>
       </div>
     );
   }
@@ -141,28 +142,28 @@ const AdminContactsTrash = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-platinum-pearl">
+    <div className="min-h-screen bg-gradient-diagonal-subtle text-foreground">
       {/* Confirmation Modal */}
       {confirmAction && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-luxury-black/80 backdrop-blur-sm">
-          <div className="glass-card p-8 max-w-md w-full mx-4">
+          <div className="bg-card border border-border/50 p-8 max-w-md w-full mx-4">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="text-xl font-serif font-bold text-platinum-pearl">
+              <h3 className="text-xl font-serif font-bold text-foreground">
                 {confirmAction.type === "restore" ? "Restore Contact" : "Permanently Delete Contact"}
               </h3>
               <button
                 onClick={handleCancelAction}
-                className="text-platinum-pearl/50 hover:text-platinum-pearl transition"
+                className="text-foreground/50 hover:text-foreground transition"
                 disabled={isProcessing}
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <p className="text-platinum-pearl/70 mb-6">
+            <p className="text-foreground/70 mb-6">
               {confirmAction.type === "restore" ? (
                 <>
                   Are you sure you want to restore the contact from{" "}
-                  <span className="font-semibold text-gold-primary">
+                  <span className="font-semibold text-accent">
                     {confirmAction.contact.name || confirmAction.contact.email}
                   </span>
                   ?
@@ -170,7 +171,7 @@ const AdminContactsTrash = () => {
               ) : (
                 <>
                   Are you sure you want to permanently delete the contact from{" "}
-                  <span className="font-semibold text-gold-primary">
+                  <span className="font-semibold text-accent">
                     {confirmAction.contact.name || confirmAction.contact.email}
                   </span>
                   ? This action cannot be undone.
@@ -180,14 +181,14 @@ const AdminContactsTrash = () => {
             <div className="flex gap-3">
               <button
                 onClick={handleCancelAction}
-                className="flex-1 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
+                className="flex-1 px-6 py-3 bg-foreground/10 text-sm uppercase tracking-[0.15em] text-foreground transition hover:bg-foreground/20"
                 disabled={isProcessing}
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmAction}
-                className={`flex-1 rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-white shadow-lg transition ${
+                className={`flex-1 px-6 py-3 text-sm uppercase tracking-[0.15em] text-white transition ${
                   confirmAction.type === "restore"
                     ? "bg-green-500 hover:bg-green-600"
                     : "bg-red-500 hover:bg-red-600"
@@ -214,64 +215,64 @@ const AdminContactsTrash = () => {
       )}
 
       <section className="relative isolate overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-luxury-black/70 to-luxury-black/40" />
-          <div className="absolute right-0 top-1/3 h-96 w-96 translate-x-1/3 rounded-full bg-gold-primary/20 blur-[160px]" />
-        </div>
-
         <div className="relative container px-4 lg:px-8">
-          <div className="flex items-center gap-4 mb-8">
-            <button
-              onClick={() => navigate("/admin/contacts")}
-              className="rounded-full p-2 text-platinum-pearl/70 transition hover:bg-platinum-pearl/10 hover:text-platinum-pearl"
-              aria-label="Back to Contacts"
-            >
-              <ArrowLeft className="h-6 w-6" />
-            </button>
-            <div>
-              <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
-                Deleted Contacts
-              </h1>
-              <p className="text-platinum-pearl/70 mt-2">
-                Restore or permanently delete contact submissions
-              </p>
+          <ScrollReveal animation="fade-in-up">
+            <div className="flex items-center gap-4 mb-12">
+              <button
+                onClick={() => navigate("/admin/contacts")}
+                className="p-2 text-foreground/70 transition hover:bg-accent/10 hover:text-foreground"
+                aria-label="Back to Contacts"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+              <div>
+                <div className="text-accent text-xs tracking-[0.3em] mb-2">ADMIN PANEL</div>
+                <h1 className="text-5xl lg:text-6xl">
+                  Deleted Contacts
+                </h1>
+                <p className="text-foreground/60 mt-2">
+                  Restore or permanently delete contact submissions
+                </p>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="glass-card p-8">
-            <h2 className="text-2xl font-serif font-bold text-platinum-pearl mb-6">
-              Trash
-            </h2>
+          <ScrollReveal animation="fade-in-up" delay={200}>
+            <div className="bg-card border border-border/50 p-8">
+              <div>
+                <div className="text-accent text-xs tracking-[0.3em] mb-2">TRASH</div>
+                <h2 className="text-3xl mb-6">Deleted Contacts</h2>
+              </div>
 
             {isLoadingContacts ? (
-              <div className="text-center text-platinum-pearl/70 py-12">
+              <div className="text-center text-foreground/70 py-12">
                 Loading deleted contacts...
               </div>
             ) : deletedContacts.length === 0 ? (
-              <div className="text-center text-platinum-pearl/70 py-12">
+              <div className="text-center text-foreground/70 py-12">
                 No deleted contacts found.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gold-primary/20">
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                    <tr className="border-b border-border/50">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Name
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Email
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Phone
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Deleted
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                         Deleted By
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gold-primary">
+                      <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-accent">
                         Actions
                       </th>
                     </tr>
@@ -280,28 +281,28 @@ const AdminContactsTrash = () => {
                     {deletedContacts.map((contact) => (
                       <tr
                         key={contact.id}
-                        className="transition-colors hover:bg-gold-primary/5"
+                        className="transition-colors hover:bg-accent/5"
                       >
-                        <td className="px-4 py-4 text-sm text-platinum-pearl">
+                        <td className="px-4 py-4 text-sm text-foreground">
                           {contact.name || "N/A"}
                         </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                        <td className="px-4 py-4 text-sm text-foreground/70">
                           {contact.email || "N/A"}
                         </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                        <td className="px-4 py-4 text-sm text-foreground/70">
                           {contact.phone || "N/A"}
                         </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                        <td className="px-4 py-4 text-sm text-foreground/70">
                           {formatDate(contact.deletedAt)}
                         </td>
-                        <td className="px-4 py-4 text-sm text-platinum-pearl/70">
+                        <td className="px-4 py-4 text-sm text-foreground/70">
                           {contact.deletedBy?.displayName || "Unknown"}
                         </td>
                         <td className="px-4 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => handleViewClick(contact)}
-                              className="rounded-full p-2 text-gold-primary transition hover:bg-gold-primary/10"
+                              className="rounded-full p-2 text-accent transition hover:bg-gold-primary/10"
                               aria-label="View contact"
                               title="View details"
                             >
@@ -343,7 +344,8 @@ const AdminContactsTrash = () => {
                 )}
               </div>
             )}
-          </div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     </div>

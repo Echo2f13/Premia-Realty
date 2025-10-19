@@ -21,20 +21,21 @@ const ContactViewModal = ({ contact, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="relative w-full max-w-2xl rounded-2xl bg-gradient-to-br from-background to-background-dark p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+      <div className="relative w-full max-w-2xl bg-card border border-border/50 p-8">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-2 text-platinum-pearl/70 transition hover:bg-platinum-pearl/10 hover:text-platinum-pearl"
+          className="absolute right-4 top-4 p-2 text-foreground/70 transition hover:bg-accent/10 hover:text-foreground"
           aria-label="Close modal"
         >
           <X className="h-5 w-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="mb-6 border-b border-gold-primary/20 pb-4">
-          <h2 className="text-2xl font-bold text-platinum-pearl">Contact Details</h2>
+        <div className="mb-6 border-b border-border/50 pb-4">
+          <div className="text-accent text-xs tracking-[0.3em] mb-2">CONTACT DETAILS</div>
+          <h2 className="text-3xl text-foreground">View Contact</h2>
         </div>
 
         {/* Contact Information */}
@@ -42,52 +43,52 @@ const ContactViewModal = ({ contact, onClose }) => {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Name */}
             <div>
-              <label className="text-sm font-semibold text-gold-primary">Name</label>
-              <p className="mt-1 text-platinum-pearl">{contact.name || "N/A"}</p>
+              <label className="text-sm font-semibold text-accent">Name</label>
+              <p className="mt-1 text-foreground">{contact.name || "N/A"}</p>
             </div>
 
             {/* Email */}
             <div>
-              <label className="text-sm font-semibold text-gold-primary">Email</label>
-              <p className="mt-1 text-platinum-pearl">{contact.email || "N/A"}</p>
+              <label className="text-sm font-semibold text-accent">Email</label>
+              <p className="mt-1 text-foreground">{contact.email || "N/A"}</p>
             </div>
 
             {/* Phone */}
             <div>
-              <label className="text-sm font-semibold text-gold-primary">Phone</label>
-              <p className="mt-1 text-platinum-pearl">{contact.phone || "N/A"}</p>
+              <label className="text-sm font-semibold text-accent">Phone</label>
+              <p className="mt-1 text-foreground">{contact.phone || "N/A"}</p>
             </div>
 
             {/* City */}
             <div>
-              <label className="text-sm font-semibold text-gold-primary">City</label>
-              <p className="mt-1 text-platinum-pearl">{contact.city || "N/A"}</p>
+              <label className="text-sm font-semibold text-accent">City</label>
+              <p className="mt-1 text-foreground">{contact.city || "N/A"}</p>
             </div>
 
             {/* Twilight Preview */}
             <div>
-              <label className="text-sm font-semibold text-gold-primary">Twilight Preview</label>
-              <p className="mt-1 text-platinum-pearl">{formatBoolean(contact.twilightPreview)}</p>
+              <label className="text-sm font-semibold text-accent">Twilight Preview</label>
+              <p className="mt-1 text-foreground">{formatBoolean(contact.twilightPreview)}</p>
             </div>
 
             {/* Virtual Walkthrough */}
             <div>
-              <label className="text-sm font-semibold text-gold-primary">Virtual Walkthrough</label>
-              <p className="mt-1 text-platinum-pearl">{formatBoolean(contact.virtualWalkthrough)}</p>
+              <label className="text-sm font-semibold text-accent">Virtual Walkthrough</label>
+              <p className="mt-1 text-foreground">{formatBoolean(contact.virtualWalkthrough)}</p>
             </div>
 
             {/* Created At */}
             <div className="md:col-span-2">
-              <label className="text-sm font-semibold text-gold-primary">Submitted At</label>
-              <p className="mt-1 text-platinum-pearl/70 text-sm">{formatDate(contact.createdAt)}</p>
+              <label className="text-sm font-semibold text-accent">Submitted At</label>
+              <p className="mt-1 text-foreground/70 text-sm">{formatDate(contact.createdAt)}</p>
             </div>
           </div>
 
           {/* Message */}
           <div>
-            <label className="text-sm font-semibold text-gold-primary">Message</label>
-            <div className="mt-2 max-h-40 overflow-y-auto rounded-lg bg-platinum-pearl/5 p-4">
-              <p className="whitespace-pre-wrap text-platinum-pearl">
+            <label className="text-sm font-semibold text-accent">Message</label>
+            <div className="mt-2 max-h-40 overflow-y-auto bg-background/50 border border-border/50 p-4">
+              <p className="whitespace-pre-wrap text-foreground">
                 {contact.message || "No message provided"}
               </p>
             </div>
@@ -98,7 +99,7 @@ const ContactViewModal = ({ contact, onClose }) => {
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="rounded-full bg-gold-primary px-6 py-2 font-semibold text-background transition hover:bg-gold-primary/90"
+            className="px-8 py-3 bg-accent text-background text-sm uppercase tracking-[0.15em] transition hover:bg-accent/90"
           >
             Close
           </button>

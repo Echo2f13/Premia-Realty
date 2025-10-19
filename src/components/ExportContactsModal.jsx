@@ -97,12 +97,12 @@ const ExportContactsModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-      <div className="relative w-full max-w-lg rounded-2xl bg-gradient-to-br from-background to-background-dark p-8 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+      <div className="relative w-full max-w-lg bg-card border border-border/50 p-8">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-2 text-platinum-pearl/70 transition hover:bg-platinum-pearl/10 hover:text-platinum-pearl"
+          className="absolute right-4 top-4 p-2 text-foreground/70 transition hover:bg-accent/10 hover:text-foreground"
           aria-label="Close modal"
           disabled={isExporting}
         >
@@ -110,9 +110,10 @@ const ExportContactsModal = ({ onClose }) => {
         </button>
 
         {/* Modal Header */}
-        <div className="mb-6 border-b border-gold-primary/20 pb-4">
-          <h2 className="text-2xl font-bold text-platinum-pearl">Export Contacts</h2>
-          <p className="mt-2 text-sm text-platinum-pearl/70">
+        <div className="mb-6 border-b border-border/50 pb-4">
+          <div className="text-accent text-xs tracking-[0.3em] mb-2">EXPORT</div>
+          <h2 className="text-3xl text-foreground">Export Contacts</h2>
+          <p className="mt-2 text-sm text-foreground/60">
             Download all contact submissions to Excel or CSV
           </p>
         </div>
@@ -121,7 +122,7 @@ const ExportContactsModal = ({ onClose }) => {
         <div className="mb-6 space-y-4">
           {/* File Format */}
           <div>
-            <label className="mb-2 block text-sm font-semibold text-gold-primary">
+            <label className="mb-2 block text-sm font-semibold text-accent">
               File Format
             </label>
             <div className="flex gap-4">
@@ -132,10 +133,10 @@ const ExportContactsModal = ({ onClose }) => {
                   value="xlsx"
                   checked={format === "xlsx"}
                   onChange={(e) => setFormat(e.target.value)}
-                  className="h-4 w-4 text-gold-primary"
+                  className="h-4 w-4 text-accent"
                   disabled={isExporting}
                 />
-                <span className="text-platinum-pearl">Excel (.xlsx)</span>
+                <span className="text-foreground">Excel (.xlsx)</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -144,10 +145,10 @@ const ExportContactsModal = ({ onClose }) => {
                   value="csv"
                   checked={format === "csv"}
                   onChange={(e) => setFormat(e.target.value)}
-                  className="h-4 w-4 text-gold-primary"
+                  className="h-4 w-4 text-accent"
                   disabled={isExporting}
                 />
-                <span className="text-platinum-pearl">CSV (.csv)</span>
+                <span className="text-foreground">CSV (.csv)</span>
               </label>
             </div>
           </div>
@@ -159,10 +160,10 @@ const ExportContactsModal = ({ onClose }) => {
                 type="checkbox"
                 checked={includeDeleted}
                 onChange={(e) => setIncludeDeleted(e.target.checked)}
-                className="h-4 w-4 rounded text-gold-primary"
+                className="h-4 w-4 rounded text-accent"
                 disabled={isExporting}
               />
-              <span className="text-sm text-platinum-pearl">
+              <span className="text-sm text-foreground">
                 Include deleted contacts
               </span>
             </label>
@@ -170,12 +171,12 @@ const ExportContactsModal = ({ onClose }) => {
         </div>
 
         {/* Export Info */}
-        <div className="mb-6 rounded-lg bg-platinum-pearl/5 p-4">
-          <h3 className="mb-2 text-sm font-semibold text-gold-primary">Export Details</h3>
-          <p className="text-sm text-platinum-pearl/70">
+        <div className="mb-6 bg-background/50 border border-border/50 p-4">
+          <h3 className="mb-2 text-sm font-semibold text-accent">Export Details</h3>
+          <p className="text-sm text-foreground/60">
             The exported file will contain the following columns:
           </p>
-          <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-platinum-pearl/70">
+          <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-foreground/60">
             <li>Name, Email, Phone, City</li>
             <li>Message</li>
             <li>Twilight Preview, Virtual Walkthrough</li>
@@ -201,14 +202,14 @@ const ExportContactsModal = ({ onClose }) => {
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="rounded-full bg-platinum-pearl/10 px-6 py-2 font-semibold text-platinum-pearl transition hover:bg-platinum-pearl/20"
+            className="px-6 py-3 bg-foreground/10 text-sm uppercase tracking-[0.15em] text-foreground transition hover:bg-foreground/20"
             disabled={isExporting}
           >
             Cancel
           </button>
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 rounded-full bg-gold-primary px-6 py-2 font-semibold text-background transition hover:bg-gold-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-3 bg-accent text-background text-sm uppercase tracking-[0.15em] transition hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isExporting}
           >
             {isExporting ? (
