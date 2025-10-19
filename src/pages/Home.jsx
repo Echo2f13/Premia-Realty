@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Building2, Award, Users } from "lucide-react";
 import PropertiesMap from "../components/PropertiesMap";
 import ScrollReveal from "../components/ScrollReveal";
-import ParticleConstellation from "../components/ParticleConstellation";
+import GradientOrb from "../components/GradientOrb";
 import { useRef, useEffect } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
@@ -38,21 +38,19 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-diagonal-subtle">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
-        {/* Particle Constellation Background */}
+        {/* Gradient Orb Background */}
         <div className="absolute inset-0 z-0">
-          <ParticleConstellation
-            particleCount={100}
-            particleColor="#D4AF37"
-            lineColor="#D4AF37"
-            particleSize={2}
-            maxDistance={150}
-            mouseRadius={200}
-            speed={0.3}
+          <GradientOrb
+            size={700}
+            colors={['#000000', '#1a1a1a', '#D4AF37', '#F4E5C2']}
+            rotationSpeed={0.0008}
+            mouseInfluence={0.15}
+            blur={120}
           />
         </div>
 
         {/* Subtle gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/40 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/50 z-10" />
 
         <div className="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
           <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">{t(translations.home.hero.subtitle)}</div>
