@@ -4,6 +4,7 @@ import { createProperty } from "../data/firebaseService";
 import { ArrowLeft } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import ImageUploadWithImgcoo from "../components/ImageUploadWithImgcoo";
+import ScrollReveal from "../components/ScrollReveal";
 
 const AdminPropertyPageAdd = () => {
   const navigate = useNavigate();
@@ -268,43 +269,41 @@ const AdminPropertyPageAdd = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-platinum-pearl">
+    <div className="min-h-screen bg-gradient-diagonal-subtle text-foreground">
       <section className="relative isolate overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-luxury-black/70 to-luxury-black/40" />
-          <div className="absolute right-0 top-1/3 h-96 w-96 translate-x-1/3 rounded-full bg-gold-primary/20 blur-[160px]" />
-        </div>
-
         <div className="relative container px-4 lg:px-8 max-w-4xl">
-          {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
-            <button
-              onClick={() => navigate("/admin")}
-              className="rounded-full p-2 text-gold-primary transition hover:bg-gold-primary/10"
-            >
-              <ArrowLeft className="h-6 w-6" />
-            </button>
-            <div>
-              <h1 className="text-4xl font-heading font-bold text-platinum-pearl">
-                Add New Property
-              </h1>
-              <p className="text-platinum-pearl/70 mt-2">
-                Fill in the details below to create a new property listing
-              </p>
+          <ScrollReveal animation="fade-in-up">
+            <div className="flex items-center gap-4 mb-12">
+              <button
+                onClick={() => navigate("/admin")}
+                className="p-2 text-foreground/70 transition hover:bg-accent/10 hover:text-foreground"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+              <div>
+                <div className="text-accent text-xs tracking-[0.3em] mb-2">ADMIN PANEL</div>
+                <h1 className="text-5xl lg:text-6xl">
+                  Add New Property
+                </h1>
+                <p className="text-foreground/60 mt-2">
+                  Fill in the details below to create a new property listing
+                </p>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="glass-card p-8">
+          <ScrollReveal animation="fade-in-up" delay={200}>
+            <form onSubmit={handleSubmit} className="bg-card border border-border/50 p-8">
             {/* Basic Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Basic Information
               </h2>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Property Title (English) *
                   </label>
                   <input
@@ -312,13 +311,13 @@ const AdminPropertyPageAdd = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Property Title (Arabic) *
                   </label>
                   <input
@@ -327,14 +326,14 @@ const AdminPropertyPageAdd = () => {
                     value={formData.title_ar}
                     onChange={handleInputChange}
                     placeholder="العنوان بالعربية"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                     dir="rtl"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Slug (URL-friendly)
                   </label>
                   <input
@@ -343,19 +342,19 @@ const AdminPropertyPageAdd = () => {
                     value={formData.slug}
                     onChange={handleInputChange}
                     placeholder="Auto-generated if empty"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Intent *
                   </label>
                   <select
                     name="intent"
                     value={formData.intent}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                     required
                   >
                     <option value="sale">Sale</option>
@@ -364,7 +363,7 @@ const AdminPropertyPageAdd = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Property Type *
                   </label>
                   <input
@@ -373,13 +372,13 @@ const AdminPropertyPageAdd = () => {
                     value={formData.type}
                     onChange={handleInputChange}
                     placeholder="e.g., Villa, Apartment, Townhouse"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Price *
                   </label>
                   <input
@@ -388,20 +387,20 @@ const AdminPropertyPageAdd = () => {
                     value={formData.price}
                     onChange={handleInputChange}
                     placeholder="e.g., 295000 or 1200"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Currency
                   </label>
                   <select
                     name="currency"
                     value={formData.currency}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   >
                     <option value="BHD">BHD</option>
                     <option value="USD">USD</option>
@@ -411,14 +410,14 @@ const AdminPropertyPageAdd = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Price Cadence (for rent)
                   </label>
                   <select
                     name="priceCadence"
                     value={formData.priceCadence}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   >
                     <option value="/month">/month</option>
                     <option value="/year">/year</option>
@@ -427,7 +426,7 @@ const AdminPropertyPageAdd = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Priority (lower = higher priority)
                   </label>
                   <input
@@ -436,12 +435,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.priority}
                     onChange={handleInputChange}
                     placeholder="e.g., 1, 2, 3"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Reference Code
                   </label>
                   <input
@@ -450,12 +449,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.referenceCode}
                     onChange={handleInputChange}
                     placeholder="e.g., PR-SEF-001"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Available From
                   </label>
                   <input
@@ -463,19 +462,19 @@ const AdminPropertyPageAdd = () => {
                     name="availableFrom"
                     value={formData.availableFrom}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Status *
                   </label>
                   <select
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                     required
                   >
                     <option value="draft">Draft</option>
@@ -486,7 +485,7 @@ const AdminPropertyPageAdd = () => {
 
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Description (English)
                   </label>
                   <textarea
@@ -494,12 +493,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.description}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Description (Arabic)
                   </label>
                   <textarea
@@ -508,7 +507,7 @@ const AdminPropertyPageAdd = () => {
                     onChange={handleInputChange}
                     rows={4}
                     placeholder="الوصف بالعربية"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                     dir="rtl"
                   />
                 </div>
@@ -522,9 +521,9 @@ const AdminPropertyPageAdd = () => {
                       name="ewaIncluded"
                       checked={formData.ewaIncluded}
                       onChange={handleInputChange}
-                      className="rounded border-gold-primary/20 bg-luxury-black/50 text-gold-primary focus:ring-gold-primary"
+                      className="rounded border-border/50 bg-background/50 text-accent focus:ring-gold-primary"
                     />
-                    <span className="text-sm text-platinum-pearl">EWA Included</span>
+                    <span className="text-sm text-foreground">EWA Included</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -533,9 +532,9 @@ const AdminPropertyPageAdd = () => {
                       name="priceInclusive"
                       checked={formData.priceInclusive}
                       onChange={handleInputChange}
-                      className="rounded border-gold-primary/20 bg-luxury-black/50 text-gold-primary focus:ring-gold-primary"
+                      className="rounded border-border/50 bg-background/50 text-accent focus:ring-gold-primary"
                     />
-                    <span className="text-sm text-platinum-pearl">Price Inclusive</span>
+                    <span className="text-sm text-foreground">Price Inclusive</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -544,9 +543,9 @@ const AdminPropertyPageAdd = () => {
                       name="featured"
                       checked={formData.featured}
                       onChange={handleInputChange}
-                      className="rounded border-gold-primary/20 bg-luxury-black/50 text-gold-primary focus:ring-gold-primary"
+                      className="rounded border-border/50 bg-background/50 text-accent focus:ring-gold-primary"
                     />
-                    <span className="text-sm text-platinum-pearl">Featured Property</span>
+                    <span className="text-sm text-foreground">Featured Property</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -555,14 +554,14 @@ const AdminPropertyPageAdd = () => {
                       name="socialHousing"
                       checked={formData.socialHousing}
                       onChange={handleInputChange}
-                      className="rounded border-gold-primary/20 bg-luxury-black/50 text-gold-primary focus:ring-gold-primary"
+                      className="rounded border-border/50 bg-background/50 text-accent focus:ring-gold-primary"
                     />
-                    <span className="text-sm text-platinum-pearl">Social Housing</span>
+                    <span className="text-sm text-foreground">Social Housing</span>
                   </label>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     EWA Limit (if EWA included)
                   </label>
                   <input
@@ -572,7 +571,7 @@ const AdminPropertyPageAdd = () => {
                     onChange={handleInputChange}
                     placeholder="e.g., 50"
                     disabled={!formData.ewaIncluded}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none disabled:opacity-50"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none disabled:opacity-50"
                   />
                 </div>
               </div>
@@ -580,13 +579,13 @@ const AdminPropertyPageAdd = () => {
 
             {/* Location */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Location
               </h2>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Governorate
                   </label>
                   <input
@@ -595,12 +594,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.location.governorate}
                     onChange={handleInputChange}
                     placeholder="e.g., Capital, Muharraq, Southern"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     City
                   </label>
                   <input
@@ -609,12 +608,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.location.city}
                     onChange={handleInputChange}
                     placeholder="e.g., Manama, Riffa, Muharraq"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Area
                   </label>
                   <input
@@ -623,12 +622,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.location.area}
                     onChange={handleInputChange}
                     placeholder="e.g., Seef, Amwaj Islands, Juffair"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Latitude
                   </label>
                   <input
@@ -637,12 +636,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.location.lat}
                     onChange={handleInputChange}
                     placeholder="e.g., 26.2361"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Longitude
                   </label>
                   <input
@@ -651,7 +650,7 @@ const AdminPropertyPageAdd = () => {
                     value={formData.location.lng}
                     onChange={handleInputChange}
                     placeholder="e.g., 50.5831"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
               </div>
@@ -659,13 +658,13 @@ const AdminPropertyPageAdd = () => {
 
             {/* Specifications */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Specifications
               </h2>
 
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Bedrooms
                   </label>
                   <input
@@ -673,12 +672,12 @@ const AdminPropertyPageAdd = () => {
                     name="specs.bedrooms"
                     value={formData.specs.bedrooms}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Bathrooms
                   </label>
                   <input
@@ -686,12 +685,12 @@ const AdminPropertyPageAdd = () => {
                     name="specs.bathrooms"
                     value={formData.specs.bathrooms}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Area (sqm)
                   </label>
                   <input
@@ -699,12 +698,12 @@ const AdminPropertyPageAdd = () => {
                     name="specs.areaSqm"
                     value={formData.specs.areaSqm}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Area (sqft)
                   </label>
                   <input
@@ -712,19 +711,19 @@ const AdminPropertyPageAdd = () => {
                     name="specs.areaSqft"
                     value={formData.specs.areaSqft}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Furnishing
                   </label>
                   <select
                     name="specs.furnishing"
                     value={formData.specs.furnishing}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   >
                     <option value="">Select...</option>
                     <option value="furnished">Furnished</option>
@@ -734,14 +733,14 @@ const AdminPropertyPageAdd = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Air Conditioning
                   </label>
                   <select
                     name="specs.ac"
                     value={formData.specs.ac}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   >
                     <option value="">Select...</option>
                     <option value="centralized">Centralized</option>
@@ -752,7 +751,7 @@ const AdminPropertyPageAdd = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Floor
                   </label>
                   <input
@@ -761,12 +760,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.specs.floor}
                     onChange={handleInputChange}
                     placeholder="e.g., 3rd, Ground"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Parking
                   </label>
                   <input
@@ -775,12 +774,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.specs.parking}
                     onChange={handleInputChange}
                     placeholder="e.g., 2 spaces, Underground"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     View
                   </label>
                   <input
@@ -789,12 +788,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.specs.view}
                     onChange={handleInputChange}
                     placeholder="e.g., sea, city, garden"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Year Built
                   </label>
                   <input
@@ -803,19 +802,19 @@ const AdminPropertyPageAdd = () => {
                     value={formData.specs.yearBuilt}
                     onChange={handleInputChange}
                     placeholder="e.g., 2020"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Classification
                   </label>
                   <select
                     name="specs.classification"
                     value={formData.specs.classification}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   >
                     <option value="">Select...</option>
                     <option value="RA">RA - Residential A</option>
@@ -831,7 +830,7 @@ const AdminPropertyPageAdd = () => {
               </div>
 
               <div className="mt-4">
-                <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                <label className="block text-sm font-semibold text-foreground mb-2">
                   View Detail
                 </label>
                 <input
@@ -840,14 +839,14 @@ const AdminPropertyPageAdd = () => {
                   value={formData.specs.viewDetail}
                   onChange={handleInputChange}
                   placeholder="e.g., Full sea view facing north, Panoramic city skyline"
-                  className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                 />
               </div>
             </div>
 
             {/* Amenities */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Amenities
               </h2>
 
@@ -858,12 +857,12 @@ const AdminPropertyPageAdd = () => {
                   onChange={(e) => setAmenitiesInput(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddAmenity())}
                   placeholder="Add amenity (e.g., Swimming Pool, Gym)"
-                  className="flex-1 rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  className="flex-1 rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleAddAmenity}
-                  className="rounded-lg bg-gold-primary/20 px-6 py-3 text-sm font-semibold text-gold-primary hover:bg-gold-primary/30 transition"
+                  className="rounded-lg bg-gold-primary/20 px-6 py-3 text-sm font-semibold text-accent hover:bg-gold-primary/30 transition"
                 >
                   Add
                 </button>
@@ -873,13 +872,13 @@ const AdminPropertyPageAdd = () => {
                 {formData.amenities.map((amenity, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 rounded-full bg-gold-primary/10 px-4 py-2 text-sm text-platinum-pearl"
+                    className="flex items-center gap-2 rounded-full bg-gold-primary/10 px-4 py-2 text-sm text-foreground"
                   >
                     <span>{amenity}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveAmenity(amenity)}
-                      className="text-platinum-pearl/50 hover:text-platinum-pearl"
+                      className="text-foreground/50 hover:text-foreground"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -890,7 +889,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Tags */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Tags
               </h2>
 
@@ -901,12 +900,12 @@ const AdminPropertyPageAdd = () => {
                   onChange={(e) => setTagsInput(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
                   placeholder="Add tag (e.g., sea-view, luxury, family-friendly)"
-                  className="flex-1 rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                  className="flex-1 rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleAddTag}
-                  className="rounded-lg bg-gold-primary/20 px-6 py-3 text-sm font-semibold text-gold-primary hover:bg-gold-primary/30 transition"
+                  className="rounded-lg bg-gold-primary/20 px-6 py-3 text-sm font-semibold text-accent hover:bg-gold-primary/30 transition"
                 >
                   Add
                 </button>
@@ -933,13 +932,13 @@ const AdminPropertyPageAdd = () => {
 
             {/* Lease Terms */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Lease Terms (for rentals)
               </h2>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Minimum Months
                   </label>
                   <input
@@ -948,12 +947,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.leaseTerms.minMonths}
                     onChange={handleInputChange}
                     placeholder="e.g., 12"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Deposit (months)
                   </label>
                   <input
@@ -962,19 +961,19 @@ const AdminPropertyPageAdd = () => {
                     value={formData.leaseTerms.depositMonths}
                     onChange={handleInputChange}
                     placeholder="e.g., 1 or 2"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Commission
                   </label>
                   <select
                     name="leaseTerms.commission"
                     value={formData.leaseTerms.commission}
                     onChange={handleInputChange}
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   >
                     <option value="">Select...</option>
                     <option value="none">None</option>
@@ -985,7 +984,7 @@ const AdminPropertyPageAdd = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Commission Note
                   </label>
                   <input
@@ -994,7 +993,7 @@ const AdminPropertyPageAdd = () => {
                     value={formData.leaseTerms.commissionNote}
                     onChange={handleInputChange}
                     placeholder="e.g., Half month rent"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
               </div>
@@ -1002,13 +1001,13 @@ const AdminPropertyPageAdd = () => {
 
             {/* Agent & Source Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Agent & Source Information
               </h2>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Agent ID
                   </label>
                   <input
@@ -1017,12 +1016,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.agentId}
                     onChange={handleInputChange}
                     placeholder="Internal agent ID"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Agent Phone
                   </label>
                   <input
@@ -1031,12 +1030,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.agentContact.phone}
                     onChange={handleInputChange}
                     placeholder="e.g., +973 3333 1111"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Agent WhatsApp
                   </label>
                   <input
@@ -1045,12 +1044,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.agentContact.whatsapp}
                     onChange={handleInputChange}
                     placeholder="e.g., +973 3333 1111"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Source Name
                   </label>
                   <input
@@ -1059,12 +1058,12 @@ const AdminPropertyPageAdd = () => {
                     value={formData.source.name}
                     onChange={handleInputChange}
                     placeholder="e.g., Direct Owner, Property Portal"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-platinum-pearl mb-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Source URL
                   </label>
                   <input
@@ -1073,7 +1072,7 @@ const AdminPropertyPageAdd = () => {
                     value={formData.source.url}
                     onChange={handleInputChange}
                     placeholder="e.g., https://example.com/property"
-                    className="w-full rounded-lg bg-luxury-black/50 border border-gold-primary/20 px-4 py-3 text-platinum-pearl focus:border-gold-primary focus:outline-none"
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                   />
                 </div>
               </div>
@@ -1081,7 +1080,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Images */}
             <div className="mb-8">
-              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-accent mb-4">
                 Images *
               </h2>
 
@@ -1096,20 +1095,21 @@ const AdminPropertyPageAdd = () => {
               <button
                 type="button"
                 onClick={() => navigate("/admin")}
-                className="flex-1 rounded-full bg-platinum-pearl/10 px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-platinum-pearl transition hover:bg-platinum-pearl/20"
+                className="flex-1 px-8 py-3 bg-foreground/10 text-sm uppercase tracking-[0.15em] text-foreground transition hover:bg-foreground/20"
                 disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold uppercase tracking-[0.4em] text-luxury-black shadow-gold transition hover:shadow-luxury disabled:opacity-50"
+                className="flex-1 px-8 py-3 bg-accent text-background text-sm uppercase tracking-[0.15em] transition hover:bg-accent/90 disabled:opacity-50"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Creating..." : "Create Property"}
               </button>
             </div>
           </form>
+          </ScrollReveal>
         </div>
       </section>
     </div>
