@@ -23,7 +23,7 @@ const ConfirmModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-luxury-black/80 backdrop-blur-sm">
       <div className="glass-card p-8 max-w-md w-full mx-4">
         <div className="flex items-start justify-between mb-4">
-          <h3 className="text-xl font-serif font-bold text-platinum-pearl">
+          <h3 className="text-xl font-heading font-bold text-platinum-pearl">
             {title}
           </h3>
           <button

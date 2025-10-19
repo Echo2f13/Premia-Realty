@@ -64,8 +64,8 @@ const Navbar = () => {
               <Building2 className="w-7 h-7 text-accent" strokeWidth={1} />
             </div>
             <div className="hidden sm:block">
-              <div className="text-xl tracking-[0.2em] text-foreground">PREMIA</div>
-              <div className="text-[10px] tracking-[0.3em] text-accent -mt-1">REALTY</div>
+              <div className="text-xl tracking-[0.2em] text-foreground font-monument">PREMIA</div>
+              <div className="text-[10px] tracking-[0.3em] text-accent -mt-1 font-monument">REALTY</div>
             </div>
           </Link>
 

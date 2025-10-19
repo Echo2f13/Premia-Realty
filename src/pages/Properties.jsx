@@ -266,8 +266,13 @@ const Properties = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
+<<<<<<< HEAD
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4 font-monument">EXCLUSIVE PORTFOLIO</div>
+              <h1 className="text-6xl md:text-7xl mb-6">Our Properties</h1>
+=======
               <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">{t(translations.properties.subtitle)}</div>
               <h1 className="text-6xl md:text-7xl mb-6">{t(translations.properties.title)}</h1>
+>>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
                 {t(translations.properties.description)}
               </p>

@@ -51,7 +51,11 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/85 to-background z-10" />
 
         <div className="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
+<<<<<<< HEAD
+          <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100 font-monument">BAHRAIN'S FINEST</div>
+=======
           <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">{t(translations.home.hero.subtitle)}</div>
+>>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
           <h1 className="text-6xl md:text-7xl lg:text-8xl mb-8 text-foreground leading-tight animation-delay-200">
             {t(translations.home.hero.title)}
           </h1>
@@ -86,21 +90,21 @@ const Home = () => {
               <div className="text-center">
                 <Building2 className="w-10 h-10 text-accent mx-auto mb-6" strokeWidth={1} aria-hidden="true" />
                 <div className="text-5xl mb-3 text-accent">50+</div>
-                <div className="text-sm tracking-[0.2em] text-foreground/60">EXCLUSIVE PROPERTIES</div>
+                <div className="text-sm tracking-[0.2em] text-foreground/60 font-monument">EXCLUSIVE PROPERTIES</div>
               </div>
             </ScrollReveal>
             <ScrollReveal animation="fade-in-up" delay={200}>
               <div className="text-center">
                 <Award className="w-10 h-10 text-accent mx-auto mb-6" strokeWidth={1} aria-hidden="true" />
                 <div className="text-5xl mb-3 text-accent">15+</div>
-                <div className="text-sm tracking-[0.2em] text-foreground/60">YEARS EXCELLENCE</div>
+                <div className="text-sm tracking-[0.2em] text-foreground/60 font-monument">YEARS EXCELLENCE</div>
               </div>
             </ScrollReveal>
             <ScrollReveal animation="fade-in-up" delay={300}>
               <div className="text-center">
                 <Users className="w-10 h-10 text-accent mx-auto mb-6" strokeWidth={1} aria-hidden="true" />
                 <div className="text-5xl mb-3 text-accent">500+</div>
-                <div className="text-sm tracking-[0.2em] text-foreground/60">SATISFIED CLIENTS</div>
+                <div className="text-sm tracking-[0.2em] text-foreground/60 font-monument">SATISFIED CLIENTS</div>
               </div>
             </ScrollReveal>
           </div>
@@ -121,7 +125,7 @@ const Home = () => {
         <div className="container mx-auto px-6 lg:px-12 text-center">
           <ScrollReveal animation="scale-in">
             <div className="max-w-3xl mx-auto">
-              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6">BEGIN YOUR JOURNEY</div>
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 font-monument">BEGIN YOUR JOURNEY</div>
               <h2 className="text-5xl md:text-6xl mb-8">Experience Luxury Living</h2>
               <p className="text-xl text-foreground/60 mb-12 font-light leading-relaxed">
                 Let us guide you to your perfect property in Bahrain's most prestigious locations

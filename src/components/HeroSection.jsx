@@ -53,7 +53,7 @@ const HeroSection = () => {
 
           <div className="glass-card relative z-20 mx-auto max-w-5xl overflow-visible animate-slide-up p-8">
             <div className="mb-8 text-center">
-              <h3 className="text-xl font-serif text-platinum-pearl">Find your sanctuary</h3>
+              <h3 className="text-xl font-heading text-platinum-pearl">Find your sanctuary</h3>
               <p className="mt-2 text-sm text-platinum-pearl/60">Search through our curated collection</p>
             </div>
 

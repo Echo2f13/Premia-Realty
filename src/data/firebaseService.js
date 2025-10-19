@@ -346,14 +346,22 @@ export const deletePropertyImage = async (imageUrl) => {
 export const createProperty = async (propertyData, imageFiles = [], user = null) => {
   try {
     console.log("📝 Creating property:", propertyData.title);
-    console.log("📷 Uploading", imageFiles.length, "images...");
+    console.log("📷 Image files to upload:", imageFiles.length);
+    console.log("📷 Image URLs already provided:", propertyData.images?.length || 0);
 
-    // Generate a unique ID for the property
-    const tempId = createRandomId();
+    let imageUrls = [];
 
-    // Upload images first
-    const imageUrls = await uploadPropertyImages(imageFiles, tempId);
-    console.log("✅ Images uploaded:", imageUrls.length);
+    // If imageFiles are provided, upload them to Firebase Storage
+    if (imageFiles.length > 0) {
+      const tempId = createRandomId();
+      imageUrls = await uploadPropertyImages(imageFiles, tempId);
+      console.log("✅ Images uploaded to Firebase Storage:", imageUrls.length);
+    }
+    // Otherwise, use the image URLs already in propertyData (base64 or external URLs)
+    else if (propertyData.images && propertyData.images.length > 0) {
+      imageUrls = propertyData.images;
+      console.log("✅ Using provided image URLs:", imageUrls.length);
+    }
 
     // Prepare user metadata
     const userMeta = user ? {
@@ -420,31 +428,42 @@ export const updateProperty = async (
   try {
     console.log("📝 Updating property:", propertyId);
     console.log("🗑️ Deleting", imagesToDelete.length, "images...");
-    console.log("📷 Uploading", newImageFiles.length, "new images...");
+    console.log("📷 New image files to upload:", newImageFiles.length);
+    console.log("📷 Image URLs in propertyData:", propertyData.images?.length || 0);
 
     const docRef = doc(propertiesCollection, propertyId);
 
-    // Delete removed images from storage
-    if (imagesToDelete.length > 0) {
-      await Promise.all(imagesToDelete.map(deletePropertyImage));
-      console.log("✅ Deleted images from storage");
+    let updatedImages = [];
+
+    // If propertyData.images is provided, use it directly (base64 or external URLs)
+    if (propertyData.images && propertyData.images.length > 0) {
+      updatedImages = propertyData.images;
+      console.log("✅ Using provided image URLs:", updatedImages.length);
     }
+    // Otherwise, handle file uploads and deletions
+    else {
+      // Delete removed images from storage
+      if (imagesToDelete.length > 0) {
+        await Promise.all(imagesToDelete.map(deletePropertyImage));
+        console.log("✅ Deleted images from storage");
+      }
 
-    // Upload new images
-    const newImageUrls = await uploadPropertyImages(newImageFiles, propertyId);
-    if (newImageUrls.length > 0) {
-      console.log("✅ New images uploaded:", newImageUrls.length);
+      // Upload new images
+      const newImageUrls = await uploadPropertyImages(newImageFiles, propertyId);
+      if (newImageUrls.length > 0) {
+        console.log("✅ New images uploaded:", newImageUrls.length);
+      }
+
+      // Get current images and filter out deleted ones
+      const currentProperty = await getProperty(propertyId);
+      const currentImages = currentProperty?.images || [];
+      const remainingImages = currentImages.filter(
+        (url) => !imagesToDelete.includes(url)
+      );
+
+      // Merge existing and new images
+      updatedImages = [...remainingImages, ...newImageUrls];
     }
-
-    // Get current images and filter out deleted ones
-    const currentProperty = await getProperty(propertyId);
-    const currentImages = currentProperty?.images || [];
-    const remainingImages = currentImages.filter(
-      (url) => !imagesToDelete.includes(url)
-    );
-
-    // Merge existing and new images
-    const updatedImages = [...remainingImages, ...newImageUrls];
 
     // Prepare user metadata
     const userMeta = user ? {

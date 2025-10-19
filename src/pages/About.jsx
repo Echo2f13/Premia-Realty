@@ -14,8 +14,13 @@ const About = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
+<<<<<<< HEAD
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4 font-monument">OUR LEGACY</div>
+              <h1 className="text-6xl md:text-7xl mb-6">About Premia</h1>
+=======
               <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">{t(translations.about.subtitle)}</div>
               <h1 className="text-6xl md:text-7xl mb-6">{t(translations.about.title)}</h1>
+>>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
                 {t(translations.about.section1.description)}
               </p>
@@ -28,8 +33,13 @@ const About = () => {
           <div className="container mx-auto px-6 lg:px-12">
             <div className="grid md:grid-cols-2 gap-16 items-center">
               <div>
+<<<<<<< HEAD
+                <div className="text-accent text-xs tracking-[0.3em] mb-6 font-monument">ESTABLISHED EXCELLENCE</div>
+                <h2 className="text-4xl mb-8">Our Story</h2>
+=======
                 <div className="text-accent text-xs tracking-[0.3em] mb-6">{t(translations.about.subtitle)}</div>
                 <h2 className="text-4xl mb-8">{t(translations.about.section1.title)}</h2>
+>>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
                 <p className="text-foreground/60 text-lg mb-6 font-light leading-relaxed">
                   {t(translations.about.section1.description)}
                 </p>
@@ -48,7 +58,7 @@ const About = () => {
             </div>
           </div>
         </section>
-
+        
         {/* Stats */}
         <section className="py-24 border-y border-border/50">
           <div className="container mx-auto px-6 lg:px-12">

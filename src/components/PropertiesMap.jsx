@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { useNavigate } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -68,11 +69,13 @@ const BahrainBoundsLock = () => {
 };
 
 const PropertiesMap = () => {
+<<<<<<< HEAD
+  const navigate = useNavigate();
+=======
   const { t } = useLanguage();
+>>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [hoveredProperty, setHoveredProperty] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -103,27 +106,15 @@ const PropertiesMap = () => {
     fetchProperties();
   }, []);
 
-  const handleMouseMove = (e) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
-  };
-
-  const handleMarkerMouseEnter = (property) => {
-    setHoveredProperty(property);
-  };
-
-  const handleMarkerMouseLeave = () => {
-    setHoveredProperty(null);
-  };
-
   const formatPrice = (price, cadence) => {
     if (!price) return "Contact for price";
     const formatted = new Intl.NumberFormat("en-US").format(price);
     return cadence ? `${formatted} BHD/${cadence}` : `${formatted} BHD`;
   };
 
-  // Map tile URL - using standard OpenStreetMap
-  const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-  const tileLayerAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  // Map tile URL - using Stadia Maps (English labels only)
+  const tileLayerUrl = "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png";
+  const tileLayerAttribution = '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 
   // Bahrain center coordinates
   const bahrainCenter = [26.0667, 50.5577];
@@ -131,7 +122,6 @@ const PropertiesMap = () => {
   return (
     <section
       className="relative isolate overflow-hidden py-20 bg-background"
-      onMouseMove={handleMouseMove}
     >
       {/* Background Effects */}
       <div className="absolute inset-0">
@@ -143,7 +133,11 @@ const PropertiesMap = () => {
       <div className="relative container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="mb-12 text-center">
+<<<<<<< HEAD
+          <div className="text-accent text-xs tracking-[0.3em] mb-4 font-monument">DISCOVER BAHRAIN</div>
+=======
           <div className="text-accent text-xs tracking-[0.3em] mb-4">{t(translations.home.map.subtitle)}</div>
+>>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
           <h2 className="text-5xl lg:text-6xl mb-6">
             {t(translations.home.map.title)}
           </h2>
@@ -218,11 +212,76 @@ const PropertiesMap = () => {
                     key={property.id}
                     position={[property.location.lat, property.location.lng]}
                     icon={redIcon}
-                    eventHandlers={{
-                      mouseover: () => handleMarkerMouseEnter(property),
-                      mouseout: handleMarkerMouseLeave,
-                    }}
-                  />
+                  >
+                    <Popup maxWidth={320} minWidth={280}>
+                      <div className="p-2">
+                        {/* Property Image */}
+                        {property.images && property.images[0] && (
+                          <div className="relative h-40 overflow-hidden mb-3 rounded">
+                            <img
+                              src={property.images[0]}
+                              alt={property.title}
+                              className="w-full h-full object-cover"
+                            />
+                            {property.inclusive && (
+                              <div className="absolute top-2 right-2 bg-accent text-background px-2 py-1 text-xs font-bold shadow-lg tracking-wider">
+                                INCLUSIVE
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Property Details */}
+                        <h3 className="text-foreground font-bold text-base mb-2 line-clamp-2">
+                          {property.title}
+                        </h3>
+
+                        <div className="flex items-center gap-1 mb-2">
+                          <span className="text-accent text-lg font-bold">
+                            {formatPrice(property.price, property.priceCadence)}
+                          </span>
+                        </div>
+
+                        {/* Location */}
+                        <div className="flex items-start gap-2 text-foreground/70 text-xs mb-2">
+                          <MapPin className="h-4 w-4 flex-shrink-0 text-accent mt-0.5" strokeWidth={1} />
+                          <span className="line-clamp-2">
+                            {[
+                              property.area,
+                              property.city,
+                              property.governorate
+                            ]
+                              .filter(Boolean)
+                              .join(", ")}
+                          </span>
+                        </div>
+
+                        {/* Bed/Bath */}
+                        <div className="flex items-center gap-3 text-foreground/70 text-sm mb-3">
+                          {property.bedrooms && (
+                            <div className="flex items-center gap-1">
+                              <Bed className="h-4 w-4 text-accent" strokeWidth={1} />
+                              <span>{property.bedrooms} Bed</span>
+                            </div>
+                          )}
+                          {property.bathrooms && (
+                            <div className="flex items-center gap-1">
+                              <Bath className="h-4 w-4 text-accent" strokeWidth={1} />
+                              <span>{property.bathrooms} Bath</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* View Property Button */}
+                        <button
+                          className="w-full bg-accent text-background py-2 text-sm font-semibold tracking-wider hover:bg-accent/90 transition-colors rounded"
+                          onClick={() => navigate(`/property/${property.id}`)}
+                        >
+                          VIEW PROPERTY
+                        </button>
+                      </div>
+                    </Popup>
+                  </Marker>
                 ))}
               </MarkerClusterGroup>
             </MapContainer>
@@ -233,7 +292,7 @@ const PropertiesMap = () => {
 
       </div>
 
-      {/* Custom CSS for map controls styling */}
+      {/* Custom CSS for map controls and popups styling */}
       <style>{`
         .leaflet-control-zoom a {
           background: rgba(255, 255, 255, 0.9) !important;
@@ -250,88 +309,29 @@ const PropertiesMap = () => {
         .leaflet-bar {
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
         }
+
+        .leaflet-popup-content-wrapper {
+          background: hsl(var(--card)) !important;
+          color: hsl(var(--foreground)) !important;
+          border: 1px solid rgba(212, 175, 55, 0.2) !important;
+          border-radius: 0.5rem !important;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .leaflet-popup-tip {
+          background: hsl(var(--card)) !important;
+          border: 1px solid rgba(212, 175, 55, 0.2) !important;
+        }
+
+        .leaflet-popup-close-button {
+          color: hsl(var(--foreground)) !important;
+          font-size: 20px !important;
+        }
+
+        .leaflet-popup-close-button:hover {
+          color: hsl(var(--accent)) !important;
+        }
       `}</style>
-
-      {/* Cursor-Following Hover Card with Smooth Transition */}
-      <div
-        className={`fixed z-[9999] pointer-events-none transition-all duration-300 ease-out ${
-          hoveredProperty ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-        }`}
-        style={{
-          left: `${mousePosition.x + 20}px`,
-          top: `${mousePosition.y + 20}px`,
-          transform: "translate(0, -50%)",
-        }}
-      >
-        {hoveredProperty && (
-          <div
-            className="bg-card border border-border/50 overflow-hidden w-80 transition-all duration-300"
-            style={{
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-            }}
-          >
-            {/* Property Image */}
-            {hoveredProperty.images && hoveredProperty.images[0] && (
-              <div className="relative h-40 overflow-hidden">
-                <img
-                  src={hoveredProperty.images[0]}
-                  alt={hoveredProperty.title}
-                  className="w-full h-full object-cover transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                {hoveredProperty.inclusive && (
-                  <div className="absolute top-2 right-2 bg-accent text-background px-3 py-1 text-xs font-bold shadow-lg tracking-wider">
-                    INCLUSIVE
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Property Details */}
-            <div className="p-4">
-              <h3 className="text-foreground font-bold text-base mb-3 line-clamp-2">
-                {hoveredProperty.title}
-              </h3>
-
-              <div className="flex items-center gap-1 mb-3">
-                <span className="text-accent text-xl font-bold bg-accent/10 px-3 py-1 border border-accent/20">
-                  {formatPrice(hoveredProperty.price, hoveredProperty.priceCadence)}
-                </span>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-center gap-2 text-foreground/70 text-xs mb-3 bg-background/50 border border-border/30 px-3 py-2">
-                <MapPin className="h-4 w-4 flex-shrink-0 text-accent" strokeWidth={1} />
-                <span className="line-clamp-1">
-                  {[
-                    hoveredProperty.area,
-                    hoveredProperty.city,
-                    hoveredProperty.governorate
-                  ]
-                    .filter(Boolean)
-                    .join(", ")}
-                </span>
-              </div>
-
-              {/* Bed/Bath */}
-              <div className="flex items-center gap-4 text-foreground/70 text-sm">
-                {hoveredProperty.bedrooms && (
-                  <div className="flex items-center gap-2 bg-background/50 border border-border/30 px-3 py-1.5">
-                    <Bed className="h-4 w-4 text-accent" strokeWidth={1} />
-                    <span>{hoveredProperty.bedrooms} Bed</span>
-                  </div>
-                )}
-                {hoveredProperty.bathrooms && (
-                  <div className="flex items-center gap-2 bg-background/50 border border-border/30 px-3 py-1.5">
-                    <Bath className="h-4 w-4 text-accent" strokeWidth={1} />
-                    <span>{hoveredProperty.bathrooms} Bath</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
     </section>
   );
 };
