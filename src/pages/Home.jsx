@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Building2, Award, Users } from "lucide-react";
 import PropertiesMap from "../components/PropertiesMap";
 import ScrollReveal from "../components/ScrollReveal";
+import ParticleConstellation from "../components/ParticleConstellation";
 import { useRef, useEffect } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
@@ -36,19 +37,22 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-diagonal-subtle">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div
-          ref={parallaxRef}
-          className="parallax-bg absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2000')",
-            top: "-20%",
-            height: "120%",
-            backgroundPosition: "center center",
-            backgroundSize: "cover"
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/85 to-background z-10" />
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
+        {/* Particle Constellation Background */}
+        <div className="absolute inset-0 z-0">
+          <ParticleConstellation
+            particleCount={100}
+            particleColor="#D4AF37"
+            lineColor="#D4AF37"
+            particleSize={2}
+            maxDistance={150}
+            mouseRadius={200}
+            speed={0.3}
+          />
+        </div>
+
+        {/* Subtle gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/40 z-10" />
 
         <div className="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
           <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">{t(translations.home.hero.subtitle)}</div>
