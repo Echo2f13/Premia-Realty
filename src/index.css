@@ -569,7 +569,6 @@ a {
     -webkit-font-smoothing: subpixel-antialiased;
   }
 
-<<<<<<< HEAD
   /* Monument Extended for captions and labels */
   .font-monument {
     font-family: 'Monument Extended', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -579,7 +578,8 @@ a {
   /* Inter for small fonts */
   .font-inter {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-=======
+  }
+
   /* RTL Support for Arabic */
   [dir="rtl"] {
     direction: rtl;
@@ -633,7 +633,6 @@ a {
   [dir="rtl"] h6,
   [dir="rtl"] p {
     font-family: 'Bodoni Moda', 'Tajawal', 'Cairo', Arial, sans-serif;
->>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
   }
 
 }
