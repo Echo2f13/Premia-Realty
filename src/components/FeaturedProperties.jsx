@@ -45,10 +45,10 @@ const FeaturedProperties = () => {
     <section className="bg-gradient-luxury py-20">
       <div className="container px-4 lg:px-8">
         <div className="mb-20 text-center animate-fade-in">
-          <span className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.3em] text-gold-primary/70">
+          <span className="mb-4 inline-block text-xs font-medium uppercase tracking-[0.3em] text-gold-primary/70 font-monument">
             Exclusive Collection
           </span>
-          <h2 className="mb-6 text-2xl font-serif font-normal text-platinum-pearl md:text-3xl">
+          <h2 className="mb-6 text-2xl font-heading font-normal text-platinum-pearl md:text-3xl">
             Carefully curated residences
           </h2>
           <p className="mx-auto max-w-xl text-lg font-light leading-relaxed text-platinum-pearl/60">
@@ -100,7 +100,7 @@ const FeaturedProperties = () => {
 
               <div className="space-y-6 p-6">
                 <div>
-                  <h3 className="mb-3 text-lg font-serif font-medium text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
+                  <h3 className="mb-3 text-lg font-heading font-medium text-platinum-pearl transition-colors duration-300 group-hover:text-gold-primary">
                     {property.title}
                   </h3>
                   <div className="flex items-center text-sm text-platinum-pearl/60">
@@ -131,7 +131,7 @@ const FeaturedProperties = () => {
                   >
                     View Details
                   </button>
-                  <p className="text-xs uppercase tracking-[0.3em] text-platinum-pearl/40">Exclusive Listing</p>
+                  <p className="text-xs uppercase tracking-[0.3em] text-platinum-pearl/40 font-monument">Exclusive Listing</p>
                 </div>
               </div>
             </article>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProperty, updateProperty } from "../data/firebaseService";
-import { ArrowLeft, Upload, X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import useAuth from "../hooks/useAuth";
+import ImageUploadWithImgcoo from "../components/ImageUploadWithImgcoo";
 
 const AdminPropertyPageEdit = () => {
   const navigate = useNavigate();
@@ -10,10 +11,7 @@ const AdminPropertyPageEdit = () => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
-  const [existingImages, setExistingImages] = useState([]);
-  const [imagesToDelete, setImagesToDelete] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
 
   const [formData, setFormData] = useState({
     // Basic Info
@@ -160,7 +158,7 @@ const AdminPropertyPageEdit = () => {
         });
 
         // Set existing images
-        setExistingImages(property.images || []);
+        setImageUrls(property.images || []);
       } catch (error) {
         console.error("Failed to fetch property:", error);
         alert("Failed to load property data");
@@ -214,33 +212,6 @@ const AdminPropertyPageEdit = () => {
     }
   };
 
-  const handleImageSelect = (e) => {
-    const files = Array.from(e.target.files);
-
-    if (files.length === 0) return;
-
-    // Add new files to existing ones
-    setImageFiles((prev) => [...prev, ...files]);
-
-    // Create previews
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviews((prev) => [...prev, reader.result]);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleRemoveNewImage = (index) => {
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleRemoveExistingImage = (imageUrl) => {
-    setImagesToDelete((prev) => [...prev, imageUrl]);
-    setExistingImages((prev) => prev.filter((url) => url !== imageUrl));
-  };
 
   const handleAddAmenity = () => {
     const trimmed = amenitiesInput.trim();
@@ -286,7 +257,7 @@ const AdminPropertyPageEdit = () => {
       return;
     }
 
-    if (existingImages.length === 0 && imageFiles.length === 0) {
+    if (imageUrls.length === 0) {
       alert("At least one image is required");
       return;
     }
@@ -355,7 +326,10 @@ const AdminPropertyPageEdit = () => {
 
       console.log("📋 Property data prepared:", propertyData);
 
-      await updateProperty(propertyId, propertyData, imageFiles, imagesToDelete, user);
+      // Add image URLs to property data
+      propertyData.images = imageUrls;
+
+      await updateProperty(propertyId, propertyData, [], [], user); // Empty arrays since we're using URLs
 
       alert("✅ Property updated successfully!");
       navigate("/admin");
@@ -410,7 +384,7 @@ const AdminPropertyPageEdit = () => {
               <ArrowLeft className="h-6 w-6" />
             </button>
             <div>
-              <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
+              <h1 className="text-4xl font-heading font-bold text-platinum-pearl">
                 Edit Property
               </h1>
               <p className="text-platinum-pearl/70 mt-2">
@@ -423,7 +397,7 @@ const AdminPropertyPageEdit = () => {
           <form onSubmit={handleSubmit} className="glass-card p-8">
             {/* Basic Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Basic Information
               </h2>
 
@@ -672,7 +646,7 @@ const AdminPropertyPageEdit = () => {
 
             {/* Location */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Location
               </h2>
 
@@ -751,7 +725,7 @@ const AdminPropertyPageEdit = () => {
 
             {/* Specifications */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Specifications
               </h2>
 
@@ -939,7 +913,7 @@ const AdminPropertyPageEdit = () => {
 
             {/* Amenities */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Amenities
               </h2>
 
@@ -982,7 +956,7 @@ const AdminPropertyPageEdit = () => {
 
             {/* Tags */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Tags
               </h2>
 
@@ -1027,7 +1001,7 @@ const AdminPropertyPageEdit = () => {
 
             {/* Lease Terms */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Lease Terms (for rentals)
               </h2>
 
@@ -1096,7 +1070,7 @@ const AdminPropertyPageEdit = () => {
 
             {/* Agent & Source Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Agent & Source Information
               </h2>
 
@@ -1175,83 +1149,14 @@ const AdminPropertyPageEdit = () => {
 
             {/* Images */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Images *
               </h2>
 
-              {/* Existing Images */}
-              {existingImages.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-platinum-pearl mb-3">
-                    Existing Images
-                  </h3>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    {existingImages.map((imageUrl, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={imageUrl}
-                          alt={`Existing ${index + 1}`}
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveExistingImage(imageUrl)}
-                          className="absolute top-2 right-2 rounded-full bg-red-500 p-2 text-white opacity-0 group-hover:opacity-100 transition"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Upload New Images */}
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-platinum-pearl mb-3">
-                  Add New Images
-                </h3>
-                <label className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gold-primary/30 bg-luxury-black/50 px-6 py-8 cursor-pointer hover:border-gold-primary/50 transition">
-                  <Upload className="h-6 w-6 text-gold-primary" />
-                  <span className="text-platinum-pearl">
-                    Click to upload images (multiple)
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageSelect}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-
-              {/* New Image Previews */}
-              {imagePreviews.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-platinum-pearl mb-3">
-                    New Images to Upload
-                  </h3>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    {imagePreviews.map((preview, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={preview}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveNewImage(index)}
-                          className="absolute top-2 right-2 rounded-full bg-red-500 p-2 text-white opacity-0 group-hover:opacity-100 transition"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <ImageUploadWithImgcoo
+                imageUrls={imageUrls}
+                onImagesChange={setImageUrls}
+              />
             </div>
 
             {/* Submit */}

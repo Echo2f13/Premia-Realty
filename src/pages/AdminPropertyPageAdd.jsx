@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createProperty } from "../data/firebaseService";
-import { ArrowLeft, Upload, X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import useAuth from "../hooks/useAuth";
+import ImageUploadWithImgcoo from "../components/ImageUploadWithImgcoo";
 
 const AdminPropertyPageAdd = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
 
   const [formData, setFormData] = useState({
     // Basic Info
@@ -122,28 +122,6 @@ const AdminPropertyPageAdd = () => {
     }
   };
 
-  const handleImageSelect = (e) => {
-    const files = Array.from(e.target.files);
-
-    if (files.length === 0) return;
-
-    // Add new files to existing ones
-    setImageFiles((prev) => [...prev, ...files]);
-
-    // Create previews
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviews((prev) => [...prev, reader.result]);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleRemoveImage = (index) => {
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
-  };
 
   const handleAddAmenity = () => {
     const trimmed = amenitiesInput.trim();
@@ -189,7 +167,7 @@ const AdminPropertyPageAdd = () => {
       return;
     }
 
-    if (imageFiles.length === 0) {
+    if (imageUrls.length === 0) {
       alert("At least one image is required");
       return;
     }
@@ -258,7 +236,10 @@ const AdminPropertyPageAdd = () => {
 
       console.log("📋 Property data prepared:", propertyData);
 
-      await createProperty(propertyData, imageFiles, user);
+      // Add image URLs to property data
+      propertyData.images = imageUrls;
+
+      await createProperty(propertyData, [], user); // Empty array for imageFiles since we're using URLs
 
       alert("✅ Property created successfully!");
       navigate("/admin");
@@ -302,7 +283,7 @@ const AdminPropertyPageAdd = () => {
               <ArrowLeft className="h-6 w-6" />
             </button>
             <div>
-              <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
+              <h1 className="text-4xl font-heading font-bold text-platinum-pearl">
                 Add New Property
               </h1>
               <p className="text-platinum-pearl/70 mt-2">
@@ -315,7 +296,7 @@ const AdminPropertyPageAdd = () => {
           <form onSubmit={handleSubmit} className="glass-card p-8">
             {/* Basic Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Basic Information
               </h2>
 
@@ -564,7 +545,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Location */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Location
               </h2>
 
@@ -643,7 +624,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Specifications */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Specifications
               </h2>
 
@@ -831,7 +812,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Amenities */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Amenities
               </h2>
 
@@ -874,7 +855,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Tags */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Tags
               </h2>
 
@@ -917,7 +898,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Lease Terms */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Lease Terms (for rentals)
               </h2>
 
@@ -986,7 +967,7 @@ const AdminPropertyPageAdd = () => {
 
             {/* Agent & Source Information */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Agent & Source Information
               </h2>
 
@@ -1065,44 +1046,14 @@ const AdminPropertyPageAdd = () => {
 
             {/* Images */}
             <div className="mb-8">
-              <h2 className="text-2xl font-serif font-bold text-gold-primary mb-4">
+              <h2 className="text-2xl font-heading font-bold text-gold-primary mb-4">
                 Images *
               </h2>
 
-              <div className="mb-4">
-                <label className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gold-primary/30 bg-luxury-black/50 px-6 py-8 cursor-pointer hover:border-gold-primary/50 transition">
-                  <Upload className="h-6 w-6 text-gold-primary" />
-                  <span className="text-platinum-pearl">
-                    Click to upload images (multiple)
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageSelect}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-3">
-                {imagePreviews.map((preview, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={preview}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(index)}
-                      className="absolute top-2 right-2 rounded-full bg-red-500 p-2 text-white opacity-0 group-hover:opacity-100 transition"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
+              <ImageUploadWithImgcoo
+                imageUrls={imageUrls}
+                onImagesChange={setImageUrls}
+              />
             </div>
 
             {/* Submit */}

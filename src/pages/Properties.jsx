@@ -262,7 +262,7 @@ const Properties = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
-              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">EXCLUSIVE PORTFOLIO</div>
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4 font-monument">EXCLUSIVE PORTFOLIO</div>
               <h1 className="text-6xl md:text-7xl mb-6">Our Properties</h1>
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
                 Discover meticulously curated estates across Bahrain's most prestigious addresses

@@ -57,8 +57,10 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Bodoni Moda', 'Georgia', 'serif'],
-        serif: ['Bodoni Moda', 'Georgia', 'serif'],
+        sans: ['Open Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        heading: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        monument: ['Monument Extended', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        inter: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       boxShadow: {
         glass: '0 24px 54px rgba(10, 10, 15, 0.45)',

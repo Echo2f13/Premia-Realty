@@ -147,7 +147,7 @@ const AdminContactsTrash = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-luxury-black/80 backdrop-blur-sm">
           <div className="glass-card p-8 max-w-md w-full mx-4">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="text-xl font-serif font-bold text-platinum-pearl">
+              <h3 className="text-xl font-heading font-bold text-platinum-pearl">
                 {confirmAction.type === "restore" ? "Restore Contact" : "Permanently Delete Contact"}
               </h3>
               <button
@@ -229,7 +229,7 @@ const AdminContactsTrash = () => {
               <ArrowLeft className="h-6 w-6" />
             </button>
             <div>
-              <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
+              <h1 className="text-4xl font-heading font-bold text-platinum-pearl">
                 Deleted Contacts
               </h1>
               <p className="text-platinum-pearl/70 mt-2">
@@ -239,7 +239,7 @@ const AdminContactsTrash = () => {
           </div>
 
           <div className="glass-card p-8">
-            <h2 className="text-2xl font-serif font-bold text-platinum-pearl mb-6">
+            <h2 className="text-2xl font-heading font-bold text-platinum-pearl mb-6">
               Trash
             </h2>
 

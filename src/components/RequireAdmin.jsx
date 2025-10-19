@@ -25,7 +25,7 @@ const RequireAdmin = ({ children }) => {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="glass-card p-8 text-center max-w-md">
           <ShieldCheck className="h-16 w-16 text-gold-primary mx-auto mb-4" />
-          <h2 className="text-2xl font-serif font-bold text-platinum-pearl mb-2">
+          <h2 className="text-2xl font-heading font-bold text-platinum-pearl mb-2">
             Access Denied
           </h2>
           <p className="text-platinum-pearl/70 mb-6">

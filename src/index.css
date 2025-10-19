@@ -1,5 +1,4 @@
 /* Lovable Design System - Premia Realty */
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;1,6..96,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -66,7 +65,7 @@
     margin: 0;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Bodoni Moda', Georgia, serif;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 400;
     font-size: 18px;
     line-height: 1.8;
@@ -106,7 +105,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bodoni Moda', Georgia, serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 700;
     letter-spacing: 0.02em;
     color: hsl(var(--foreground));
@@ -568,6 +567,17 @@ a {
     -webkit-backface-visibility: hidden;
     -webkit-transform: translateZ(0);
     -webkit-font-smoothing: subpixel-antialiased;
+  }
+
+  /* Monument Extended for captions and labels */
+  .font-monument {
+    font-family: 'Monument Extended', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+  }
+
+  /* Inter for small fonts */
+  .font-inter {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
 }

@@ -3,21 +3,13 @@
 ## Fixes
 ### BE fixes:
 
-+ Search - Home and Properties page
-+ Map accuracy 
-+ Login - make it better
-+ DB properties access
-+ Admin - images and Metrics
-+ liked proerties
++ Filter - type of property
++ Map accuracy
++ Admin - images
 
 ### UI fixes:
 
-+ nav bar
 + Hero section
-+ Login page
-+ Signup page
-+ Property cards
-+ property page
 + About us and Contact us page 
 + footer
 + profile page

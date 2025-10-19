@@ -155,7 +155,7 @@ const AdminContacts = () => {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="glass-card p-8 text-center max-w-md">
           <ShieldCheck className="h-16 w-16 text-gold-primary mx-auto mb-4" />
-          <h2 className="text-2xl font-serif font-bold text-platinum-pearl mb-2">
+          <h2 className="text-2xl font-heading font-bold text-platinum-pearl mb-2">
             Access Denied
           </h2>
           <p className="text-platinum-pearl/70 mb-6">
@@ -179,7 +179,7 @@ const AdminContacts = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-luxury-black/80 backdrop-blur-sm">
           <div className="glass-card p-8 max-w-md w-full mx-4">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="text-xl font-serif font-bold text-platinum-pearl">
+              <h3 className="text-xl font-heading font-bold text-platinum-pearl">
                 Delete Contact
               </h3>
               <button
@@ -249,7 +249,7 @@ const AdminContacts = () => {
             </button>
             <ShieldCheck className="h-12 w-12 text-gold-primary" />
             <div>
-              <h1 className="text-4xl font-serif font-bold text-platinum-pearl">
+              <h1 className="text-4xl font-heading font-bold text-platinum-pearl">
                 Contact Submissions
               </h1>
               <p className="text-platinum-pearl/70 mt-2">
@@ -260,7 +260,7 @@ const AdminContacts = () => {
 
           <div className="glass-card p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-serif font-bold text-platinum-pearl">
+              <h2 className="text-2xl font-heading font-bold text-platinum-pearl">
                 Contacts
               </h2>
               <div className="flex items-center gap-3">

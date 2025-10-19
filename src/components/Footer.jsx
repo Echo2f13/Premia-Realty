@@ -12,8 +12,8 @@ const Footer = () => {
                 <Building2 className="w-7 h-7 text-accent" strokeWidth={1} />
               </div>
               <div>
-                <div className="text-xl tracking-[0.2em]">PREMIA</div>
-                <div className="text-[10px] tracking-[0.3em] text-accent -mt-1">REALTY</div>
+                <div className="text-xl tracking-[0.2em] font-monument">PREMIA</div>
+                <div className="text-[10px] tracking-[0.3em] text-accent -mt-1 font-monument">REALTY</div>
               </div>
             </div>
             <p className="text-base text-foreground/60 font-light leading-relaxed mb-8">
@@ -36,7 +36,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-sm tracking-[0.2em] text-accent mb-6">NAVIGATION</h4>
+            <h4 className="text-sm tracking-[0.2em] text-accent mb-6 font-monument">NAVIGATION</h4>
             <div className="space-y-3">
               <Link to="/" className="block text-base text-foreground/60 hover:text-accent transition-colors">
                 Home
@@ -54,7 +54,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-sm tracking-[0.2em] text-accent mb-6">HOURS</h4>
+            <h4 className="text-sm tracking-[0.2em] text-accent mb-6 font-monument">HOURS</h4>
             <div className="space-y-3 text-sm text-foreground/60 font-light">
               <p>Monday - Friday</p>
               <p>9:00 AM - 6:00 PM</p>
@@ -64,7 +64,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-16 pt-8 border-t border-border/50 text-center">
-          <p className="text-xs text-foreground/40 tracking-[0.2em]">
+          <p className="text-xs text-foreground/40 tracking-[0.2em] font-monument">
             © {new Date().getFullYear()} PREMIA REALTY. ALL RIGHTS RESERVED.
           </p>
         </div>

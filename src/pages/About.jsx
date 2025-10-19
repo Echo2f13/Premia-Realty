@@ -10,7 +10,7 @@ const About = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
-              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">OUR LEGACY</div>
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4 font-monument">OUR LEGACY</div>
               <h1 className="text-6xl md:text-7xl mb-6">About Premia</h1>
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
                 For over a decade, we have redefined luxury real estate in Bahrain
@@ -24,7 +24,7 @@ const About = () => {
           <div className="container mx-auto px-6 lg:px-12">
             <div className="grid md:grid-cols-2 gap-16 items-center">
               <div>
-                <div className="text-accent text-xs tracking-[0.3em] mb-6">ESTABLISHED EXCELLENCE</div>
+                <div className="text-accent text-xs tracking-[0.3em] mb-6 font-monument">ESTABLISHED EXCELLENCE</div>
                 <h2 className="text-4xl mb-8">Our Story</h2>
                 <p className="text-foreground/60 text-lg mb-6 font-light leading-relaxed">
                   Founded with a vision to transform the luxury real estate landscape, Premia Realty has become synonymous with excellence, trust, and sophistication.
@@ -44,7 +44,7 @@ const About = () => {
             </div>
           </div>
         </section>
-
+        
         {/* Stats */}
         <section className="py-24 border-y border-border/50">
           <div className="container mx-auto px-6 lg:px-12">

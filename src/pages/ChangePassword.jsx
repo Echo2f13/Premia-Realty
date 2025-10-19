@@ -101,7 +101,7 @@ const ChangePassword = () => {
               <span className="text-xs font-semibold uppercase tracking-[0.45em] text-gold-primary/75">
                 Security
               </span>
-              <h1 className="mt-6 text-4xl font-serif text-platinum-pearl">
+              <h1 className="mt-6 text-4xl font-heading text-platinum-pearl">
                 Change Your Password
               </h1>
               <p className="mt-4 text-sm leading-relaxed text-platinum-pearl/65">
