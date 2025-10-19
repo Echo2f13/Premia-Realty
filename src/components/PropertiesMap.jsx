@@ -69,11 +69,8 @@ const BahrainBoundsLock = () => {
 };
 
 const PropertiesMap = () => {
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
   const { t } = useLanguage();
->>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -133,11 +130,7 @@ const PropertiesMap = () => {
       <div className="relative container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="mb-12 text-center">
-<<<<<<< HEAD
-          <div className="text-accent text-xs tracking-[0.3em] mb-4 font-monument">DISCOVER BAHRAIN</div>
-=======
           <div className="text-accent text-xs tracking-[0.3em] mb-4">{t(translations.home.map.subtitle)}</div>
->>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
           <h2 className="text-5xl lg:text-6xl mb-6">
             {t(translations.home.map.title)}
           </h2>

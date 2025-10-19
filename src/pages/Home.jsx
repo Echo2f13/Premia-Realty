@@ -51,11 +51,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/85 to-background z-10" />
 
         <div className="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
-<<<<<<< HEAD
-          <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100 font-monument">BAHRAIN'S FINEST</div>
-=======
           <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">{t(translations.home.hero.subtitle)}</div>
->>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
           <h1 className="text-6xl md:text-7xl lg:text-8xl mb-8 text-foreground leading-tight animation-delay-200">
             {t(translations.home.hero.title)}
           </h1>

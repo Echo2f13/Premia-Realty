@@ -40,11 +40,7 @@ const Footer = () => {
           </div>
 
           <div>
-<<<<<<< HEAD
-            <h4 className="text-sm tracking-[0.2em] text-accent mb-6 font-monument">NAVIGATION</h4>
-=======
             <h4 className="text-sm tracking-[0.2em] text-accent mb-6">{t(translations.footer.quickLinks)}</h4>
->>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
             <div className="space-y-3">
               <Link to="/" className="block text-base text-foreground/60 hover:text-accent transition-colors">
                 {t(translations.nav.home)}
@@ -62,11 +58,7 @@ const Footer = () => {
           </div>
 
           <div>
-<<<<<<< HEAD
-            <h4 className="text-sm tracking-[0.2em] text-accent mb-6 font-monument">HOURS</h4>
-=======
             <h4 className="text-sm tracking-[0.2em] text-accent mb-6">{t(translations.contact.info.hours)}</h4>
->>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
             <div className="space-y-3 text-sm text-foreground/60 font-light">
               <p>{t(translations.contact.info.weekdays)}</p>
               <p className="mt-6">{t(translations.contact.info.weekend)}</p>
@@ -75,13 +67,8 @@ const Footer = () => {
         </div>
 
         <div className="mt-16 pt-8 border-t border-border/50 text-center">
-<<<<<<< HEAD
-          <p className="text-xs text-foreground/40 tracking-[0.2em] font-monument">
-            © {new Date().getFullYear()} PREMIA REALTY. ALL RIGHTS RESERVED.
-=======
           <p className="text-xs text-foreground/40 tracking-[0.2em]">
             {t(translations.footer.copyright)}
->>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
           </p>
         </div>
       </div>
