@@ -7,6 +7,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Breadcrumbs from "./components/Breadcrumbs";
 import LoadingScreen from "./components/LoadingScreen";
 import { ToastProvider } from "./components/Toast";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import Home from "./pages/Home";
 import Properties from "./pages/Properties";
 import About from "./pages/About";
@@ -72,12 +73,14 @@ const App = () => {
       {isLoading && <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />}
       <Router>
         <ScrollToTop />
-        <ToastProvider>
-          <div className="flex min-h-screen flex-col bg-background text-platinum-pearl">
-            <AppContent />
-            <BackToTop />
-          </div>
-        </ToastProvider>
+        <LanguageProvider>
+          <ToastProvider>
+            <div className="flex min-h-screen flex-col bg-background text-platinum-pearl">
+              <AppContent />
+              <BackToTop />
+            </div>
+          </ToastProvider>
+        </LanguageProvider>
       </Router>
     </>
   );

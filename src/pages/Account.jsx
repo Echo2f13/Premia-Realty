@@ -10,10 +10,13 @@ import useAuth from "../hooks/useAuth";
 import { saveSavedPropertiesToCookies } from "../utils/savedPropertiesCookies";
 import { KeyRound, Loader2 } from "lucide-react";
 import ScrollReveal from "../components/ScrollReveal";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 const Account = () => {
   const navigate = useNavigate();
   const { user, profile, loading, signOut } = useAuth();
+  const { t } = useLanguage();
   const [savedResidences, setSavedResidences] = useState([]);
   const [contactHistory, setContactHistory] = useState([]);
   const [status, setStatus] = useState("");
@@ -115,7 +118,7 @@ const Account = () => {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex items-center gap-3">
           <Loader2 className="w-6 h-6 text-accent animate-spin" />
-          <span className="text-sm tracking-[0.2em] text-foreground/60">Loading your account...</span>
+          <span className="text-sm tracking-[0.2em] text-foreground/60">{t(translations.account.loading)}</span>
         </div>
       </div>
     );
@@ -128,19 +131,19 @@ const Account = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="max-w-5xl">
-              <div className="text-accent text-xs tracking-[0.3em] mb-4">YOUR ACCOUNT</div>
-              <h1 className="text-5xl md:text-6xl mb-6">Welcome back, {profileForm.fullName || "Estate Connoisseur"}</h1>
+              <div className="text-accent text-xs tracking-[0.3em] mb-4">{t(translations.account.yourAccount)}</div>
+              <h1 className="text-5xl md:text-6xl mb-6">{t(translations.account.welcome)}, {profileForm.fullName || t(translations.account.defaultName)}</h1>
               <p className="text-xl text-foreground/60 font-light leading-relaxed max-w-3xl">
-                Review your personal details, curated residences, and ongoing conversations in one refined dashboard.
+                {t(translations.account.description)}
               </p>
 
               <div className="grid md:grid-cols-2 gap-6 mt-12">
                 <div className="border border-border/50 bg-card p-8 text-center">
-                  <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">SAVED PROPERTIES</div>
+                  <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">{t(translations.account.savedProperties)}</div>
                   <div className="text-4xl text-accent">{summary.savedCount}</div>
                 </div>
                 <div className="border border-border/50 bg-card p-8 text-center">
-                  <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">CONTACT REQUESTS</div>
+                  <div className="text-sm tracking-[0.2em] text-foreground/60 mb-3">{t(translations.account.contactRequests)}</div>
                   <div className="text-4xl text-accent">{summary.contactCount}</div>
                 </div>
               </div>
@@ -153,15 +156,15 @@ const Account = () => {
           <div className="container mx-auto px-6 lg:px-12">
             <ScrollReveal animation="fade-in-up" delay={100}>
               <div className="max-w-2xl">
-                <h2 className="text-3xl mb-4">Personal Details</h2>
+                <h2 className="text-3xl mb-4">{t(translations.account.personalDetails)}</h2>
               <p className="text-foreground/60 mb-8 font-light">
-                Update your information so our concierge can tailor recommendations to your preferences.
+                {t(translations.account.updateInfo)}
               </p>
 
               <form className="space-y-6" onSubmit={handleProfileSubmit}>
                 <div>
                   <label htmlFor="profile-fullName" className="text-sm text-accent tracking-wider mb-2 block">
-                    FULL NAME
+                    {t(translations.account.fullName)}
                   </label>
                   <input
                     id="profile-fullName"
@@ -175,7 +178,7 @@ const Account = () => {
 
                 <div>
                   <label htmlFor="profile-phone" className="text-sm text-accent tracking-wider mb-2 block">
-                    PHONE
+                    {t(translations.account.phone)}
                   </label>
                   <input
                     id="profile-phone"
@@ -183,19 +186,19 @@ const Account = () => {
                     type="tel"
                     value={profileForm.phone}
                     onChange={handleProfileChange}
-                    placeholder="+973 XXXX XXXX"
+                    placeholder={t(translations.account.phonePlaceholder)}
                     className="w-full bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
                 <div>
                   <label className="text-sm text-accent tracking-wider mb-2 block">
-                    EMAIL
+                    {t(translations.account.email)}
                   </label>
                   <div className="w-full bg-card border border-border/50 h-12 px-4 flex items-center text-foreground/60">
-                    {user.email || "No email associated"}
+                    {user.email || t(translations.account.noEmail)}
                   </div>
-                  <p className="text-xs text-foreground/40 mt-1">Email cannot be changed</p>
+                  <p className="text-xs text-foreground/40 mt-1">{t(translations.account.emailNote)}</p>
                 </div>
 
                 {status && (
@@ -209,7 +212,7 @@ const Account = () => {
                   disabled={isSaving}
                   className="w-full px-10 py-4 bg-accent text-background text-sm tracking-[0.2em] hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSaving ? "SAVING..." : "SAVE CHANGES"}
+                  {isSaving ? t(translations.account.saving) : t(translations.account.saveChanges)}
                 </button>
               </form>
 
@@ -219,7 +222,7 @@ const Account = () => {
                   className="inline-flex items-center gap-2 text-sm tracking-[0.15em] text-foreground/70 hover:text-accent transition-colors"
                 >
                   <KeyRound className="h-4 w-4" />
-                  Change Password
+                  {t(translations.account.changePassword)}
                 </Link>
               </div>
               </div>
@@ -232,9 +235,9 @@ const Account = () => {
           <div className="container mx-auto px-6 lg:px-12">
             <ScrollReveal animation="fade-in-up" delay={100}>
               <div className="mb-12">
-                <h2 className="text-3xl mb-4">Saved Properties</h2>
+                <h2 className="text-3xl mb-4">{t(translations.account.savedPropertiesTitle)}</h2>
               <p className="text-foreground/60 font-light">
-                Your curated shortlist of properties awaiting private preview.
+                {t(translations.account.savedPropertiesDesc)}
               </p>
               </div>
             </ScrollReveal>
@@ -243,13 +246,13 @@ const Account = () => {
               {savedResidences.length === 0 ? (
                 <div className="col-span-full border border-border/50 bg-card px-6 py-20 text-center">
                   <p className="text-foreground/60">
-                    You haven't saved any properties yet. Explore the portfolio to begin curating.
+                    {t(translations.account.noSavedProperties)}
                   </p>
                   <Link
                     to="/properties"
                     className="inline-block mt-6 px-8 py-3 border border-accent text-accent text-sm tracking-[0.15em] hover:bg-accent hover:text-background transition-all"
                   >
-                    BROWSE PROPERTIES
+                    {t(translations.account.browseProperties)}
                   </Link>
                 </div>
               ) : (
@@ -300,7 +303,7 @@ const Account = () => {
                           onClick={() => handleRemoveSaved(residence.id)}
                           className="px-4 py-2 border border-border/50 text-xs tracking-[0.15em] text-foreground/70 hover:border-accent hover:text-accent transition-all"
                         >
-                          REMOVE
+                          {t(translations.account.remove)}
                         </button>
                       </div>
                     </div>
@@ -318,9 +321,9 @@ const Account = () => {
             <div className="max-w-4xl">
               <ScrollReveal animation="fade-in-up" delay={100}>
                 <div className="mb-12">
-                  <h2 className="text-3xl mb-4">Contact History</h2>
+                  <h2 className="text-3xl mb-4">{t(translations.account.contactHistoryTitle)}</h2>
                 <p className="text-foreground/60 font-light">
-                  Keep track of properties you've enquired about and follow up with your concierge.
+                  {t(translations.account.contactHistoryDesc)}
                 </p>
                 </div>
               </ScrollReveal>
@@ -329,13 +332,13 @@ const Account = () => {
                 {contactHistory.length === 0 ? (
                   <div className="border border-border/50 bg-card px-6 py-20 text-center">
                     <p className="text-foreground/60 mb-6">
-                      Submit a contact request to begin your personalised consultation.
+                      {t(translations.account.noContactHistory)}
                     </p>
                     <Link
                       to="/contact"
                       className="inline-block px-8 py-3 border border-accent text-accent text-sm tracking-[0.15em] hover:bg-accent hover:text-background transition-all"
                     >
-                      CONTACT US
+                      {t(translations.account.contactUs)}
                     </Link>
                   </div>
                 ) : (

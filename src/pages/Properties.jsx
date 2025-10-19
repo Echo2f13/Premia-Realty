@@ -11,6 +11,8 @@ import { db } from "../firebase";
 import useAuth from "../hooks/useAuth";
 import { useToast } from "../components/Toast";
 import ScrollReveal from "../components/ScrollReveal";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
 
 const getPropertyKey = (property, fallback) => {
   if (property?.id) return String(property.id);
@@ -30,6 +32,7 @@ const getPropertyKey = (property, fallback) => {
 const Properties = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const { t } = useLanguage();
   const toast = useToast();
   const [listings, setListings] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
@@ -222,11 +225,11 @@ const Properties = () => {
 
   // Format price for display
   const formatPrice = (price) => {
-    if (!price) return "Contact for price";
+    if (!price) return t(translations.properties.contactForPrice);
 
     const numPrice = typeof price === 'number' ? price : parseFloat(price);
 
-    if (isNaN(numPrice)) return "Contact for price";
+    if (isNaN(numPrice)) return t(translations.properties.contactForPrice);
 
     const formatted = new Intl.NumberFormat("en-US").format(numPrice);
 
@@ -262,10 +265,15 @@ const Properties = () => {
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
+<<<<<<< HEAD
               <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4 font-monument">EXCLUSIVE PORTFOLIO</div>
               <h1 className="text-6xl md:text-7xl mb-6">Our Properties</h1>
+=======
+              <div className="text-accent text-base font-semibold tracking-[0.3em] mb-4">{t(translations.properties.subtitle)}</div>
+              <h1 className="text-6xl md:text-7xl mb-6">{t(translations.properties.title)}</h1>
+>>>>>>> 997d0ff099971297d14f23ae11ae80b24e8a5fec
               <p className="text-xl text-foreground/60 font-light leading-relaxed">
-                Discover meticulously curated estates across Bahrain's most prestigious addresses
+                {t(translations.properties.description)}
               </p>
             </div>
           </div>
@@ -277,7 +285,7 @@ const Properties = () => {
             <div className="grid md:grid-cols-4 gap-6">
               <input
                 type="text"
-                placeholder="Search location..."
+                placeholder={t(translations.properties.filters.searchPlaceholder)}
                 value={filters.location}
                 onChange={(e) => setFilters((prev) => ({ ...prev, location: e.target.value }))}
                 className="bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
@@ -287,32 +295,32 @@ const Properties = () => {
                 onChange={(e) => setFilters((prev) => ({ ...prev, propertyType: e.target.value }))}
                 className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
               >
-                <option value="">Property Type</option>
-                <option value="Villa">Villa</option>
-                <option value="Apartment">Apartment</option>
-                <option value="Penthouse">Penthouse</option>
-                <option value="Townhouse">Townhouse</option>
+                <option value="">{t(translations.properties.filters.propertyType)}</option>
+                <option value="Villa">{t(translations.properties.filters.villa)}</option>
+                <option value="Apartment">{t(translations.properties.filters.apartment)}</option>
+                <option value="Penthouse">{t(translations.properties.filters.penthouse)}</option>
+                <option value="Townhouse">{t(translations.properties.filters.townhouse)}</option>
               </select>
               <select
                 value={filters.priceRange}
                 onChange={(e) => setFilters((prev) => ({ ...prev, priceRange: e.target.value }))}
                 className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
               >
-                <option value="">Price Range</option>
-                <option value="0-500k">Below BD 500,000</option>
-                <option value="500k-1m">BD 500,000 - 1,000,000</option>
-                <option value="1m+">Above BD 1,000,000</option>
+                <option value="">{t(translations.properties.filters.priceRange)}</option>
+                <option value="0-500k">{t(translations.properties.filters.below500k)}</option>
+                <option value="500k-1m">{t(translations.properties.filters.range500kTo1m)}</option>
+                <option value="1m+">{t(translations.properties.filters.above1m)}</option>
               </select>
               <select
                 value={filters.bedrooms}
                 onChange={(e) => setFilters((prev) => ({ ...prev, bedrooms: e.target.value }))}
                 className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
               >
-                <option value="">Bedrooms</option>
-                <option value="2">2+ Bedrooms</option>
-                <option value="3">3+ Bedrooms</option>
-                <option value="4">4+ Bedrooms</option>
-                <option value="5">5+ Bedrooms</option>
+                <option value="">{t(translations.properties.filters.bedrooms)}</option>
+                <option value="2">{t(translations.properties.filters.bedrooms2Plus)}</option>
+                <option value="3">{t(translations.properties.filters.bedrooms3Plus)}</option>
+                <option value="4">{t(translations.properties.filters.bedrooms4Plus)}</option>
+                <option value="5">{t(translations.properties.filters.bedrooms5Plus)}</option>
               </select>
             </div>
           </div>
@@ -324,7 +332,7 @@ const Properties = () => {
             <div className="container mx-auto px-6 lg:px-12">
               <div className="flex flex-col items-center justify-center py-20">
                 <Loader2 className="w-12 h-12 text-accent animate-spin" />
-                <p className="mt-4 text-foreground/60">Loading properties...</p>
+                <p className="mt-4 text-foreground/60">{t(translations.properties.loading)}</p>
               </div>
             </div>
           </section>
@@ -340,7 +348,7 @@ const Properties = () => {
                   onClick={() => window.location.reload()}
                   className="mt-4 border border-accent px-6 py-2 text-sm tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
                 >
-                  Try Again
+                  {t(translations.properties.tryAgain)}
                 </button>
               </div>
             </div>
@@ -354,8 +362,8 @@ const Properties = () => {
               <div className="text-center py-20">
                 <p className="text-foreground/60 mb-6">
                   {allProperties.length === 0
-                    ? "No properties available at this time."
-                    : "No properties match your search criteria. Try adjusting your filters."}
+                    ? t(translations.properties.noProperties)
+                    : t(translations.properties.noMatch)}
                 </p>
                 {allProperties.length > 0 && (
                   <button
@@ -365,7 +373,7 @@ const Properties = () => {
                     }}
                     className="border border-accent px-8 py-3 text-sm tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
                   >
-                    Clear Filters
+                    {t(translations.properties.clearFilters)}
                   </button>
                 )}
               </div>
