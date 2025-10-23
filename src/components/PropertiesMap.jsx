@@ -206,7 +206,14 @@ const PropertiesMap = () => {
                     position={[property.location.lat, property.location.lng]}
                     icon={redIcon}
                   >
-                    <Popup maxWidth={320} minWidth={280}>
+                    <Popup
+                      maxWidth={320}
+                      minWidth={280}
+                      autoPan={true}
+                      autoPanPaddingTopLeft={[50, 80]}
+                      autoPanPaddingBottomRight={[50, 50]}
+                      keepInView={true}
+                    >
                       <div className="p-2">
                         {/* Property Image */}
                         {property.images && property.images[0] && (
