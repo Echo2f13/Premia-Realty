@@ -114,41 +114,89 @@ export const translations = {
   about: {
     title: { en: "About Premia", ar: "عن بريميا" },
     subtitle: { en: "EXCELLENCE IN REAL ESTATE", ar: "التميز في العقارات" },
-    section1: {
+    intro: {
+      description: {
+        en: "Welcome to Premia Realty, the ultimate address for luxury residential lease in Bahrain. We specialize in curating exclusive leasing opportunities for discerning individuals and families seeking elegance, comfort, and sophistication. Whether it's a stunning villa, a modern apartment, or a lavish penthouse, Premia Realty is your trusted partner in finding the home you've always dreamed of.",
+        ar: "مرحبًا بكم في بريميا ريلتي، العنوان الأمثل لتأجير العقارات السكنية الفاخرة في البحرين. نحن متخصصون في توفير فرص تأجير حصرية للأفراد والعائلات الذين يبحثون عن الأناقة والراحة والفخامة. سواء كانت فيلا مذهلة، أو شقة عصرية، أو بنتهاوس فاخر، فإن بريميا ريلتي هي شريكك الموثوق في العثور على المنزل الذي طالما حلمت به."
+      },
+    },
+    story: {
       title: { en: "Our Story", ar: "قصتنا" },
       description: {
-        en: "Since our establishment, Premia has been committed to delivering exceptional real estate services in the Kingdom of Bahrain. We specialize in premium properties that reflect the finest standards of luxury and comfort.",
-        ar: "منذ تأسيسنا، التزمت بريميا بتقديم خدمات عقارية استثنائية في مملكة البحرين. نحن متخصصون في العقارات المميزة التي تعكس أرقى معايير الفخامة والراحة."
+        en: "Premia Realty, which was set up in 2025, represents a fresh yet ambitious chapter in the world of Bahrain's real estate leasing industry. Established with a singular purpose—to make premium home leasing accessible, seamless, and client-focused—Premia Realty is the realization of a vision to offer unmatched service and professionalism in this sector.\n\nFounded by Mr. Viji Varghese, an entrepreneur with a strong background in business development and a deep understanding of customer satisfaction, Premia Realty was born out of a desire to fill a noticeable gap in the market: the need for a truly personalized and transparent leasing service. Recognizing the challenges that tenants often face—unreliable listings, unclear communication, and lack of after-lease support—Mr. Varghese envisioned a company that would uphold integrity at every stage of the leasing journey.\n\nFrom its inception, Premia Realty has been built on a foundation of trust, transparency, and a client-first philosophy. Though a new entrant in 2025, the company has swiftly positioned itself to become a name synonymous with premium residential leasing in Bahrain.\n\nAt Premia, we understand that finding a home is about more than just square footage—it's about lifestyle, security, and peace of mind. That's why our team is committed to hand-picking residences that not only meet but exceed expectations. Each property is carefully vetted for quality, location, and livability to ensure our clients only see the best options.",
+        ar: "تأسست بريميا ريلتي في عام 2025، وهي تمثل فصلاً جديدًا وطموحًا في عالم صناعة تأجير العقارات في البحرين. تأسست بهدف واحد - جعل تأجير المنازل الفاخرة في متناول الجميع، وسلسًا، ومركزًا على العميل - بريميا ريلتي هي تحقيق لرؤية تقديم خدمة لا مثيل لها واحترافية في هذا القطاع.\n\nتأسست من قبل السيد فيجي فرغيز، رجل أعمال ذو خلفية قوية في تطوير الأعمال وفهم عميق لرضا العملاء، ولدت بريميا ريلتي من رغبة في سد فجوة ملحوظة في السوق: الحاجة إلى خدمة تأجير شخصية وشفافة حقًا. إدراكًا للتحديات التي يواجهها المستأجرون غالبًا - القوائم غير الموثوقة، والتواصل غير الواضح، ونقص الدعم بعد التأجير - تصور السيد فرغيز شركة من شأنها أن تدعم النزاهة في كل مرحلة من رحلة التأجير.\n\nمنذ إنشائها، تم بناء بريميا ريلتي على أساس الثقة والشفافية وفلسفة العميل أولاً. على الرغم من كونها وافدًا جديدًا في عام 2025، فقد وضعت الشركة نفسها بسرعة لتصبح اسمًا مرادفًا لتأجير العقارات السكنية الفاخرة في البحرين.\n\nفي بريميا، نفهم أن العثور على منزل يتعلق بأكثر من مجرد المساحة - إنه يتعلق بأسلوب الحياة والأمان وراحة البال. لهذا السبب يلتزم فريقنا باختيار المساكن التي لا تلبي التوقعات فحسب، بل تتجاوزها. يتم فحص كل عقار بعناية من حيث الجودة والموقع وقابلية العيش لضمان رؤية عملائنا فقط لأفضل الخيارات."
       },
     },
-    section2: {
+    mission: {
       title: { en: "Our Mission", ar: "مهمتنا" },
       description: {
-        en: "To provide our clients with unparalleled real estate solutions, combining market expertise with personalized service to help you find your perfect property.",
-        ar: "تزويد عملائنا بحلول عقارية لا مثيل لها، من خلال الجمع بين الخبرة في السوق والخدمة الشخصية لمساعدتك في العثور على عقارك المثالي."
+        en: "To redefine the leasing experience through integrity, innovation, and attention to detail. We aim to be Bahrain's most trusted residential leasing firm by offering unmatched transparency, dedicated support, and a curated portfolio of high-quality homes.",
+        ar: "إعادة تعريف تجربة التأجير من خلال النزاهة والابتكار والاهتمام بالتفاصيل. نهدف إلى أن نكون شركة تأجير العقارات السكنية الأكثر ثقة في البحرين من خلال تقديم شفافية لا مثيل لها، ودعم متخصص، ومحفظة منسقة من المنازل عالية الجودة."
       },
     },
-    section3: {
-      title: { en: "Why Choose Us", ar: "لماذا تختارنا" },
-      reason1: {
-        title: { en: "Local Expertise", ar: "خبرة محلية" },
+    team: {
+      title: { en: "Our Team", ar: "فريقنا" },
+      founder: {
+        name: { en: "Mr. Viji Varghese", ar: "السيد فيجي فرغيز" },
+        title: { en: "Founder & Managing Director", ar: "المؤسس والمدير العام" },
         description: {
-          en: "Deep understanding of Bahrain's real estate market",
-          ar: "فهم عميق لسوق العقارات في البحرين"
+          en: "With years of experience in customer relations and business management, Mr. Viji Varghese brings a wealth of knowledge and a client-centric approach to Premia Realty. His vision is simple yet powerful: create a leasing service that respects the client's time, needs, and aspirations. Under his leadership, Premia Realty has already begun to set new benchmarks for quality and service in the leasing sector.\n\nMr. Varghese believes that every client deserves not just a home, but a lifestyle. His hands-on approach and dedication to excellence have shaped Premia Realty into a company that values relationships over transactions.",
+          ar: "مع سنوات من الخبرة في علاقات العملاء وإدارة الأعمال، يجلب السيد فيجي فرغيز ثروة من المعرفة ونهجًا يركز على العميل إلى بريميا ريلتي. رؤيته بسيطة ولكنها قوية: إنشاء خدمة تأجير تحترم وقت العميل واحتياجاته وتطلعاته. تحت قيادته، بدأت بريميا ريلتي بالفعل في وضع معايير جديدة للجودة والخدمة في قطاع التأجير.\n\nيعتقد السيد فرغيز أن كل عميل يستحق ليس فقط منزلًا، ولكن أسلوب حياة. نهجه العملي وتفانيه في التميز قد شكلا بريميا ريلتي لتصبح شركة تقدر العلاقات أكثر من المعاملات."
+        },
+      },
+    },
+    milestones: {
+      title: { en: "Our Milestones", ar: "إنجازاتنا" },
+      year2025: {
+        title: { en: "2025 – The Beginning", ar: "2025 - البداية" },
+        description: {
+          en: "Premia Realty officially launched with a mission to transform residential leasing in Bahrain.",
+          ar: "أطلقت بريميا ريلتي رسميًا بمهمة تحويل تأجير العقارات السكنية في البحرين."
+        },
+      },
+      launch: {
+        title: { en: "First Quarter 2025", ar: "الربع الأول 2025" },
+        description: {
+          en: "Launch of our digital platform, making property browsing easier and more efficient for clients.",
+          ar: "إطلاق منصتنا الرقمية، مما يجعل تصفح العقارات أسهل وأكثر كفاءة للعملاء."
+        },
+      },
+      expansion: {
+        title: { en: "Looking Ahead", ar: "النظر إلى الأمام" },
+        description: {
+          en: "Expansion of portfolio to include a wider range of premium residential options across key locations in Bahrain.",
+          ar: "توسيع المحفظة لتشمل مجموعة واسعة من الخيارات السكنية الفاخرة في المواقع الرئيسية في البحرين."
+        },
+      },
+    },
+    difference: {
+      title: { en: "What Makes Us Different", ar: "ما يميزنا" },
+      reason1: {
+        title: { en: "Client-Centric Approach", ar: "نهج يركز على العميل" },
+        description: {
+          en: "Your needs come first. We listen, we adapt, we deliver.",
+          ar: "احتياجاتك تأتي أولاً. نحن نستمع، ونتكيف، ونقدم."
         },
       },
       reason2: {
-        title: { en: "Premium Selection", ar: "اختيار مميز" },
+        title: { en: "Curated Portfolio", ar: "محفظة منسقة" },
         description: {
-          en: "Curated portfolio of luxury properties",
-          ar: "مجموعة مختارة من العقارات الفاخرة"
+          en: "Only the finest properties make it to our listings—each one handpicked for quality and appeal.",
+          ar: "فقط أفضل العقارات تصل إلى قوائمنا - كل واحدة مختارة يدويًا من حيث الجودة والجاذبية."
         },
       },
       reason3: {
-        title: { en: "Dedicated Service", ar: "خدمة متفانية" },
+        title: { en: "Transparent Dealings", ar: "تعاملات شفافة" },
         description: {
-          en: "Personalized attention to your unique needs",
-          ar: "اهتمام شخصي باحتياجاتك الفريدة"
+          en: "No hidden fees, no surprises—just honest, clear communication throughout your journey.",
+          ar: "لا رسوم خفية، لا مفاجآت - فقط تواصل صادق وواضح طوال رحلتك."
+        },
+      },
+      reason4: {
+        title: { en: "After-Lease Support", ar: "دعم ما بعد التأجير" },
+        description: {
+          en: "Our relationship doesn't end at signing. We're here for you even after you move in.",
+          ar: "علاقتنا لا تنتهي بالتوقيع. نحن هنا من أجلك حتى بعد انتقالك."
         },
       },
     },
