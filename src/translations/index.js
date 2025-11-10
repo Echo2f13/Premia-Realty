@@ -39,6 +39,87 @@ export const translations = {
       },
       loading: { en: "Loading map...", ar: "جاري تحميل الخريطة..." },
     },
+    aboutPreview: {
+      title: { en: "About Premia Realty", ar: "عن بريميا ريلتي" },
+      subtitle: { en: "WHO WE ARE", ar: "من نحن" },
+      description: {
+        en: "Welcome to Premia Realty, the ultimate address for luxury residential lease in Bahrain. We specialize in curating exclusive leasing opportunities for discerning individuals and families seeking elegance, comfort, and sophistication.",
+        ar: "مرحبًا بكم في بريميا ريلتي، العنوان الأمثل لتأجير العقارات السكنية الفاخرة في البحرين. نحن متخصصون في توفير فرص تأجير حصرية للأفراد والعائلات الذين يبحثون عن الأناقة والراحة والفخامة."
+      },
+      learnMore: { en: "Learn More About Us", ar: "اعرف المزيد عنا" },
+    },
+    priorityProperties: {
+      title: { en: "Featured Properties", ar: "العقارات المميزة" },
+      subtitle: { en: "HANDPICKED SELECTION", ar: "مختارة بعناية" },
+      description: {
+        en: "Explore our premium collection of exclusive properties",
+        ar: "استكشف مجموعتنا المميزة من العقارات الحصرية"
+      },
+      viewDetails: { en: "View Details", ar: "عرض التفاصيل" },
+      viewAll: { en: "View All Properties", ar: "عرض جميع العقارات" },
+      loading: { en: "Loading featured properties...", ar: "جاري تحميل العقارات المميزة..." },
+      noProperties: { en: "No featured properties available", ar: "لا توجد عقارات مميزة متاحة" },
+    },
+    whyChooseUs: {
+      title: { en: "Why Choose Premia", ar: "لماذا تختار بريميا" },
+      subtitle: { en: "OUR COMMITMENT", ar: "التزامنا" },
+      reason1: {
+        title: { en: "Trusted Expertise", ar: "خبرة موثوقة" },
+        description: {
+          en: "Years of experience in Bahrain's luxury real estate market",
+          ar: "سنوات من الخبرة في سوق العقارات الفاخرة في البحرين"
+        },
+      },
+      reason2: {
+        title: { en: "Prime Locations", ar: "مواقع متميزة" },
+        description: {
+          en: "Exclusive properties in the most prestigious addresses",
+          ar: "عقارات حصرية في أرقى العناوين"
+        },
+      },
+      reason3: {
+        title: { en: "Transparent Dealings", ar: "تعاملات شفافة" },
+        description: {
+          en: "Clear communication and honest pricing throughout",
+          ar: "تواصل واضح وتسعير صادق في جميع المراحل"
+        },
+      },
+      reason4: {
+        title: { en: "Personalized Service", ar: "خدمة مخصصة" },
+        description: {
+          en: "Tailored solutions to meet your unique requirements",
+          ar: "حلول مخصصة لتلبية متطلباتك الفريدة"
+        },
+      },
+    },
+    testimonials: {
+      title: { en: "Client Testimonials", ar: "آراء العملاء" },
+      subtitle: { en: "SUCCESS STORIES", ar: "قصص النجاح" },
+      testimonial1: {
+        quote: {
+          en: "Premia Realty made finding our dream home effortless. Their professionalism and attention to detail are unmatched.",
+          ar: "جعلت بريميا ريلتي العثور على منزل أحلامنا سهلاً. احترافيتهم واهتمامهم بالتفاصيل لا مثيل لهما."
+        },
+        author: { en: "Ahmed Al-Khalifa", ar: "أحمد الخليفة" },
+        role: { en: "Business Executive", ar: "مدير تنفيذي" },
+      },
+      testimonial2: {
+        quote: {
+          en: "Outstanding service from start to finish. The team went above and beyond to ensure we found the perfect property.",
+          ar: "خدمة متميزة من البداية إلى النهاية. الفريق بذل جهدًا استثنائيًا لضمان عثورنا على العقار المثالي."
+        },
+        author: { en: "Sarah Johnson", ar: "سارة جونسون" },
+        role: { en: "Expatriate Family", ar: "عائلة وافدة" },
+      },
+      testimonial3: {
+        quote: {
+          en: "Transparent, reliable, and truly professional. Premia Realty exceeded all our expectations in every way.",
+          ar: "شفافون وموثوقون ومحترفون حقًا. تجاوزت بريميا ريلتي جميع توقعاتنا بكل الطرق."
+        },
+        author: { en: "Mohammed Al-Mansoori", ar: "محمد المنصوري" },
+        role: { en: "Property Investor", ar: "مستثمر عقاري" },
+      },
+    },
   },
 
   // Properties Page

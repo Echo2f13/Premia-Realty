@@ -13,6 +13,8 @@ const GradientOrb = ({
   const animationFrameRef = useRef(null);
   const sizeRef = useRef({ current: size, target: size });
   const intensityRef = useRef(1);
+  const lastMouseMoveRef = useRef(Date.now());
+  const isIdleRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,6 +35,9 @@ const GradientOrb = ({
 
     // Smooth mouse position with easing
     const handleMouseMove = (e) => {
+      lastMouseMoveRef.current = Date.now();
+      isIdleRef.current = false;
+
       mouseRef.current.targetX = (e.clientX / width) * 2 - 1;
       mouseRef.current.targetY = (e.clientY / height) * 2 - 1;
 
@@ -66,6 +71,21 @@ const GradientOrb = ({
 
     // Animation loop
     const animate = () => {
+      // Check if idle (no mouse movement for 2 seconds)
+      const timeSinceLastMove = Date.now() - lastMouseMoveRef.current;
+      if (timeSinceLastMove > 2000 && !isIdleRef.current) {
+        isIdleRef.current = true;
+      }
+
+      // Reduce frame rate when idle
+      if (isIdleRef.current) {
+        // Skip some frames when idle to save CPU
+        if (Math.random() > 0.5) {
+          animationFrameRef.current = requestAnimationFrame(animate);
+          return;
+        }
+      }
+
       // Clear canvas
       ctx.clearRect(0, 0, width, height);
 
@@ -119,52 +139,28 @@ const GradientOrb = ({
       ctx.fillStyle = mainGradient;
       ctx.fill();
 
-      // Secondary orb for glow effect - more reactive to mouse
-      const secondaryOffsetX = Math.cos(rotationRef.current * 3) * 50 + mouseRef.current.x * 30;
-      const secondaryOffsetY = Math.sin(rotationRef.current * 3) * 50 + mouseRef.current.y * 30;
-      const glowGradient = createGradient(
-        orbX + secondaryOffsetX,
-        orbY + secondaryOffsetY,
-        currentSize / 3,
-        intensityRef.current
-      );
-      ctx.globalAlpha = 0.6 + mouseActivity * 0.2;
-      ctx.beginPath();
-      ctx.arc(
-        orbX + secondaryOffsetX,
-        orbY + secondaryOffsetY,
-        currentSize / 3,
-        0,
-        Math.PI * 2
-      );
-      ctx.fillStyle = glowGradient;
-      ctx.fill();
-
-      // Accent highlight - follows mouse more closely
-      ctx.globalAlpha = 0.4 + mouseActivity * 0.3;
-      const highlightOffsetX = Math.cos(rotationRef.current * 5) * 80 + mouseRef.current.x * 60;
-      const highlightOffsetY = Math.sin(rotationRef.current * 5) * 80 + mouseRef.current.y * 60;
-      const highlightGradient = ctx.createRadialGradient(
-        orbX + highlightOffsetX,
-        orbY + highlightOffsetY,
-        0,
-        orbX + highlightOffsetX,
-        orbY + highlightOffsetY,
-        currentSize / 4
-      );
-      highlightGradient.addColorStop(0, colors[3]);
-      highlightGradient.addColorStop(0.5, colors[2]);
-      highlightGradient.addColorStop(1, 'transparent');
-      ctx.beginPath();
-      ctx.arc(
-        orbX + highlightOffsetX,
-        orbY + highlightOffsetY,
-        currentSize / 4,
-        0,
-        Math.PI * 2
-      );
-      ctx.fillStyle = highlightGradient;
-      ctx.fill();
+      // Secondary orb for glow effect - only when not idle
+      if (!isIdleRef.current) {
+        const secondaryOffsetX = Math.cos(rotationRef.current * 3) * 50 + mouseRef.current.x * 30;
+        const secondaryOffsetY = Math.sin(rotationRef.current * 3) * 50 + mouseRef.current.y * 30;
+        const glowGradient = createGradient(
+          orbX + secondaryOffsetX,
+          orbY + secondaryOffsetY,
+          currentSize / 3,
+          intensityRef.current
+        );
+        ctx.globalAlpha = 0.6 + mouseActivity * 0.2;
+        ctx.beginPath();
+        ctx.arc(
+          orbX + secondaryOffsetX,
+          orbY + secondaryOffsetY,
+          currentSize / 3,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = glowGradient;
+        ctx.fill();
+      }
 
       ctx.restore();
 
