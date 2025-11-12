@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState, useRef } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Building2, Menu, User, X, LogOut, Languages } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { signOutCustomer } from "../data/firebaseService";
@@ -9,9 +9,11 @@ import { translations } from "../translations";
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated, isAdmin } = useAuth();
   const { language, toggleLanguage, t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const dropdownRef = useRef(null);
 
   const links = [
@@ -45,6 +47,25 @@ const Navbar = () => {
     };
   }, [accountDropdownOpen]);
 
+  // Handle scroll detection for navbar transparency
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    // Only add scroll listener on home page
+    if (location.pathname === "/") {
+      window.addEventListener("scroll", handleScroll);
+      handleScroll(); // Check initial scroll position
+    } else {
+      setIsScrolled(true); // Always solid on non-home pages
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [location.pathname]);
+
   const handleSignOut = async () => {
     try {
       await signOutCustomer();
@@ -56,7 +77,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      isScrolled
+        ? "bg-background/95 backdrop-blur-md border-b border-border/50"
+        : "bg-background/30 backdrop-blur-sm border-b border-border/20"
+    }`}>
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-24">
           <Link to="/" className="flex items-center gap-3">

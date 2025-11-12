@@ -45,19 +45,14 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-diagonal-subtle">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
-        {/* Animated Background Gradient */}
+        {/* Hero Background Image */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/5 animate-gradient-shift" />
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[120px] animate-pulse-slow" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[100px] animate-pulse-slower" />
-        </div>
-
-        {/* Floating Grid Lines */}
-        <div className="absolute inset-0 z-[1] opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'linear-gradient(to right, #D4AF37 1px, transparent 1px), linear-gradient(to bottom, #D4AF37 1px, transparent 1px)',
-            backgroundSize: '80px 80px'
-          }} />
+          <img
+            src="/hero.jpg"
+            alt="Luxury real estate"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-background/60" />
         </div>
 
         {/* Floating Property Cards - Decorative */}
@@ -141,15 +136,15 @@ const Home = () => {
               <span className="relative z-10">{t(translations.home.hero.learnMore)}</span>
             </Link>
           </div>
+        </div>
 
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 animation-delay-600 animate-fade-in">
-            <div className="flex flex-col items-center gap-2 text-accent/60 animate-bounce-slow">
-              <span className="text-xs tracking-[0.2em] uppercase">Scroll</span>
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </div>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-[25] animation-delay-600 animate-fade-in">
+          <div className="flex flex-col items-center gap-2 text-accent/60 animate-bounce-slow">
+            <span className="text-xs tracking-[0.2em] uppercase">Scroll</span>
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
           </div>
         </div>
 
