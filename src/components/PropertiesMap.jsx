@@ -223,9 +223,9 @@ const PropertiesMap = () => {
                               alt={property.title}
                               className="w-full h-full object-cover"
                             />
-                            {property.inclusive && (
+                            {property.negotiable && (
                               <div className="absolute top-2 right-2 bg-accent text-background px-2 py-1 text-xs font-bold shadow-lg tracking-wider">
-                                INCLUSIVE
+                                NEGOTIABLE
                               </div>
                             )}
                           </div>

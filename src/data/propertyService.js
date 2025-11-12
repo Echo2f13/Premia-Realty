@@ -71,7 +71,7 @@ export const sqmToSqft = (sqm) => (sqm ? Math.round(sqm * 10.7639) : null);
  * @param {string} options.filters.intent - Filter by intent (rent/sale)
  * @param {string} options.filters.status - Filter by status
  * @param {boolean} options.filters.featured - Filter by featured status
- * @param {boolean} options.filters.priceInclusive - Filter by price inclusive
+ * @param {boolean} options.filters.negotiable - Filter by negotiable status
  * @param {Object} options.sort - Sort configuration
  * @param {string} options.sort.field - Field to sort by (default: 'createdAt')
  * @param {string} options.sort.direction - Sort direction 'asc' or 'desc' (default: 'desc')
@@ -124,8 +124,8 @@ export const listProperties = async ({
     if (filters.featured !== undefined) {
       q = query(q, where("featured", "==", filters.featured));
     }
-    if (filters.priceInclusive !== undefined) {
-      q = query(q, where("priceInclusive", "==", filters.priceInclusive));
+    if (filters.negotiable !== undefined) {
+      q = query(q, where("negotiable", "==", filters.negotiable));
     }
 
     // Apply sorting

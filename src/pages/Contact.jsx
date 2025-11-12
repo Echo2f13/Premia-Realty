@@ -11,6 +11,7 @@ const initialFormState = {
   name: "",
   email: "",
   phone: "",
+  enquiryType: "buy",
   requirements: "",
 };
 
@@ -46,6 +47,7 @@ const Contact = () => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
+        enquiryType: formData.enquiryType,
         message: formData.requirements,
       }, {
         userId: user?.uid ?? null,
@@ -154,6 +156,34 @@ const Contact = () => {
                       onChange={handleInputChange}
                       required
                     />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-accent tracking-wider mb-3 block">{t(translations.contact.form.enquiryType)}</label>
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setFormData((prev) => ({ ...prev, enquiryType: "buy" }))}
+                        className={`flex-1 px-6 py-3 border transition-all ${
+                          formData.enquiryType === "buy"
+                            ? "bg-accent text-background border-accent"
+                            : "bg-card text-foreground/70 border-border/50 hover:border-accent/50"
+                        }`}
+                      >
+                        {t(translations.contact.form.buy)}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData((prev) => ({ ...prev, enquiryType: "sell" }))}
+                        className={`flex-1 px-6 py-3 border transition-all ${
+                          formData.enquiryType === "sell"
+                            ? "bg-accent text-background border-accent"
+                            : "bg-card text-foreground/70 border-border/50 hover:border-accent/50"
+                        }`}
+                      >
+                        {t(translations.contact.form.sell)}
+                      </button>
+                    </div>
                   </div>
 
                   <div>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Bath, Bed, Heart, MapPin, Maximize, Loader2 } from "lucide-react";
 import {
   removeSavedProperty,
@@ -37,7 +37,7 @@ const Properties = () => {
   const toast = useToast();
   const [listings, setListings] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
-  const [filters, setFilters] = useState({ location: "", propertyType: "", priceRange: "", bedrooms: "" });
+  const [filters, setFilters] = useState({ intent: "rent", location: "", propertyType: "", priceRange: "", bedrooms: "" });
   const [savedResidences, setSavedResidences] = useState(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -152,6 +152,13 @@ const Properties = () => {
   const handleSearch = useCallback(() => {
     let filtered = [...allProperties];
 
+    // Filter by intent (rent or sale)
+    if (filters.intent) {
+      filtered = filtered.filter(property =>
+        property.intent === filters.intent
+      );
+    }
+
     // Filter by location (search in governorate, city, area, and address)
     if (filters.location.trim()) {
       const searchTerm = filters.location.toLowerCase().trim();
@@ -217,7 +224,7 @@ const Properties = () => {
     }
 
     setListings(filtered);
-  }, [allProperties, filters.location, filters.propertyType, filters.priceRange, filters.bedrooms]);
+  }, [allProperties, filters.intent, filters.location, filters.propertyType, filters.priceRange, filters.bedrooms]);
 
   // Apply filters automatically whenever they change
   useEffect(() => {
@@ -275,50 +282,79 @@ const Properties = () => {
           </div>
         </section>
 
-        {/* Filters */}
-        <section className="py-12 border-b border-border/50">
+        {/* Filters Section */}
+        <section className="py-16 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
-            <div className="grid md:grid-cols-4 gap-6">
-              <input
-                type="text"
-                placeholder={t(translations.properties.filters.searchPlaceholder)}
-                value={filters.location}
-                onChange={(e) => setFilters((prev) => ({ ...prev, location: e.target.value }))}
-                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-colors"
-              />
-              <select
-                value={filters.propertyType}
-                onChange={(e) => setFilters((prev) => ({ ...prev, propertyType: e.target.value }))}
-                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
-              >
-                <option value="">{t(translations.properties.filters.propertyType)}</option>
-                <option value="Villa">{t(translations.properties.filters.villa)}</option>
-                <option value="Apartment">{t(translations.properties.filters.apartment)}</option>
-                <option value="Penthouse">{t(translations.properties.filters.penthouse)}</option>
-                <option value="Townhouse">{t(translations.properties.filters.townhouse)}</option>
-              </select>
-              <select
-                value={filters.priceRange}
-                onChange={(e) => setFilters((prev) => ({ ...prev, priceRange: e.target.value }))}
-                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
-              >
-                <option value="">{t(translations.properties.filters.priceRange)}</option>
-                <option value="0-500k">{t(translations.properties.filters.below500k)}</option>
-                <option value="500k-1m">{t(translations.properties.filters.range500kTo1m)}</option>
-                <option value="1m+">{t(translations.properties.filters.above1m)}</option>
-              </select>
-              <select
-                value={filters.bedrooms}
-                onChange={(e) => setFilters((prev) => ({ ...prev, bedrooms: e.target.value }))}
-                className="bg-card border border-border/50 h-12 px-4 text-foreground/90 focus:outline-none focus:border-accent transition-colors"
-              >
-                <option value="">{t(translations.properties.filters.bedrooms)}</option>
-                <option value="2">{t(translations.properties.filters.bedrooms2Plus)}</option>
-                <option value="3">{t(translations.properties.filters.bedrooms3Plus)}</option>
-                <option value="4">{t(translations.properties.filters.bedrooms4Plus)}</option>
-                <option value="5">{t(translations.properties.filters.bedrooms5Plus)}</option>
-              </select>
-            </div>
+            <ScrollReveal animation="fade-in-up">
+              {/* Main Intent Filter */}
+              <div className="flex justify-center mb-12">
+                <div className="inline-flex bg-background border border-border/50 p-2 gap-2">
+                  <button
+                    onClick={() => setFilters((prev) => ({ ...prev, intent: "rent" }))}
+                    className={`px-16 py-4 text-sm uppercase tracking-[0.25em] font-semibold transition-all duration-300 ${
+                      filters.intent === "rent"
+                        ? "bg-accent text-background shadow-lg"
+                        : "text-foreground/60 hover:text-foreground hover:bg-card/50"
+                    }`}
+                  >
+                    {t(translations.properties.filters.rent)}
+                  </button>
+                  <button
+                    onClick={() => setFilters((prev) => ({ ...prev, intent: "sale" }))}
+                    className={`px-16 py-4 text-sm uppercase tracking-[0.25em] font-semibold transition-all duration-300 ${
+                      filters.intent === "sale"
+                        ? "bg-accent text-background shadow-lg"
+                        : "text-foreground/60 hover:text-foreground hover:bg-card/50"
+                    }`}
+                  >
+                    {t(translations.properties.filters.sale)}
+                  </button>
+                </div>
+              </div>
+
+              {/* Secondary Filters */}
+              <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <input
+                  type="text"
+                  placeholder={t(translations.properties.filters.searchPlaceholder)}
+                  value={filters.location}
+                  onChange={(e) => setFilters((prev) => ({ ...prev, location: e.target.value }))}
+                  className="bg-card border border-border/50 h-14 px-6 text-foreground/90 placeholder:text-foreground/40 focus:outline-none focus:border-accent transition-all hover:border-accent/50"
+                />
+                <select
+                  value={filters.propertyType}
+                  onChange={(e) => setFilters((prev) => ({ ...prev, propertyType: e.target.value }))}
+                  className="bg-card border border-border/50 h-14 px-6 text-foreground/90 focus:outline-none focus:border-accent transition-all hover:border-accent/50 cursor-pointer"
+                >
+                  <option value="">{t(translations.properties.filters.propertyType)}</option>
+                  <option value="Villa">{t(translations.properties.filters.villa)}</option>
+                  <option value="Apartment">{t(translations.properties.filters.apartment)}</option>
+                  <option value="Penthouse">{t(translations.properties.filters.penthouse)}</option>
+                  <option value="Townhouse">{t(translations.properties.filters.townhouse)}</option>
+                </select>
+                <select
+                  value={filters.priceRange}
+                  onChange={(e) => setFilters((prev) => ({ ...prev, priceRange: e.target.value }))}
+                  className="bg-card border border-border/50 h-14 px-6 text-foreground/90 focus:outline-none focus:border-accent transition-all hover:border-accent/50 cursor-pointer"
+                >
+                  <option value="">{t(translations.properties.filters.priceRange)}</option>
+                  <option value="0-500k">{t(translations.properties.filters.below500k)}</option>
+                  <option value="500k-1m">{t(translations.properties.filters.range500kTo1m)}</option>
+                  <option value="1m+">{t(translations.properties.filters.above1m)}</option>
+                </select>
+                <select
+                  value={filters.bedrooms}
+                  onChange={(e) => setFilters((prev) => ({ ...prev, bedrooms: e.target.value }))}
+                  className="bg-card border border-border/50 h-14 px-6 text-foreground/90 focus:outline-none focus:border-accent transition-all hover:border-accent/50 cursor-pointer"
+                >
+                  <option value="">{t(translations.properties.filters.bedrooms)}</option>
+                  <option value="2">{t(translations.properties.filters.bedrooms2Plus)}</option>
+                  <option value="3">{t(translations.properties.filters.bedrooms3Plus)}</option>
+                  <option value="4">{t(translations.properties.filters.bedrooms4Plus)}</option>
+                  <option value="5">{t(translations.properties.filters.bedrooms5Plus)}</option>
+                </select>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
 
@@ -364,7 +400,7 @@ const Properties = () => {
                 {allProperties.length > 0 && (
                   <button
                     onClick={() => {
-                      setFilters({ location: "", propertyType: "", priceRange: "", bedrooms: "" });
+                      setFilters({ intent: "rent", location: "", propertyType: "", priceRange: "", bedrooms: "" });
                       setListings(allProperties);
                     }}
                     className="border border-accent px-8 py-3 text-sm tracking-[0.15em] text-accent transition hover:bg-accent hover:text-background"
@@ -389,14 +425,22 @@ const Properties = () => {
                   return (
                     <ScrollReveal key={propertyKey} animation="fade-in-up" delay={index * 50}>
                       <div className="group hover-lift">
-                      <div className="relative h-[400px] mb-6 overflow-hidden hover-zoom-image">
+                      <Link to={`/property/${property.id}`} className="block relative h-[400px] mb-6 overflow-hidden hover-zoom-image">
                         <img
                           src={property.images?.[0] || property.image || 'https://via.placeholder.com/400x300?text=No+Image'}
                           alt={property.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 cursor-pointer"
-                          onClick={() => navigate(`/property/${property.id}`)}
+                          className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 cursor-pointer ${
+                            property.status === 'sold' ? 'grayscale' : ''
+                          }`}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent opacity-60" />
+                        {property.status === 'sold' && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="bg-red-500 text-white px-8 py-4 text-2xl font-bold tracking-wider transform -rotate-12">
+                              SOLD
+                            </div>
+                          </div>
+                        )}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -412,7 +456,7 @@ const Properties = () => {
                             strokeWidth={1}
                           />
                         </button>
-                      </div>
+                      </Link>
 
                       <div className="space-y-4 cursor-pointer" onClick={() => navigate(`/property/${property.id}`)}>
                         <div>
@@ -449,10 +493,21 @@ const Properties = () => {
                               </div>
                             ) : null;
                           })()}
-                          <div className="flex items-center gap-2">
-                            <Maximize className="w-4 h-4" strokeWidth={1} />
-                            <span>{formatArea(property)}</span>
-                          </div>
+                          {/* Show area for sale properties, furnished status for rentals */}
+                          {property.intent === 'sale' ? (
+                            <div className="flex items-center gap-2">
+                              <Maximize className="w-4 h-4" strokeWidth={1} />
+                              <span>{formatArea(property)}</span>
+                            </div>
+                          ) : (
+                            property.furnished !== undefined && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs uppercase tracking-wider">
+                                  {property.furnished ? 'Furnished' : 'Unfurnished'}
+                                </span>
+                              </div>
+                            )
+                          )}
                         </div>
 
                         <div className="text-2xl text-accent pt-2">{formatPrice(property.price)}</div>

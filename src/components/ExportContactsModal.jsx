@@ -44,6 +44,7 @@ const ExportContactsModal = ({ onClose }) => {
         Name: contact.name || "",
         Email: contact.email || "",
         Phone: contact.phone || "",
+        Type: contact.enquiryType === "sell" ? "Sell" : "Buy",
         City: contact.city || "",
         Message: contact.message || "",
         "Twilight Preview": formatBoolean(contact.twilightPreview),
@@ -63,6 +64,7 @@ const ExportContactsModal = ({ onClose }) => {
         { wch: 20 }, // Name
         { wch: 30 }, // Email
         { wch: 15 }, // Phone
+        { wch: 10 }, // Type
         { wch: 15 }, // City
         { wch: 40 }, // Message
         { wch: 18 }, // Twilight Preview
@@ -177,7 +179,7 @@ const ExportContactsModal = ({ onClose }) => {
             The exported file will contain the following columns:
           </p>
           <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-foreground/60">
-            <li>Name, Email, Phone, City</li>
+            <li>Name, Email, Phone, Type, City</li>
             <li>Message</li>
             <li>Twilight Preview, Virtual Walkthrough</li>
             <li>Submitted At</li>

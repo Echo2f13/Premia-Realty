@@ -12,9 +12,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 border border-accent/30 flex items-center justify-center">
-                <Building2 className="w-7 h-7 text-accent" strokeWidth={1} />
-              </div>
+              <img
+                src="/main-logo.png"
+                alt="Premia Realty"
+                className="h-12 w-auto"
+              />
               <div>
                 <div className="text-xl tracking-[0.2em] font-monument">PREMIA</div>
                 <div className="text-[10px] tracking-[0.3em] text-accent -mt-1 font-monument">REALTY</div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createProperty } from "../data/firebaseService";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import ImageUploadWithImgcoo from "../components/ImageUploadWithImgcoo";
 import ScrollReveal from "../components/ScrollReveal";
@@ -24,7 +24,7 @@ const AdminPropertyPageAdd = () => {
     currency: "BHD",
     status: "draft",
     ewaIncluded: false,
-    priceInclusive: false,
+    negotiable: false,
     ewaLimit: "",
     featured: false,
     socialHousing: false,
@@ -51,6 +51,7 @@ const AdminPropertyPageAdd = () => {
       bathrooms: "",
       furnishing: "", // furnished, unfurnished, semi
       ac: "", // centralized, split, vrf, other
+      kitchenType: "open", // open, closed
       areaSqm: "",
       areaSqft: "",
       floor: "",
@@ -479,6 +480,7 @@ const AdminPropertyPageAdd = () => {
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
+                    <option value="sold">Sold</option>
                   </select>
                 </div>
               </div>
@@ -529,12 +531,12 @@ const AdminPropertyPageAdd = () => {
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      name="priceInclusive"
-                      checked={formData.priceInclusive}
+                      name="negotiable"
+                      checked={formData.negotiable}
                       onChange={handleInputChange}
                       className="rounded border-border/50 bg-background/50 text-accent focus:ring-gold-primary"
                     />
-                    <span className="text-sm text-foreground">Price Inclusive</span>
+                    <span className="text-sm text-foreground">Negotiable</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -752,6 +754,21 @@ const AdminPropertyPageAdd = () => {
 
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">
+                    Kitchen Type
+                  </label>
+                  <select
+                    name="specs.kitchenType"
+                    value={formData.specs.kitchenType}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
+                  >
+                    <option value="open">Open Kitchen</option>
+                    <option value="closed">Closed Kitchen</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-2">
                     Floor
                   </label>
                   <input
@@ -898,7 +915,9 @@ const AdminPropertyPageAdd = () => {
                   type="text"
                   value={tagsInput}
                   onChange={(e) => setTagsInput(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && (e.preventDefault(), handleAddTag())
+                  }
                   placeholder="Add tag (e.g., sea-view, luxury, family-friendly)"
                   className="flex-1 rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
                 />

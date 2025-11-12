@@ -306,6 +306,9 @@ const AdminContacts = () => {
                           Phone
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
+                          Type
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
                           City
                         </th>
                         <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-accent">
@@ -330,6 +333,15 @@ const AdminContacts = () => {
                           </td>
                           <td className="px-4 py-4 text-sm text-foreground/70">
                             {contact.phone || "N/A"}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-foreground/70">
+                            <span className={`inline-block px-3 py-1 text-xs uppercase tracking-wider ${
+                              contact.enquiryType === "sell"
+                                ? "bg-blue-500/20 text-blue-400"
+                                : "bg-green-500/20 text-green-400"
+                            }`}>
+                              {contact.enquiryType === "sell" ? "Sell" : "Buy"}
+                            </span>
                           </td>
                           <td className="px-4 py-4 text-sm text-foreground/70">
                             {contact.city || "N/A"}

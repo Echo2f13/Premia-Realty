@@ -7,7 +7,7 @@ export const translations = {
     contact: { en: "CONTACT", ar: "اتصل بنا" },
     admin: { en: "ADMIN", ar: "الإدارة" },
     login: { en: "LOGIN", ar: "تسجيل الدخول" },
-    signup: { en: "INQUIRE", ar: "استفسر" },
+    signup: { en: "ENQUIRE", ar: "استفسر" },
     account: { en: "ACCOUNT", ar: "الحساب" },
     profile: { en: "PROFILE", ar: "الملف الشخصي" },
     signOut: { en: "SIGN OUT", ar: "تسجيل الخروج" },
@@ -19,7 +19,7 @@ export const translations = {
       title: { en: "Discover Luxury Living in Bahrain", ar: "اكتشف الحياة الفاخرة في البحرين" },
       subtitle: { en: "Your Gateway to Premium Real Estate", ar: "بوابتك إلى العقارات الممتازة" },
       description: {
-        en: "Explore exclusive properties in the heart of the Kingdom",
+        en: "Explore exclusive properties at prime locations within the Kingdom",
         ar: "استكشف العقارات الحصرية في قلب المملكة"
       },
       exploreButton: { en: "Explore Properties", ar: "استكشف العقارات" },
@@ -137,6 +137,8 @@ export const translations = {
     noMatch: { en: "No properties match your search criteria. Try adjusting your filters.", ar: "لا توجد عقارات تطابق معايير البحث. حاول تعديل الفلاتر." },
     clearFilters: { en: "Clear Filters", ar: "مسح الفلاتر" },
     filters: {
+      rent: { en: "Rent", ar: "إيجار" },
+      sale: { en: "Sale", ar: "بيع" },
       searchPlaceholder: { en: "Search location...", ar: "ابحث عن الموقع..." },
       propertyType: { en: "Property Type", ar: "نوع العقار" },
       villa: { en: "Villa", ar: "فيلا" },
@@ -158,7 +160,7 @@ export const translations = {
   // Property Detail Page
   propertyDetail: {
     backToProperties: { en: "Properties", ar: "العقارات" },
-    inclusive: { en: "INCLUSIVE", ar: "شامل" },
+    negotiable: { en: "NEGOTIABLE", ar: "قابل للتفاوض" },
     forRent: { en: "FOR RENT", ar: "للإيجار" },
     forSale: { en: "FOR SALE", ar: "للبيع" },
     month: { en: "month", ar: "شهر" },
@@ -179,13 +181,13 @@ export const translations = {
     governorate: { en: "Governorate", ar: "المحافظة" },
     city: { en: "City", ar: "المدينة" },
     nearbyAmenities: { en: "Nearby Amenities", ar: "المرافق القريبة" },
-    inquireAbout: { en: "Inquire About This Property", ar: "استفسر عن هذا العقار" },
+    inquireAbout: { en: "Enquire About This Property", ar: "استفسر عن هذا العقار" },
     yourName: { en: "Your Name", ar: "اسمك" },
     yourEmail: { en: "Your Email", ar: "بريدك الإلكتروني" },
     yourPhone: { en: "Your Phone", ar: "هاتفك" },
     message: { en: "Message", ar: "الرسالة" },
     interestedIn: { en: "I'm interested in", ar: "أنا مهتم بـ" },
-    sendInquiry: { en: "Send Inquiry", ar: "إرسال الاستفسار" },
+    sendInquiry: { en: "Send Enquiry", ar: "إرسال الاستفسار" },
     sending: { en: "Sending...", ar: "جاري الإرسال..." },
     loading: { en: "Loading property...", ar: "جاري تحميل العقار..." },
     notFound: { en: "Property not found", ar: "العقار غير موجود" },
@@ -204,8 +206,8 @@ export const translations = {
     story: {
       title: { en: "Our Story", ar: "قصتنا" },
       description: {
-        en: "Premia Realty, which was set up in 2025, represents a fresh yet ambitious chapter in the world of Bahrain's real estate leasing industry. Established with a singular purpose—to make premium home leasing accessible, seamless, and client-focused—Premia Realty is the realization of a vision to offer unmatched service and professionalism in this sector.\n\nFounded by Mr. Viji Varghese, an entrepreneur with a strong background in business development and a deep understanding of customer satisfaction, Premia Realty was born out of a desire to fill a noticeable gap in the market: the need for a truly personalized and transparent leasing service. Recognizing the challenges that tenants often face—unreliable listings, unclear communication, and lack of after-lease support—Mr. Varghese envisioned a company that would uphold integrity at every stage of the leasing journey.\n\nFrom its inception, Premia Realty has been built on a foundation of trust, transparency, and a client-first philosophy. Though a new entrant in 2025, the company has swiftly positioned itself to become a name synonymous with premium residential leasing in Bahrain.\n\nAt Premia, we understand that finding a home is about more than just square footage—it's about lifestyle, security, and peace of mind. That's why our team is committed to hand-picking residences that not only meet but exceed expectations. Each property is carefully vetted for quality, location, and livability to ensure our clients only see the best options.",
-        ar: "تأسست بريميا ريلتي في عام 2025، وهي تمثل فصلاً جديدًا وطموحًا في عالم صناعة تأجير العقارات في البحرين. تأسست بهدف واحد - جعل تأجير المنازل الفاخرة في متناول الجميع، وسلسًا، ومركزًا على العميل - بريميا ريلتي هي تحقيق لرؤية تقديم خدمة لا مثيل لها واحترافية في هذا القطاع.\n\nتأسست من قبل السيد فيجي فرغيز، رجل أعمال ذو خلفية قوية في تطوير الأعمال وفهم عميق لرضا العملاء، ولدت بريميا ريلتي من رغبة في سد فجوة ملحوظة في السوق: الحاجة إلى خدمة تأجير شخصية وشفافة حقًا. إدراكًا للتحديات التي يواجهها المستأجرون غالبًا - القوائم غير الموثوقة، والتواصل غير الواضح، ونقص الدعم بعد التأجير - تصور السيد فرغيز شركة من شأنها أن تدعم النزاهة في كل مرحلة من رحلة التأجير.\n\nمنذ إنشائها، تم بناء بريميا ريلتي على أساس الثقة والشفافية وفلسفة العميل أولاً. على الرغم من كونها وافدًا جديدًا في عام 2025، فقد وضعت الشركة نفسها بسرعة لتصبح اسمًا مرادفًا لتأجير العقارات السكنية الفاخرة في البحرين.\n\nفي بريميا، نفهم أن العثور على منزل يتعلق بأكثر من مجرد المساحة - إنه يتعلق بأسلوب الحياة والأمان وراحة البال. لهذا السبب يلتزم فريقنا باختيار المساكن التي لا تلبي التوقعات فحسب، بل تتجاوزها. يتم فحص كل عقار بعناية من حيث الجودة والموقع وقابلية العيش لضمان رؤية عملائنا فقط لأفضل الخيارات."
+        en: "Established in 2025, Premia Realty represents an ambitious new chapter in Bahrain's real estate leasing industry. Founded by Mr. V. Varghese, an entrepreneur with extensive experience in business development and customer satisfaction, the company was created to fill a critical market gap: the need for truly personalized and transparent leasing services.\n\nRecognizing the challenges tenants face—unreliable listings, unclear communication, and lack of support—Mr. Varghese envisioned a company built on integrity, trust, and a client-first philosophy. At Premia, we understand that finding a home is about more than square footage—it's about lifestyle, security, and peace of mind. Our team hand-picks residences that exceed expectations, carefully vetting each property for quality, location, and livability.",
+        ar: "تأسست بريميا ريلتي في عام 2025، وتمثل فصلاً جديدًا وطموحًا في صناعة تأجير العقارات في البحرين. أسسها السيد في. فرغيز، رجل أعمال ذو خبرة واسعة في تطوير الأعمال ورضا العملاء، لسد فجوة حرجة في السوق: الحاجة إلى خدمات تأجير شخصية وشفافة حقًا.\n\nإدراكًا للتحديات التي يواجهها المستأجرون - القوائم غير الموثوقة والتواصل غير الواضح ونقص الدعم - تصور السيد فرغيز شركة مبنية على النزاهة والثقة وفلسفة العميل أولاً. في بريميا، نفهم أن العثور على منزل يتعلق بأكثر من المساحة - إنه يتعلق بأسلوب الحياة والأمان وراحة البال. يختار فريقنا المساكن التي تتجاوز التوقعات، مع فحص كل عقار بعناية من حيث الجودة والموقع وقابلية العيش."
       },
     },
     mission: {
@@ -218,11 +220,19 @@ export const translations = {
     team: {
       title: { en: "Our Team", ar: "فريقنا" },
       founder: {
-        name: { en: "Mr. Viji Varghese", ar: "السيد فيجي فرغيز" },
+        name: { en: "Mr. V. Varghese", ar: "السيد في. فرغيز" },
         title: { en: "Founder & Managing Director", ar: "المؤسس والمدير العام" },
         description: {
-          en: "With years of experience in customer relations and business management, Mr. Viji Varghese brings a wealth of knowledge and a client-centric approach to Premia Realty. His vision is simple yet powerful: create a leasing service that respects the client's time, needs, and aspirations. Under his leadership, Premia Realty has already begun to set new benchmarks for quality and service in the leasing sector.\n\nMr. Varghese believes that every client deserves not just a home, but a lifestyle. His hands-on approach and dedication to excellence have shaped Premia Realty into a company that values relationships over transactions.",
-          ar: "مع سنوات من الخبرة في علاقات العملاء وإدارة الأعمال، يجلب السيد فيجي فرغيز ثروة من المعرفة ونهجًا يركز على العميل إلى بريميا ريلتي. رؤيته بسيطة ولكنها قوية: إنشاء خدمة تأجير تحترم وقت العميل واحتياجاته وتطلعاته. تحت قيادته، بدأت بريميا ريلتي بالفعل في وضع معايير جديدة للجودة والخدمة في قطاع التأجير.\n\nيعتقد السيد فرغيز أن كل عميل يستحق ليس فقط منزلًا، ولكن أسلوب حياة. نهجه العملي وتفانيه في التميز قد شكلا بريميا ريلتي لتصبح شركة تقدر العلاقات أكثر من المعاملات."
+          en: "With extensive experience in customer relations and business management, Mr. V. Varghese brings a client-centric approach to Premia Realty. His vision is clear: create a leasing service that respects client needs and aspirations. Under his leadership, Premia Realty sets new benchmarks for quality and service in the leasing sector, valuing relationships over transactions.",
+          ar: "مع خبرة واسعة في علاقات العملاء وإدارة الأعمال، يجلب السيد في. فرغيز نهجًا يركز على العميل إلى بريميا ريلتي. رؤيته واضحة: إنشاء خدمة تأجير تحترم احتياجات العملاء وتطلعاتهم. تحت قيادته، تضع بريميا ريلتي معايير جديدة للجودة والخدمة في قطاع التأجير، وتقدر العلاقات أكثر من المعاملات."
+        },
+      },
+      coo: {
+        name: { en: "Mr. Ronnie Varghese", ar: "السيد روني فرغيز" },
+        title: { en: "Chief Operating Officer", ar: "مدير العمليات" },
+        description: {
+          en: "As COO, Mr. Ronnie Varghese oversees daily operations and ensures seamless service delivery. With a keen eye for detail and commitment to operational excellence, he plays a vital role in maintaining Premia's high standards and enhancing client satisfaction across all touchpoints.",
+          ar: "بصفته مدير العمليات، يشرف السيد روني فرغيز على العمليات اليومية ويضمن تقديم خدمة سلسة. بعين ثاقبة للتفاصيل والتزام بالتميز التشغيلي، يلعب دورًا حيويًا في الحفاظ على معايير بريميا العالية وتعزيز رضا العملاء في جميع نقاط الاتصال."
         },
       },
     },
@@ -298,6 +308,9 @@ export const translations = {
       emailPlaceholder: { en: "your@email.com", ar: "your@email.com" },
       phone: { en: "PHONE", ar: "الهاتف" },
       phonePlaceholder: { en: "+973 XXXX XXXX", ar: "+973 XXXX XXXX" },
+      enquiryType: { en: "ENQUIRY TYPE", ar: "نوع الاستفسار" },
+      buy: { en: "Buy", ar: "شراء" },
+      sell: { en: "Sell", ar: "بيع" },
       message: { en: "MESSAGE", ar: "الرسالة" },
       messagePlaceholder: { en: "Your requirements...", ar: "متطلباتك..." },
       submit: { en: "SEND MESSAGE", ar: "إرسال الرسالة" },
@@ -308,7 +321,7 @@ export const translations = {
       email: { en: "EMAIL", ar: "البريد الإلكتروني" },
       address: { en: "ADDRESS", ar: "العنوان" },
       hours: { en: "HOURS", ar: "ساعات العمل" },
-      weekdays: { en: "Monday - Friday: 9:00 AM - 6:00 PM", ar: "الاثنين - الجمعة: 9:00 صباحًا - 6:00 مساءً" },
+      weekdays: { en: "Sat - Thurs: 9:00 AM - 6:00 PM", ar: "السبت - الخميس: 9:00 صباحًا - 6:00 مساءً" },
       weekend: { en: "Private viewings by appointment", ar: "معاينات خاصة بموعد مسبق" },
     },
   },

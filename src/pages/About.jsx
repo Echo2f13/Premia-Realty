@@ -50,12 +50,9 @@ const About = () => {
                   {t(translations.about.story.title)}
                 </h2>
                 <div className="text-foreground/70 text-base font-light leading-relaxed space-y-4">
-                  <p>
-                    Premia Realty was established in 2025 with a singular purpose: to make premium home leasing accessible, seamless, and client-focused. Founded by Mr. Viji Varghese, we address the market's need for truly personalized and transparent leasing service.
-                  </p>
-                  <p>
-                    Built on trust, transparency, and a client-first philosophy, we carefully vet each property for quality, location, and livability—ensuring our clients see only the best options.
-                  </p>
+                  {t(translations.about.story.description).split('\n\n').map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
                 </div>
               </div>
             </div>
@@ -87,8 +84,8 @@ const About = () => {
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl mb-3">{t(translations.about.team.title)}</h2>
             </div>
-            <ScrollReveal animation="fade-in-up">
-              <div className="max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto space-y-8">
+              <ScrollReveal animation="fade-in-up">
                 <div className="bg-card border border-border/50 rounded-lg p-8 md:p-10 hover-glow transition-all">
                   <div className="text-center mb-6 pb-6 border-b border-border/30">
                     <h3 className="text-2xl mb-2 text-accent font-semibold">
@@ -99,16 +96,31 @@ const About = () => {
                     </p>
                   </div>
                   <div className="text-foreground/70 text-base font-light leading-relaxed space-y-4">
-                    <p>
-                      With extensive experience in customer relations and business management, Mr. Viji Varghese brings a client-centric approach to Premia Realty. His vision: create a leasing service that respects the client's time, needs, and aspirations.
-                    </p>
-                    <p>
-                      Under his leadership, Premia Realty has set new benchmarks for quality and service—building a company that values relationships over transactions.
-                    </p>
+                    {t(translations.about.team.founder.description).split('\n\n').map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
                   </div>
                 </div>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
+
+              <ScrollReveal animation="fade-in-up" delay={100}>
+                <div className="bg-card border border-border/50 rounded-lg p-8 md:p-10 hover-glow transition-all">
+                  <div className="text-center mb-6 pb-6 border-b border-border/30">
+                    <h3 className="text-2xl mb-2 text-accent font-semibold">
+                      {t(translations.about.team.coo.name)}
+                    </h3>
+                    <p className="text-foreground/60 text-sm font-light tracking-wide uppercase">
+                      {t(translations.about.team.coo.title)}
+                    </p>
+                  </div>
+                  <div className="text-foreground/70 text-base font-light leading-relaxed space-y-4">
+                    {t(translations.about.team.coo.description).split('\n\n').map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
           </div>
         </section>
 

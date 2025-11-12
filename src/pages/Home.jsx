@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import PropertiesMap from "../components/PropertiesMap";
 import ScrollReveal from "../components/ScrollReveal";
-import GradientOrb from "../components/GradientOrb";
 import LazyImage from "../components/LazyImage";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -46,46 +45,116 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-diagonal-subtle">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
-        {/* Gradient Orb Background */}
+        {/* Animated Background Gradient */}
         <div className="absolute inset-0 z-0">
-          <GradientOrb
-            size={600}
-            colors={['#000000', '#1a1a1a', '#D4AF37', '#F4E5C2']}
-            rotationSpeed={0.0005}
-            mouseInfluence={0.1}
-            blur={80}
-          />
+          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/5 animate-gradient-shift" />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[120px] animate-pulse-slow" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[100px] animate-pulse-slower" />
         </div>
 
-        {/* Subtle gradient overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/50 z-10" />
+        {/* Floating Grid Lines */}
+        <div className="absolute inset-0 z-[1] opacity-[0.03]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'linear-gradient(to right, #D4AF37 1px, transparent 1px), linear-gradient(to bottom, #D4AF37 1px, transparent 1px)',
+            backgroundSize: '80px 80px'
+          }} />
+        </div>
 
-        <div className="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
-          <div className="text-accent text-base font-semibold tracking-[0.3em] mb-6 animation-delay-100">{t(translations.home.hero.subtitle)}</div>
-          <h1 className="text-6xl md:text-7xl lg:text-8xl mb-8 text-foreground leading-tight animation-delay-200">
-            {t(translations.home.hero.title)}
+        {/* Floating Property Cards - Decorative */}
+        <div className="absolute inset-0 z-[2] pointer-events-none">
+          {/* Top Right Card */}
+          <div className="absolute top-[15%] right-[8%] w-[280px] opacity-20 transform hover:opacity-30 transition-all duration-700 animate-float-slow">
+            <div className="bg-card border border-accent/30 backdrop-blur-sm p-4">
+              <div className="h-32 bg-gradient-to-br from-accent/20 to-transparent mb-3" />
+              <div className="h-3 w-3/4 bg-accent/30 mb-2" />
+              <div className="h-2 w-1/2 bg-accent/20" />
+            </div>
+          </div>
+
+          {/* Left Side Card */}
+          <div className="absolute top-[35%] left-[5%] w-[260px] opacity-15 transform hover:opacity-25 transition-all duration-700 animate-float-slower">
+            <div className="bg-card border border-accent/30 backdrop-blur-sm p-4">
+              <div className="h-28 bg-gradient-to-br from-accent/20 to-transparent mb-3" />
+              <div className="h-3 w-2/3 bg-accent/30 mb-2" />
+              <div className="h-2 w-1/3 bg-accent/20" />
+            </div>
+          </div>
+
+          {/* Bottom Right Small Card */}
+          <div className="absolute bottom-[20%] right-[15%] w-[240px] opacity-10 transform hover:opacity-20 transition-all duration-700 animate-float">
+            <div className="bg-card border border-accent/30 backdrop-blur-sm p-3">
+              <div className="h-24 bg-gradient-to-br from-accent/20 to-transparent mb-2" />
+              <div className="h-2 w-3/4 bg-accent/30 mb-2" />
+              <div className="h-2 w-1/2 bg-accent/20" />
+            </div>
+          </div>
+
+          {/* Top Left Accent Shape */}
+          <div className="absolute top-[25%] left-[12%] w-32 h-32 border border-accent/20 rotate-45 animate-spin-very-slow opacity-10" />
+
+          {/* Bottom Left Accent Circle */}
+          <div className="absolute bottom-[25%] left-[8%] w-24 h-24 border border-accent/20 rounded-full animate-pulse-slow opacity-10" />
+        </div>
+
+        {/* Main Content */}
+        <div className="relative z-20 text-center px-6 max-w-6xl">
+          {/* Subtitle with animated underline */}
+          <div className="inline-block mb-8 animate-fade-in">
+            <div className="text-accent text-sm md:text-base font-semibold tracking-[0.3em] mb-3 animation-delay-100">
+              {t(translations.home.hero.subtitle)}
+            </div>
+            <div className="h-[1px] w-0 bg-accent mx-auto animate-expand-width" />
+          </div>
+
+          {/* Main Heading with Staggered Animation */}
+          <h1 className="text-5xl md:text-7xl lg:text-8xl mb-8 text-foreground leading-[1.1] font-light animation-delay-200 animate-fade-in-up">
+            <span className="inline-block animation-delay-200 animate-fade-in-up">
+              {t(translations.home.hero.title).split(' ')[0]}
+            </span>{' '}
+            <span className="inline-block animation-delay-300 animate-fade-in-up text-accent font-normal">
+              {t(translations.home.hero.title).split(' ').slice(1).join(' ')}
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-foreground/60 mb-12 max-w-3xl mx-auto font-light leading-relaxed animation-delay-300">
+
+          {/* Description with subtle animation */}
+          <p className="text-lg md:text-xl lg:text-2xl text-foreground/70 mb-14 max-w-3xl mx-auto font-light leading-relaxed animation-delay-400 animate-fade-in">
             {t(translations.home.hero.description)}
           </p>
 
-          <div className="flex gap-6 justify-center flex-wrap animation-delay-400">
+          {/* CTA Buttons with Enhanced Styling */}
+          <div className="flex gap-6 justify-center flex-wrap animation-delay-500 animate-fade-in-up">
             <Link
               to="/properties"
-              className="px-10 py-4 bg-accent text-background text-sm tracking-[0.2em] hover:bg-accent/90 transition-all btn-primary hover-glow"
+              className="group relative px-12 py-5 bg-accent text-background text-sm tracking-[0.2em] overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:scale-105"
               aria-label="Explore our properties"
             >
-              {t(translations.home.hero.exploreButton)}
+              <div className="absolute inset-0 bg-gradient-to-r from-accent via-[#F4E5C2] to-accent bg-[length:200%_100%] animate-shimmer" />
+              <div className="absolute inset-0 bg-accent" />
+              <span className="relative z-10">{t(translations.home.hero.exploreButton)}</span>
             </Link>
             <Link
               to="/contact"
-              className="px-10 py-4 border border-accent text-accent text-sm tracking-[0.2em] hover:bg-accent hover:text-background transition-all"
+              className="relative px-12 py-5 border-2 border-accent text-accent text-sm tracking-[0.2em] transition-all duration-300 hover:bg-accent hover:text-background group overflow-hidden"
               aria-label="Schedule a property viewing"
             >
-              {t(translations.home.hero.learnMore)}
+              <div className="absolute inset-0 bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              <span className="relative z-10">{t(translations.home.hero.learnMore)}</span>
             </Link>
           </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 animation-delay-600 animate-fade-in">
+            <div className="flex flex-col items-center gap-2 text-accent/60 animate-bounce-slow">
+              <span className="text-xs tracking-[0.2em] uppercase">Scroll</span>
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </div>
+          </div>
         </div>
+
+        {/* Bottom Fade Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-[15]" />
       </section>
 
       {/* Featured Properties Map Section */}

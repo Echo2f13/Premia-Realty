@@ -315,12 +315,19 @@ const PropertyDetail = () => {
                   <div className="text-4xl font-bold text-accent">
                     {formatPrice(property.price, property.priceCadence)}
                   </div>
-                  {property.inclusive && (
-                    <div className="mt-2 inline-flex items-center gap-2 bg-accent/10 border border-accent/30 px-4 py-1.5">
-                      <Shield className="w-4 h-4 text-accent" />
-                      <span className="text-sm font-semibold text-accent tracking-wider">INCLUSIVE</span>
-                    </div>
-                  )}
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {property.negotiable && (
+                      <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/30 px-4 py-1.5">
+                        <Shield className="w-4 h-4 text-accent" />
+                        <span className="text-sm font-semibold text-accent tracking-wider">NEGOTIABLE</span>
+                      </div>
+                    )}
+                    {property.status === 'sold' && (
+                      <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/30 px-4 py-1.5">
+                        <span className="text-sm font-semibold text-red-500 tracking-wider">SOLD</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 {property.featured && (
                   <div className="bg-red-500 text-white px-4 py-2 text-sm font-bold tracking-wider">
@@ -341,11 +348,25 @@ const PropertyDetail = () => {
                   <div className="text-2xl font-bold text-foreground">{bathrooms}</div>
                   <div className="text-xs text-foreground/60 tracking-wider">BATHROOMS</div>
                 </div>
-                <div className="text-center p-4 bg-background/50 border border-border/30">
-                  <Maximize className="w-6 h-6 text-accent mx-auto mb-2" strokeWidth={1} />
-                  <div className="text-2xl font-bold text-foreground">{areaSqft || 'N/A'}</div>
-                  <div className="text-xs text-foreground/60 tracking-wider">SQFT {areaSqm && `(${areaSqm}M²)`}</div>
-                </div>
+                {/* Show area for sale properties only */}
+                {property.intent === 'sale' && (
+                  <div className="text-center p-4 bg-background/50 border border-border/30">
+                    <Maximize className="w-6 h-6 text-accent mx-auto mb-2" strokeWidth={1} />
+                    <div className="text-2xl font-bold text-foreground">{areaSqft || 'N/A'}</div>
+                    <div className="text-xs text-foreground/60 tracking-wider">SQFT {areaSqm && `(${areaSqm}M²)`}</div>
+                  </div>
+                )}
+                {/* Show furnished status for rental properties */}
+                {property.intent === 'rent' && (
+                  <div className="text-center p-4 bg-background/50 border border-border/30">
+                    <Shield className="w-6 h-6 text-accent mx-auto mb-2" strokeWidth={1} />
+                    <div className="text-sm font-bold text-foreground uppercase tracking-wider">
+                      {property.specs?.furnishing === 'furnished' ? 'Furnished' :
+                       property.specs?.furnishing === 'semi' ? 'Semi-Furnished' : 'Unfurnished'}
+                    </div>
+                    <div className="text-xs text-foreground/60 tracking-wider">STATUS</div>
+                  </div>
+                )}
                 <div className="text-center p-4 bg-background/50 border border-border/30">
                   <MapPin className="w-6 h-6 text-accent mx-auto mb-2" strokeWidth={1} />
                   <div className="text-sm font-bold text-foreground truncate">{property.location?.city || 'N/A'}</div>
@@ -395,10 +416,20 @@ const PropertyDetail = () => {
               <h2 className="text-3xl mb-6">Property Details</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 <DetailRow label="Property Type" value={propertyType || 'N/A'} />
-                <DetailRow label="Size" value={`${areaSqft || 'N/A'} sqft ${areaSqm ? `(${areaSqm}m²)` : ''}`} />
+                {/* Show size only for sale properties */}
+                {property.intent === 'sale' && (
+                  <DetailRow label="Size" value={`${areaSqft || 'N/A'} sqft ${areaSqm ? `(${areaSqm}m²)` : ''}`} />
+                )}
                 <DetailRow label="Bedrooms" value={bedrooms} />
                 <DetailRow label="Bathrooms" value={bathrooms} />
-                <DetailRow label="Furnished" value={property.furnished ? 'Yes' : 'No'} />
+                <DetailRow label="Furnished" value={
+                  property.specs?.furnishing === 'furnished' ? 'Furnished' :
+                  property.specs?.furnishing === 'semi' ? 'Semi-Furnished' : 'Unfurnished'
+                } />
+                <DetailRow
+                  label="Kitchen Type"
+                  value={property.specs?.kitchenType === 'closed' ? 'Closed Kitchen' : 'Open Kitchen'}
+                />
                 <DetailRow label="Reference ID" value={property.referenceCode || property.id} />
               </div>
               </div>
@@ -437,20 +468,22 @@ const PropertyDetail = () => {
               <div className="bg-card border border-border/50 p-6">
               <h3 className="text-2xl mb-4">Contact Agent</h3>
               <div className="space-y-3">
-                <Link
-                  to="/contact"
+                <a
+                  href={`tel:${property.agentContact?.phone || ''}`}
                   className="w-full flex items-center justify-center gap-2 bg-accent text-background px-6 py-4 font-semibold hover:bg-accent/90 transition text-sm tracking-[0.15em]"
                 >
                   <Phone className="w-5 h-5" strokeWidth={1.5} />
                   CALL NOW
-                </Link>
-                <Link
-                  to="/contact"
+                </a>
+                <a
+                  href={`https://wa.me/${property.agentContact?.whatsapp?.replace(/[^0-9]/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 bg-green-600 px-6 py-4 text-white font-semibold hover:bg-green-700 transition text-sm tracking-[0.15em]"
                 >
                   <MessageCircle className="w-5 h-5" strokeWidth={1.5} />
                   WHATSAPP
-                </Link>
+                </a>
               </div>
               </div>
             </ScrollReveal>
@@ -460,9 +493,22 @@ const PropertyDetail = () => {
               <ScrollReveal animation="fade-in-up" delay={200}>
                 <div className="bg-card border border-border/50 p-6">
                 <h3 className="text-2xl mb-4">Location</h3>
-                <div className="h-64 bg-background/50 border border-border/30 flex items-center justify-center text-foreground/40">
-                  <MapPin className="w-12 h-12" strokeWidth={1} />
-                </div>
+                <a
+                  href={`https://www.google.com/maps?q=${property.location.lat},${property.location.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block h-64 border border-border/30 overflow-hidden hover:border-accent/50 transition cursor-pointer"
+                >
+                  <iframe
+                    src={`https://www.google.com/maps?q=${property.location.lat},${property.location.lng}&z=17&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="pointer-events-none"
+                  />
+                </a>
                 <p className="mt-4 text-sm text-foreground/60">
                   {[property.location.area, property.location.city, property.location.governorate].filter(Boolean).join(', ')}
                 </p>

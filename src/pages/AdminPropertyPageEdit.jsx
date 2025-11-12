@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProperty, updateProperty } from "../data/firebaseService";
+import { getProperty, updateProperty, uploadPropertyImages, deletePropertyImage } from "../data/firebaseService";
 import { ArrowLeft, Upload, X } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import ScrollReveal from "../components/ScrollReveal";
+import ImageUploadWithImgcoo from "../components/ImageUploadWithImgcoo";
 
 const AdminPropertyPageEdit = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const AdminPropertyPageEdit = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
 
@@ -27,7 +29,7 @@ const AdminPropertyPageEdit = () => {
     currency: "BHD", // BHD, USD, EUR, GBP
     status: "draft",
     ewaIncluded: false,
-    priceInclusive: false,
+    negotiable: false,
     ewaLimit: "",
     featured: false,
     socialHousing: false,
@@ -53,6 +55,7 @@ const AdminPropertyPageEdit = () => {
       bathrooms: "",
       furnishing: "", // furnished, unfurnished, semi-furnished
       ac: "", // centralized, split, vrf, other
+      kitchenType: "open", // open, closed
       areaSqm: "",
       areaSqft: "",
       floor: "",
@@ -112,7 +115,7 @@ const AdminPropertyPageEdit = () => {
           currency: property.currency || "BHD",
           status: property.status || "draft",
           ewaIncluded: property.ewaIncluded || false,
-          priceInclusive: property.priceInclusive || false,
+          negotiable: property.negotiable || false,
           ewaLimit: property.ewaLimit || "",
           featured: property.featured || false,
           socialHousing: property.socialHousing || false,
@@ -287,7 +290,7 @@ const AdminPropertyPageEdit = () => {
       return;
     }
 
-    if (existingImages.length === 0 && imageFiles.length === 0) {
+    if (existingImages.length === 0 && imageFiles.length === 0 && imageUrls.length === 0) {
       alert("At least one image is required");
       return;
     }
@@ -356,7 +359,32 @@ const AdminPropertyPageEdit = () => {
 
       console.log("📋 Property data prepared:", propertyData);
 
-      await updateProperty(propertyId, propertyData, imageFiles, imagesToDelete, user);
+      // If we have URL-uploaded images, merge them with existing and file-uploaded images
+      if (imageUrls.length > 0) {
+        // Upload new image files first
+        const newImageFileUrls = imageFiles.length > 0
+          ? await uploadPropertyImages(imageFiles, propertyId)
+          : [];
+
+        // Delete marked images from storage
+        if (imagesToDelete.length > 0) {
+          await Promise.all(imagesToDelete.map((url) => deletePropertyImage(url)));
+        }
+
+        // Filter existing images to remove deleted ones
+        const remainingExistingImages = existingImages.filter(
+          (url) => !imagesToDelete.includes(url)
+        );
+
+        // Merge all images: existing + URL uploads + file uploads
+        propertyData.images = [...remainingExistingImages, ...imageUrls, ...newImageFileUrls];
+
+        // Update property with merged images (pass empty arrays to avoid double processing)
+        await updateProperty(propertyId, propertyData, [], [], user);
+      } else {
+        // Normal update flow when no URL images
+        await updateProperty(propertyId, propertyData, imageFiles, imagesToDelete, user);
+      }
 
       alert("✅ Property updated successfully!");
       navigate("/admin");
@@ -605,6 +633,7 @@ const AdminPropertyPageEdit = () => {
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
+                    <option value="sold">Sold</option>
                   </select>
                 </div>
               </div>
@@ -654,12 +683,12 @@ const AdminPropertyPageEdit = () => {
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    name="priceInclusive"
-                    checked={formData.priceInclusive}
+                    name="negotiable"
+                    checked={formData.negotiable}
                     onChange={handleInputChange}
                     className="rounded border-border/50 bg-background/50 text-accent focus:ring-gold-primary"
                   />
-                  <span className="text-sm text-foreground">Price Inclusive</span>
+                  <span className="text-sm text-foreground">Negotiable</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -872,6 +901,21 @@ const AdminPropertyPageEdit = () => {
                     <option value="split">Split</option>
                     <option value="vrf">VRF</option>
                     <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-2">
+                    Kitchen Type
+                  </label>
+                  <select
+                    name="specs.kitchenType"
+                    value={formData.specs.kitchenType}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg bg-background/50 border border-border/50 px-4 py-3 text-foreground focus:border-accent focus:outline-none"
+                  >
+                    <option value="open">Open Kitchen</option>
+                    <option value="closed">Closed Kitchen</option>
                   </select>
                 </div>
 
@@ -1238,52 +1282,11 @@ const AdminPropertyPageEdit = () => {
                 </div>
               )}
 
-              {/* Upload New Images */}
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-foreground mb-3">
-                  Add New Images
-                </h3>
-                <label className="flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gold-primary/30 bg-background/50 px-6 py-8 cursor-pointer hover:border-gold-primary/50 transition">
-                  <Upload className="h-6 w-6 text-accent" />
-                  <span className="text-foreground">
-                    Click to upload images (multiple)
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageSelect}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-
-              {/* New Image Previews */}
-              {imagePreviews.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-3">
-                    New Images to Upload
-                  </h3>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    {imagePreviews.map((preview, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={preview}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveNewImage(index)}
-                          className="absolute top-2 right-2 rounded-full bg-red-500 p-2 text-white opacity-0 group-hover:opacity-100 transition"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Add New Images - Using ImageUploadWithImgcoo component */}
+              <ImageUploadWithImgcoo
+                imageUrls={imageUrls}
+                onImagesChange={setImageUrls}
+              />
             </div>
 
             {/* Submit */}
