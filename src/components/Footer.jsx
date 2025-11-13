@@ -28,15 +28,18 @@ const Footer = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-base text-foreground/60">
                 <Phone className="w-5 h-5 text-accent" strokeWidth={1} />
-                <span>+973 1234 5678</span>
+                <div>
+                  <div>+973 33709005</div>
+                  <div>+973 34020266</div>
+                </div>
               </div>
               <div className="flex items-center gap-3 text-base text-foreground/60">
                 <Mail className="w-5 h-5 text-accent" strokeWidth={1} />
-                <span>concierge@premiarealty.com</span>
+                <span>vv.premiarealty@gmail.com</span>
               </div>
               <div className="flex items-center gap-3 text-base text-foreground/60">
                 <MapPin className="w-5 h-5 text-accent" strokeWidth={1} />
-                <span>{t(translations.footer.address)}</span>
+                <span>Office 3020, Building 2004, Road 1527 Hidd</span>
               </div>
             </div>
           </div>

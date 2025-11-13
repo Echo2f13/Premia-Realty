@@ -88,21 +88,22 @@ const Contact = () => {
                       <Phone className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
                       <div>
                         <div className="text-sm text-accent tracking-wider mb-1">{t(translations.contact.info.phone)}</div>
-                        <div className="text-lg">+973 1234 5678</div>
+                        <div className="text-lg">+973 33709005</div>
+                        <div className="text-lg">+973 34020266</div>
                       </div>
                     </div>
                     <div className="flex items-start gap-4">
                       <Mail className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
                       <div>
                         <div className="text-sm text-accent tracking-wider mb-1">{t(translations.contact.info.email)}</div>
-                        <div className="text-lg">concierge@premiarealty.com</div>
+                        <div className="text-lg">vv.premiarealty@gmail.com</div>
                       </div>
                     </div>
                     <div className="flex items-start gap-4">
                       <MapPin className="w-6 h-6 text-accent mt-1" strokeWidth={1} />
                       <div>
                         <div className="text-sm text-accent tracking-wider mb-1">{t(translations.contact.info.address)}</div>
-                        <div className="text-lg">{t(translations.footer.address)}</div>
+                        <div className="text-lg">Office 3020, Building 2004, Road 1527 Hidd</div>
                       </div>
                     </div>
                   </div>

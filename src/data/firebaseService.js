@@ -27,6 +27,7 @@ import {
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  linkWithCredential,
 } from "firebase/auth";
 import {
   ref,
@@ -157,6 +158,9 @@ export const signInWithGoogle = async () => {
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
 
+  // Check if this is a new user (first time sign in)
+  const isNewUser = result._tokenResponse?.isNewUser || false;
+
   // Create or update user profile in Firestore
   await setDoc(
     userDocRef(user.uid),
@@ -168,9 +172,37 @@ export const signInWithGoogle = async () => {
       photoURL: user.photoURL || null,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
+      needsPasswordSetup: isNewUser, // Flag for first-time Google users
     },
     { merge: true }
   );
+
+  return { user, isNewUser };
+};
+
+export const linkPasswordToGoogleAccount = async (password) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("No user is currently signed in");
+  }
+
+  // Check if user already has password auth
+  const providers = user.providerData.map(p => p.providerId);
+  if (providers.includes("password")) {
+    throw new Error("Password is already set for this account");
+  }
+
+  // Create email/password credential
+  const credential = EmailAuthProvider.credential(user.email, password);
+
+  // Link the credential to the current user
+  await linkWithCredential(user, credential);
+
+  // Update Firestore to mark password as set
+  await updateDoc(userDocRef(user.uid), {
+    needsPasswordSetup: false,
+    updatedAt: serverTimestamp(),
+  });
 
   return user;
 };

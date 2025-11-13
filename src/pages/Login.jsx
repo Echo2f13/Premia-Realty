@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { signInCustomer, signInWithGoogle } from "../data/firebaseService";
+import { signInCustomer, signInWithGoogle, linkPasswordToGoogleAccount } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
+import SetPasswordModal from "../components/SetPasswordModal";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,6 +14,8 @@ const Login = () => {
   const [form, setForm] = useState({ identifier: "", password: "" });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [googleUserEmail, setGoogleUserEmail] = useState("");
 
   useEffect(() => {
     if (!loading && user) {
@@ -50,9 +53,18 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      await signInWithGoogle();
-      const redirectTo = location.state?.from ?? "/account";
-      navigate(redirectTo, { replace: true });
+      const result = await signInWithGoogle();
+
+      // If this is a new user, show password setup modal
+      if (result.isNewUser) {
+        setGoogleUserEmail(result.user.email);
+        setShowPasswordModal(true);
+        setIsSubmitting(false);
+      } else {
+        // Existing user, redirect normally
+        const redirectTo = location.state?.from ?? "/account";
+        navigate(redirectTo, { replace: true });
+      }
     } catch (err) {
       console.error("Unable to sign in with Google", err);
       if (err.code === "auth/popup-closed-by-user") {
@@ -64,6 +76,23 @@ const Login = () => {
       }
       setIsSubmitting(false);
     }
+  };
+
+  const handleSetPassword = async (password) => {
+    try {
+      await linkPasswordToGoogleAccount(password);
+      setShowPasswordModal(false);
+      const redirectTo = location.state?.from ?? "/account";
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      throw new Error(err.message || "Failed to set password");
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowPasswordModal(false);
+    const redirectTo = location.state?.from ?? "/account";
+    navigate(redirectTo, { replace: true });
   };
 
   return (
@@ -158,6 +187,13 @@ const Login = () => {
           </Link>
         </p>
       </div>
+
+      <SetPasswordModal
+        isOpen={showPasswordModal}
+        onClose={handleCloseModal}
+        onSubmit={handleSetPassword}
+        userEmail={googleUserEmail}
+      />
     </div>
   );
 };
