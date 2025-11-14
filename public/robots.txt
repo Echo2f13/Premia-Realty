@@ -1,0 +1,26 @@
+# Premia Realty - Robots.txt
+# Website: https://premiarealty.bh
+
+User-agent: *
+Allow: /
+Allow: /properties
+Allow: /about
+Allow: /contact
+
+# Disallow admin and account pages from search engines
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /account
+Disallow: /login
+Disallow: /signup
+Disallow: /change-password
+
+# Disallow trash pages
+Disallow: /admin/trash
+Disallow: /admin/contacts/trash
+
+# Sitemap location
+Sitemap: https://premiarealty.bh/sitemap.xml
+
+# Crawl-delay (optional - helps prevent server overload)
+Crawl-delay: 1

@@ -4,6 +4,7 @@ import { addContactForm } from "../data/firebaseService";
 import useAuth from "../hooks/useAuth";
 import { useToast } from "../components/Toast";
 import ScrollReveal from "../components/ScrollReveal";
+import SEO from "../components/SEO";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
 
@@ -64,8 +65,10 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-diagonal-subtle">
-      <div className="pt-24">
+    <>
+      <SEO page="contact" />
+      <div className="min-h-screen bg-gradient-diagonal-subtle">
+        <div className="pt-24">
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
             <div className="text-center max-w-3xl mx-auto animate-fade-in">
@@ -210,8 +213,9 @@ const Contact = () => {
             </div>
           </div>
         </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

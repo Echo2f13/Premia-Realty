@@ -11,6 +11,7 @@ import { db } from "../firebase";
 import useAuth from "../hooks/useAuth";
 import { useToast } from "../components/Toast";
 import ScrollReveal from "../components/ScrollReveal";
+import SEO from "../components/SEO";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
 import { getPropertyField, translateLocation } from "../utils/propertyTranslations";
@@ -267,8 +268,10 @@ const Properties = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-diagonal-subtle">
-      <div className="pt-24">
+    <>
+      <SEO page="properties" />
+      <div className="min-h-screen bg-gradient-diagonal-subtle">
+        <div className="pt-24">
         {/* Header */}
         <section className="py-20 border-b border-border/50">
           <div className="container mx-auto px-6 lg:px-12">
@@ -520,8 +523,9 @@ const Properties = () => {
             </div>
           </section>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

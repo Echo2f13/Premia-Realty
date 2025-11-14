@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import PropertiesMap from "../components/PropertiesMap";
 import ScrollReveal from "../components/ScrollReveal";
 import LazyImage from "../components/LazyImage";
+import SEO from "../components/SEO";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
@@ -42,9 +43,11 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-diagonal-subtle">
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
+    <>
+      <SEO page="home" />
+      <div className="min-h-screen bg-gradient-diagonal-subtle">
+        {/* Hero Section */}
+        <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
         {/* Hero Background Image */}
         <div className="absolute inset-0 z-0">
           <img
@@ -262,7 +265,8 @@ const Home = () => {
           </ScrollReveal>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 };
 

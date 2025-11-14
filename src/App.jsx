@@ -40,7 +40,7 @@ const AppContent = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/account" element={<Account />} />
           <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/property/:id" element={<PropertyDetail />} />
+          <Route path="/properties/:id" element={<PropertyDetail />} />
 
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />

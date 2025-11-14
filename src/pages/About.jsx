@@ -1,6 +1,7 @@
 import { Target, Users, Award, TrendingUp } from "lucide-react";
 import ScrollReveal from "../components/ScrollReveal";
 import LazyImage from "../components/LazyImage";
+import SEO from "../components/SEO";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
 
@@ -8,7 +9,9 @@ const About = () => {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gradient-diagonal-subtle">
+    <>
+      <SEO page="about" />
+      <div className="min-h-screen bg-gradient-diagonal-subtle">
       <div className="pt-24">
         {/* Hero Header */}
         <section className="py-16 border-b border-border/50">
@@ -225,7 +228,8 @@ const About = () => {
           </div>
         </section>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -109,9 +109,9 @@ const PropertiesMap = () => {
     return cadence ? `${formatted} BHD/${cadence}` : `${formatted} BHD`;
   };
 
-  // Map tile URL - using Stadia Maps (English labels only)
-  const tileLayerUrl = "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png";
-  const tileLayerAttribution = '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+  // Map tile URL - using OpenStreetMap (free, no API key required)
+  const tileLayerUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const tileLayerAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
   // Bahrain center coordinates
   const bahrainCenter = [26.0667, 50.5577];
