@@ -140,11 +140,12 @@ const PropertiesMap = () => {
         </div>
 
         {/* Map Container - Portrait (3:4 aspect ratio) - Full Screen Size */}
+        {/* MOBILE FIX: Increased height on mobile (60vh), desktop uses aspectRatio */}
         <div className="flex justify-center">
           <div
-            className="relative rounded-2xl overflow-hidden shadow-2xl border-2 w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl"
+            className="relative rounded-2xl overflow-hidden shadow-2xl border-2 w-full max-w-4xl lg:max-w-6xl xl:max-w-7xl h-[60vh] lg:h-auto"
             style={{
-              aspectRatio: '6 / 4',
+              aspectRatio: window.innerWidth >= 1024 ? '6 / 4' : undefined,
               borderColor: 'rgba(212, 175, 55, 0.2)',
               boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
             }}
@@ -158,12 +159,15 @@ const PropertiesMap = () => {
               </div>
             </div>
           ) : (
+            // MOBILE FIX: Added tap={true} for better mobile touch interaction
             <MapContainer
               center={bahrainCenter}
               zoom={11}
               style={{ height: "100%", width: "100%" }}
               zoomControl={true}
               scrollWheelZoom={true}
+              tap={true}
+              touchZoom={true}
             >
               <TileLayer
                 attribution={tileLayerAttribution}
@@ -206,6 +210,7 @@ const PropertiesMap = () => {
                     position={[property.location.lat, property.location.lng]}
                     icon={redIcon}
                   >
+                    {/* MOBILE FIX: Added closeOnClick={false} for better mobile tap behavior */}
                     <Popup
                       maxWidth={320}
                       minWidth={280}
@@ -213,6 +218,7 @@ const PropertiesMap = () => {
                       autoPanPaddingTopLeft={[50, 80]}
                       autoPanPaddingBottomRight={[50, 50]}
                       keepInView={true}
+                      closeOnClick={false}
                     >
                       <div className="p-2">
                         {/* Property Image */}

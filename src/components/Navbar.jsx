@@ -90,7 +90,7 @@ const Navbar = () => {
               alt="Premia Realty"
               className="h-12 w-auto"
             />
-            <div className="hidden sm:block">
+            <div>
               <div className="text-xl tracking-[0.2em] text-foreground font-monument">PREMIA</div>
               <div className="text-[10px] tracking-[0.3em] text-accent -mt-1 font-monument">REALTY</div>
             </div>

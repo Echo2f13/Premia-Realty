@@ -428,7 +428,7 @@ const Properties = () => {
                   return (
                     <ScrollReveal key={propertyKey} animation="fade-in-up" delay={index * 50}>
                       <div className="group hover-lift">
-                      <Link to={`/property/${property.id}`} className="block relative h-[400px] mb-6 overflow-hidden hover-zoom-image">
+                      <Link to={`/properties/${property.id}`} className="block relative h-[400px] mb-6 overflow-hidden hover-zoom-image">
                         <img
                           src={property.images?.[0] || property.image || 'https://via.placeholder.com/400x300?text=No+Image'}
                           alt={property.title}
@@ -461,7 +461,7 @@ const Properties = () => {
                         </button>
                       </Link>
 
-                      <div className="space-y-4 cursor-pointer" onClick={() => navigate(`/property/${property.id}`)}>
+                      <div className="space-y-4 cursor-pointer" onClick={() => navigate(`/properties/${property.id}`)}>
                         <div>
                           <div className="text-sm text-accent tracking-wider mb-2">
                             {(() => {
