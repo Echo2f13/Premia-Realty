@@ -202,15 +202,34 @@ const Properties = () => {
       filtered = filtered.filter(property => {
         const price = parseFloat(property.price) || 0;
 
-        switch (filters.priceRange) {
-          case '0-500k':
-            return price < 500000;
-          case '500k-1m':
-            return price >= 500000 && price < 1000000;
-          case '1m+':
-            return price >= 1000000;
-          default:
-            return true;
+        // Different price ranges for rent vs sale
+        if (filters.intent === 'rent') {
+          switch (filters.priceRange) {
+            case '0-250':
+              return price >= 0 && price <= 250;
+            case '251-500':
+              return price >= 251 && price <= 500;
+            case '501-1000':
+              return price >= 501 && price <= 1000;
+            case '1000-2000':
+              return price >= 1000 && price <= 2000;
+            case '2000+':
+              return price > 2000;
+            default:
+              return true;
+          }
+        } else {
+          // Price ranges for sale
+          switch (filters.priceRange) {
+            case '0-500k':
+              return price < 500000;
+            case '500k-1m':
+              return price >= 500000 && price < 1000000;
+            case '1m+':
+              return price >= 1000000;
+            default:
+              return true;
+          }
         }
       });
     }
@@ -219,6 +238,12 @@ const Properties = () => {
     if (filters.bedrooms) {
       filtered = filtered.filter(property => {
         const beds = property.specs?.bedrooms || property.bedrooms || 0;
+
+        // Handle studio rooms (0 bedrooms)
+        if (filters.bedrooms === 'studio') {
+          return beds === 0;
+        }
+
         const minBeds = parseInt(filters.bedrooms);
         return beds >= minBeds;
       });
@@ -226,6 +251,11 @@ const Properties = () => {
 
     setListings(filtered);
   }, [allProperties, filters.intent, filters.location, filters.propertyType, filters.priceRange, filters.bedrooms]);
+
+  // Clear price range when switching between rent and sale
+  useEffect(() => {
+    setFilters((prev) => ({ ...prev, priceRange: "" }));
+  }, [filters.intent]);
 
   // Apply filters automatically whenever they change
   useEffect(() => {
@@ -341,9 +371,21 @@ const Properties = () => {
                   className="bg-card border border-border/50 h-14 px-6 text-foreground/90 focus:outline-none focus:border-accent transition-all hover:border-accent/50 cursor-pointer"
                 >
                   <option value="">{t(translations.properties.filters.priceRange)}</option>
-                  <option value="0-500k">{t(translations.properties.filters.below500k)}</option>
-                  <option value="500k-1m">{t(translations.properties.filters.range500kTo1m)}</option>
-                  <option value="1m+">{t(translations.properties.filters.above1m)}</option>
+                  {filters.intent === 'rent' ? (
+                    <>
+                      <option value="0-250">BD 0 - 250</option>
+                      <option value="251-500">BD 251 - 500</option>
+                      <option value="501-1000">BD 501 - 1,000</option>
+                      <option value="1000-2000">BD 1,000 - 2,000</option>
+                      <option value="2000+">BD 2,000+</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="0-500k">{t(translations.properties.filters.below500k)}</option>
+                      <option value="500k-1m">{t(translations.properties.filters.range500kTo1m)}</option>
+                      <option value="1m+">{t(translations.properties.filters.above1m)}</option>
+                    </>
+                  )}
                 </select>
                 <select
                   value={filters.bedrooms}
@@ -351,6 +393,7 @@ const Properties = () => {
                   className="bg-card border border-border/50 h-14 px-6 text-foreground/90 focus:outline-none focus:border-accent transition-all hover:border-accent/50 cursor-pointer"
                 >
                   <option value="">{t(translations.properties.filters.bedrooms)}</option>
+                  <option value="studio">Studio</option>
                   <option value="2">{t(translations.properties.filters.bedrooms2Plus)}</option>
                   <option value="3">{t(translations.properties.filters.bedrooms3Plus)}</option>
                   <option value="4">{t(translations.properties.filters.bedrooms4Plus)}</option>

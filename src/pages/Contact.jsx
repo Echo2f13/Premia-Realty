@@ -12,7 +12,7 @@ const initialFormState = {
   name: "",
   email: "",
   phone: "",
-  enquiryType: "buy",
+  enquiryType: "buysell",
   requirements: "",
 };
 
@@ -167,25 +167,25 @@ const Contact = () => {
                     <div className="flex gap-3">
                       <button
                         type="button"
-                        onClick={() => setFormData((prev) => ({ ...prev, enquiryType: "buy" }))}
+                        onClick={() => setFormData((prev) => ({ ...prev, enquiryType: "buysell" }))}
                         className={`flex-1 px-6 py-3 border transition-all ${
-                          formData.enquiryType === "buy"
+                          formData.enquiryType === "buysell"
                             ? "bg-accent text-background border-accent"
                             : "bg-card text-foreground/70 border-border/50 hover:border-accent/50"
                         }`}
                       >
-                        {t(translations.contact.form.buy)}
+                        Buy/Sell
                       </button>
                       <button
                         type="button"
-                        onClick={() => setFormData((prev) => ({ ...prev, enquiryType: "sell" }))}
+                        onClick={() => setFormData((prev) => ({ ...prev, enquiryType: "lease" }))}
                         className={`flex-1 px-6 py-3 border transition-all ${
-                          formData.enquiryType === "sell"
+                          formData.enquiryType === "lease"
                             ? "bg-accent text-background border-accent"
                             : "bg-card text-foreground/70 border-border/50 hover:border-accent/50"
                         }`}
                       >
-                        {t(translations.contact.form.sell)}
+                        Lease
                       </button>
                     </div>
                   </div>
