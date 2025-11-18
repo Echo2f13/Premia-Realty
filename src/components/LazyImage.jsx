@@ -4,11 +4,12 @@ const LazyImage = ({
   src,
   alt,
   className = '',
-  placeholder = 'https://via.placeholder.com/400x300?text=Loading...',
+  placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23171717"/%3E%3C/svg%3E',
   ...props
 }) => {
   const [imageSrc, setImageSrc] = useState(placeholder);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const imgRef = useRef(null);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const LazyImage = ({
           });
         },
         {
-          rootMargin: '50px',
+          rootMargin: '100px', // Increased from 50px for earlier loading
         }
       );
 
@@ -45,6 +46,16 @@ const LazyImage = ({
 
   const handleLoad = () => {
     setImageLoaded(true);
+    setImageError(false);
+  };
+
+  const handleError = () => {
+    setImageError(true);
+    setImageLoaded(true);
+    // Use a fallback image from Unsplash if the original fails
+    if (imageSrc !== placeholder) {
+      setImageSrc('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop');
+    }
   };
 
   return (
@@ -52,8 +63,11 @@ const LazyImage = ({
       ref={imgRef}
       src={imageSrc}
       alt={alt}
-      className={`lazy-load-image ${imageLoaded ? 'loaded' : ''} ${className}`}
+      className={`lazy-load-image ${imageLoaded ? 'loaded' : ''} ${imageError ? 'error' : ''} ${className}`}
       onLoad={handleLoad}
+      onError={handleError}
+      loading="lazy"
+      decoding="async"
       {...props}
     />
   );

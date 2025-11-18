@@ -60,12 +60,33 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Minimum loading time
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
+    // Wait for fonts and critical resources to load
+    const loadResources = async () => {
+      try {
+        // Wait for fonts to be ready
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
 
-    return () => clearTimeout(timer);
+        // Ensure DOM is fully loaded
+        if (document.readyState !== 'complete') {
+          await new Promise(resolve => {
+            window.addEventListener('load', resolve, { once: true });
+          });
+        }
+
+        // Small delay for smoother transition (300ms instead of 2500ms)
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error loading resources:', error);
+        // Fallback: show app after 1 second if there's an error
+        setTimeout(() => setIsLoading(false), 1000);
+      }
+    };
+
+    loadResources();
   }, []);
 
   return (

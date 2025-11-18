@@ -145,6 +145,8 @@ export const translations = {
       apartment: { en: "Apartment", ar: "شقة" },
       penthouse: { en: "Penthouse", ar: "بنتهاوس" },
       townhouse: { en: "Townhouse", ar: "منزل" },
+      duplex: { en: "Duplex", ar: "دوبلكس" },
+      building: { en: "Building", ar: "مبنى" },
       priceRange: { en: "Price Range", ar: "نطاق السعر" },
       below500k: { en: "Below BD 500,000", ar: "أقل من 500,000 د.ب" },
       range500kTo1m: { en: "BD 500,000 - 1,000,000", ar: "500,000 - 1,000,000 د.ب" },

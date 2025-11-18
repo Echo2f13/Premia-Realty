@@ -11,6 +11,8 @@ export const propertyTypeTranslations = {
   'Apartment': { en: 'Apartment', ar: 'شقة' },
   'Penthouse': { en: 'Penthouse', ar: 'بنتهاوس' },
   'Townhouse': { en: 'Townhouse', ar: 'منزل' },
+  'Duplex': { en: 'Duplex', ar: 'دوبلكس' },
+  'Building': { en: 'Building', ar: 'مبنى' },
   'Studio': { en: 'Studio', ar: 'استوديو' },
   'Office': { en: 'Office', ar: 'مكتب' },
   'Commercial': { en: 'Commercial', ar: 'تجاري' },

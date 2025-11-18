@@ -4,6 +4,7 @@ import PropertiesMap from "../components/PropertiesMap";
 import ScrollReveal from "../components/ScrollReveal";
 import LazyImage from "../components/LazyImage";
 import SEO from "../components/SEO";
+import PropertySkeleton from "../components/PropertySkeleton";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
@@ -174,8 +175,10 @@ const Home = () => {
           </ScrollReveal>
 
           {loadingProperties ? (
-            <div className="text-center py-12 text-foreground/70">
-              {t(translations.home.priorityProperties.loading)}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, index) => (
+                <PropertySkeleton key={index} />
+              ))}
             </div>
           ) : priorityProperties.length === 0 ? (
             <div className="text-center py-12 text-foreground/70">

@@ -15,6 +15,7 @@ import SEO from "../components/SEO";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
 import { getPropertyField, translateLocation } from "../utils/propertyTranslations";
+import PropertySkeleton from "../components/PropertySkeleton";
 
 const getPropertyKey = (property, fallback) => {
   if (property?.id) return String(property.id);
@@ -364,6 +365,12 @@ const Properties = () => {
                   <option value="Apartment">{t(translations.properties.filters.apartment)}</option>
                   <option value="Penthouse">{t(translations.properties.filters.penthouse)}</option>
                   <option value="Townhouse">{t(translations.properties.filters.townhouse)}</option>
+                  {filters.intent === 'rent' && (
+                    <option value="Duplex">{t(translations.properties.filters.duplex)}</option>
+                  )}
+                  {filters.intent === 'sale' && (
+                    <option value="Building">{t(translations.properties.filters.building)}</option>
+                  )}
                 </select>
                 <select
                   value={filters.priceRange}
@@ -408,9 +415,10 @@ const Properties = () => {
         {loading && (
           <section className="py-20">
             <div className="container mx-auto px-6 lg:px-12">
-              <div className="flex flex-col items-center justify-center py-20">
-                <Loader2 className="w-12 h-12 text-accent animate-spin" />
-                <p className="mt-4 text-foreground/60">{t(translations.properties.loading)}</p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[...Array(6)].map((_, index) => (
+                  <PropertySkeleton key={index} />
+                ))}
               </div>
             </div>
           </section>
